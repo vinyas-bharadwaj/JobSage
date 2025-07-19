@@ -1,0 +1,300 @@
+<nav class="navbar navbar-expand-lg navbar-dark shadow-lg">
+    <div class="container">
+        <!-- Brand/Logo -->
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="fas fa-briefcase me-2"></i>JobSage
+        </a>
+
+        <!-- Mobile toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navigation items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="{% url 'home-page' %}">
+                        <i class="fas fa-home me-1"></i>Home
+                    </a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="{% url 'resume-page' %}">
+                        <i class="fas fa-code me-1"></i>Resume
+                    </a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-microphone me-1"></i>Mock Interviews
+                    </a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-book me-1"></i>Resources
+                    </a>
+                </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-chart-line me-1"></i>Progress
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User authentication section -->
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user me-2"></i>Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cog me-2"></i>Settings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'logout-page' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item me-2">
+                        <a class="nav-link" href="{% url 'login-page' %}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light px-3" href="{% url 'signup-page' %}">
+                            <i class="fas fa-user-plus me-1"></i>Sign Up
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Add custom CSS for additional styling -->
+<style>
+    .navbar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        padding: 1.2rem 0;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 1050;
+    }
+
+    .navbar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .navbar .container {
+        position: relative;
+        z-index: 1051;
+    }
+    
+    .navbar-brand {
+        font-size: 1.8rem;
+        margin-right: 2rem;
+        font-weight: 800;
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+        color: #f093fb !important;
+        transform: scale(1.05);
+    }
+
+    .navbar-brand i {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .nav-link {
+        padding: 0.8rem 1.2rem !important;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.9) !important;
+        border-radius: 25px;
+        margin: 0 0.2rem;
+        position: relative;
+    }
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(240, 147, 251, 0.2), rgba(245, 87, 108, 0.2));
+        border-radius: 25px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .nav-link:hover {
+        color: white !important;
+        transform: translateY(-2px);
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-link:hover::before {
+        opacity: 1;
+    }
+
+    .nav-link i {
+        margin-right: 0.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover i {
+        transform: scale(1.2);
+    }
+    
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        margin-top: 0.8rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        z-index: 1055;
+        position: absolute;
+    }
+    
+    .dropdown-item {
+        padding: 0.8rem 1.5rem;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        margin: 0.2rem 0.5rem;
+        font-weight: 500;
+    }
+    
+    .dropdown-item:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .dropdown-item i {
+        width: 20px;
+        text-align: center;
+    }
+
+    .nav-item.dropdown {
+        position: relative;
+        z-index: 1055;
+    }
+    
+    .btn-outline-light {
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-radius: 25px;
+        padding: 0.6rem 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    
+    .btn-outline-light:hover {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+    }
+
+    .navbar-toggler {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-toggler:hover {
+        border-color: #f093fb;
+        box-shadow: 0 0 15px rgba(240, 147, 251, 0.3);
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    
+    @media (max-width: 991px) {
+        .navbar {
+            padding: 1rem 0;
+        }
+
+        .navbar-nav .btn {
+            margin-top: 0.8rem;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        .nav-item {
+            margin-right: 0 !important;
+            margin-bottom: 0.3rem;
+        }
+        
+        .navbar-brand {
+            margin-right: 0;
+            font-size: 1.6rem;
+        }
+
+        .nav-link {
+            margin: 0.2rem 0;
+            text-align: left;
+        }
+    }
+
+    /* Active link styling */
+    .nav-link.active {
+        background: linear-gradient(45deg, rgba(240, 147, 251, 0.3), rgba(245, 87, 108, 0.3));
+        color: white !important;
+    }
+
+    /* Animation for navbar on scroll */
+    .navbar.scrolled {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%) !important;
+        backdrop-filter: blur(20px);
+    }
+</style>
+
+<script>
+    // Add scroll effect to navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>

@@ -1,0 +1,787 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Resume Analyzer - JobSage
+{% endblock title %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="resume-hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-file-alt me-2"></i>AI-Powered Analysis
+                    </div>
+                    <h1 class="hero-title">
+                        Optimize Your <span class="text-gradient">Resume</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Get instant AI-powered feedback on your resume. Our advanced analysis helps you 
+                        stand out to recruiters and pass ATS systems with confidence.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Upload Section -->
+<section class="upload-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="upload-card">
+                    <form method="POST" enctype="multipart/form-data" class="upload-form">
+                        {% csrf_token %}
+                        
+                        <div class="upload-header">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Upload Your Resume</h3>
+                            <p>Upload your resume in PDF, DOCX, or TXT format for instant analysis</p>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="target_role" class="form-label">Target Role (Optional)</label>
+                            <input type="text" class="form-control" id="target_role" name="target_role" 
+                                   placeholder="e.g., Software Engineer, Data Scientist, Product Manager"
+                                   value="{{ target_role }}">
+                            <small class="form-text">Help us provide more targeted feedback</small>
+                        </div>
+
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <input type="file" id="resume_file" name="resume_file" accept=".pdf,.docx,.doc,.txt" required>
+                            <div class="upload-content">
+                                <i class="fas fa-file-upload upload-icon-large"></i>
+                                <h4>Drop your resume here</h4>
+                                <p>or <span class="upload-link">browse files</span></p>
+                                <small>Supports PDF, DOCX, DOC, TXT (max 10MB)</small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 analyze-btn">
+                            <i class="fas fa-brain me-2"></i>Analyze Resume
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+{% if analysis_completed %}
+<section class="results-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-badge">Analysis Results</div>
+                <h2 class="section-title">Your Resume Analysis</h2>
+                <p class="section-subtitle">Detailed feedback for {{ file_name }}</p>
+            </div>
+        </div>
+
+        <!-- Score Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="score-card">
+                    <div class="score-header">
+                        <h4>Overall Score</h4>
+                        <div class="score-circle">
+                            <div class="score-number">{{ analysis.overall_score }}</div>
+                            <div class="score-label">/ 100</div>
+                        </div>
+                    </div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: {{ analysis.overall_score }}%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="score-card">
+                    <div class="score-header">
+                        <h4>ATS Compatibility</h4>
+                        <div class="score-circle ats-score">
+                            <div class="score-number">{{ analysis.ats_score }}</div>
+                            <div class="score-label">/ 100</div>
+                        </div>
+                    </div>
+                    <div class="score-bar">
+                        <div class="score-fill ats-fill" style="width: {{ analysis.ats_score }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Details -->
+        <div class="row g-4">
+            <!-- Strengths -->
+            <div class="col-lg-4">
+                <div class="analysis-card strengths-card">
+                    <div class="card-header">
+                        <i class="fas fa-thumbs-up"></i>
+                        <h4>Strengths</h4>
+                    </div>
+                    <div class="card-content">
+                        <ul class="analysis-list">
+                            {% for strength in analysis.strengths %}
+                                <li><i class="fas fa-check"></i>{{ strength }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Improvements -->
+            <div class="col-lg-4">
+                <div class="analysis-card improvements-card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Areas for Improvement</h4>
+                    </div>
+                    <div class="card-content">
+                        <ul class="analysis-list">
+                            {% for improvement in analysis.improvement_areas %}
+                                <li><i class="fas fa-arrow-up"></i>{{ improvement }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Missing Elements -->
+            <div class="col-lg-4">
+                <div class="analysis-card missing-card">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Missing Elements</h4>
+                    </div>
+                    <div class="card-content">
+                        <ul class="analysis-list">
+                            {% for missing in analysis.missing_elements %}
+                                <li><i class="fas fa-plus"></i>{{ missing }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="recommendations-card">
+                    <div class="card-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Actionable Recommendations</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="recommendations-grid">
+                            {% for recommendation in analysis.recommendations %}
+                                <div class="recommendation-item">
+                                    <div class="recommendation-number">{{ forloop.counter }}</div>
+                                    <div class="recommendation-text">{{ recommendation }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <a href="{% url 'resume-page' %}" class="btn btn-outline-primary btn-lg me-3">
+                    <i class="fas fa-upload me-2"></i>Analyze Another Resume
+                </a>
+                <button class="btn btn-primary btn-lg" onclick="window.print()">
+                    <i class="fas fa-download me-2"></i>Download Report
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<style>
+    /* Hero Section */
+    .resume-hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .resume-hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 0;
+        opacity: 0.9;
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    /* Upload Section */
+    .upload-section {
+        padding: 3rem 0;
+        background: #f8f9fa;
+    }
+
+    .upload-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .upload-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .upload-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .upload-icon i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .upload-header h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-header p {
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        padding: 0.875rem 1rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-text {
+        color: #9ca3af;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    /* File Upload Area */
+    .file-upload-area {
+        position: relative;
+        border: 3px dashed #d1d5db;
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+        cursor: pointer;
+    }
+
+    .file-upload-area:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.02);
+    }
+
+    .file-upload-area.drag-over {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .file-upload-area input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .upload-content .upload-icon-large {
+        font-size: 3rem;
+        color: #9ca3af;
+        margin-bottom: 1rem;
+    }
+
+    .upload-content h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-content p {
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-link {
+        color: #667eea;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .upload-link:hover {
+        text-decoration: underline;
+    }
+
+    .analyze-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .analyze-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Results Section */
+    .results-section {
+        padding: 4rem 0;
+        background: white;
+    }
+
+    .section-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    /* Score Cards */
+    .score-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        height: 100%;
+    }
+
+    .score-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .score-header h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0;
+    }
+
+    .score-circle {
+        display: flex;
+        align-items: baseline;
+        gap: 0.25rem;
+    }
+
+    .score-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #667eea;
+    }
+
+    .ats-score .score-number {
+        color: #f093fb;
+    }
+
+    .score-label {
+        font-size: 0.875rem;
+        color: #9ca3af;
+        font-weight: 600;
+    }
+
+    .score-bar {
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .score-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 4px;
+        transition: width 1s ease;
+    }
+
+    .ats-fill {
+        background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    /* Analysis Cards */
+    .analysis-card {
+        background: white;
+        border-radius: 20px;
+        padding: 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .analysis-card .card-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .strengths-card .card-header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+    }
+
+    .improvements-card .card-header {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        border: none;
+    }
+
+    .missing-card .card-header {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border: none;
+    }
+
+    .analysis-card .card-header h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .analysis-card .card-header i {
+        font-size: 1.25rem;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .analysis-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .analysis-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    .analysis-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .analysis-list i {
+        margin-top: 0.125rem;
+        flex-shrink: 0;
+    }
+
+    .strengths-card .analysis-list i {
+        color: #10b981;
+    }
+
+    .improvements-card .analysis-list i {
+        color: #f59e0b;
+    }
+
+    .missing-card .analysis-list i {
+        color: #ef4444;
+    }
+
+    /* Recommendations */
+    .recommendations-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 24px;
+        padding: 0;
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        color: white;
+        overflow: hidden;
+    }
+
+    .recommendations-card .card-header {
+        padding: 2rem 2rem 1rem;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .recommendations-card .card-header h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .recommendations-card .card-header i {
+        font-size: 1.5rem;
+    }
+
+    .recommendations-grid {
+        display: grid;
+        gap: 1.5rem;
+        padding: 1rem 2rem 2rem;
+    }
+
+    .recommendation-item {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .recommendation-number {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+    }
+
+    .recommendation-text {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        opacity: 0.95;
+    }
+
+    /* Alerts */
+    .alert {
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        font-size: 0.875rem;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+
+    .alert-error {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .upload-card {
+            padding: 1.5rem;
+        }
+
+        .file-upload-area {
+            padding: 2rem 1rem;
+        }
+
+        .score-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .recommendations-grid {
+            padding: 1rem 1.5rem 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    // File upload drag and drop functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('resume_file');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        // Handle dropped files
+        fileUploadArea.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight(e) {
+            fileUploadArea.classList.add('drag-over');
+        }
+
+        function unhighlight(e) {
+            fileUploadArea.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            
+            if (files.length > 0) {
+                updateFileLabel(files[0].name);
+            }
+        }
+
+        // Handle file selection via click
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                updateFileLabel(this.files[0].name);
+            }
+        });
+
+        function updateFileLabel(fileName) {
+            const uploadContent = fileUploadArea.querySelector('.upload-content');
+            uploadContent.innerHTML = `
+                <i class="fas fa-file-check upload-icon-large" style="color: #10b981;"></i>
+                <h4>File Selected</h4>
+                <p><strong>${fileName}</strong></p>
+                <small>Click to change file or drag another file</small>
+            `;
+        }
+    });
+</script>
+{% endblock content %}
