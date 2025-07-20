@@ -1,0 +1,44 @@
+<!-- Create this file: src/static/js/excalidraw/build-excalidraw.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excalidraw Build</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@excalidraw/excalidraw@0.17.6/dist/excalidraw.production.min.js"></script>
+    <style>
+        .excalidraw-container {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <div id="excalidraw-root" class="excalidraw-container"></div>
+    
+    <script>
+        // Export Excalidraw for use in your Django app
+        window.initializeExcalidraw = function(container, options = {}) {
+            const excalidrawElement = React.createElement(ExcalidrawLib.Excalidraw, {
+                initialData: options.initialData || {
+                    elements: [],
+                    appState: {
+                        viewBackgroundColor: "#ffffff",
+                        theme: "light"
+                    }
+                },
+                onChange: options.onChange || function() {},
+                ref: options.ref || function() {}
+            });
+            
+            ReactDOM.render(excalidrawElement, container);
+            return excalidrawElement;
+        };
+        
+        // Initialize for testing
+        if (document.getElementById('excalidraw-root')) {
+            window.initializeExcalidraw(document.getElementById('excalidraw-root'));
+        }
+    </script>
+</body>
+</html>

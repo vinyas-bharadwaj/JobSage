@@ -1,0 +1,801 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    System Design Practice - JobSage
+{% endblock title %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="system-design-hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-sitemap me-2"></i>FAANG-Level Practice
+                    </div>
+                    <h1 class="hero-title">
+                        Master <span class="text-gradient">System Design</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Practice with real interview questions from top tech companies. Design systems, 
+                        get AI-powered feedback, and ace your next system design interview.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Questions Section -->
+<section class="questions-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-badge">Practice Questions</div>
+                <h2 class="section-title">System Design Challenges</h2>
+                <p class="section-subtitle">Choose a question and start designing your solution</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Question Cards -->
+            <div class="col-lg-6">
+                <div class="question-card" data-difficulty="medium">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="difficulty-badge medium">Medium</span>
+                            <span class="company-tags">
+                                <span class="company-tag">Google</span>
+                                <span class="company-tag">Meta</span>
+                            </span>
+                        </div>
+                        <h3>Design a URL Shortener (like bit.ly)</h3>
+                        <p class="question-description">
+                            Design a URL shortening service that can handle millions of URLs and billions of redirects.
+                        </p>
+                    </div>
+                    <div class="question-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            <li>Shorten long URLs and generate unique short URLs</li>
+                            <li>Handle 100M URLs shortened per day</li>
+                            <li>100:1 read/write ratio</li>
+                            <li>Custom aliases support</li>
+                            <li>Analytics and expiration features</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary start-design-btn" 
+                            data-question="Design a URL Shortener (like bit.ly)"
+                            data-requirements="Shorten long URLs and generate unique short URLs. Handle 100M URLs shortened per day. 100:1 read/write ratio. Custom aliases support. Analytics and expiration features.">
+                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="question-card" data-difficulty="hard">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="difficulty-badge hard">Hard</span>
+                            <span class="company-tags">
+                                <span class="company-tag">Netflix</span>
+                                <span class="company-tag">YouTube</span>
+                            </span>
+                        </div>
+                        <h3>Design a Video Streaming Service</h3>
+                        <p class="question-description">
+                            Design a global video streaming platform that can serve millions of concurrent users.
+                        </p>
+                    </div>
+                    <div class="question-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            <li>Upload and stream videos globally</li>
+                            <li>Support multiple video qualities</li>
+                            <li>Handle 1B users worldwide</li>
+                            <li>Low latency streaming</li>
+                            <li>Content recommendation system</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary start-design-btn"
+                            data-question="Design a Video Streaming Service"
+                            data-requirements="Upload and stream videos globally. Support multiple video qualities. Handle 1B users worldwide. Low latency streaming. Content recommendation system.">
+                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="question-card" data-difficulty="medium">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="difficulty-badge medium">Medium</span>
+                            <span class="company-tags">
+                                <span class="company-tag">WhatsApp</span>
+                                <span class="company-tag">Slack</span>
+                            </span>
+                        </div>
+                        <h3>Design a Chat Application</h3>
+                        <p class="question-description">
+                            Design a real-time messaging system supporting millions of users and group chats.
+                        </p>
+                    </div>
+                    <div class="question-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            <li>Real-time messaging between users</li>
+                            <li>Group chat support</li>
+                            <li>Message history and search</li>
+                            <li>Online/offline status</li>
+                            <li>Push notifications</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary start-design-btn"
+                            data-question="Design a Chat Application"
+                            data-requirements="Real-time messaging between users. Group chat support. Message history and search. Online/offline status. Push notifications.">
+                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="question-card" data-difficulty="hard">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="difficulty-badge hard">Hard</span>
+                            <span class="company-tags">
+                                <span class="company-tag">Uber</span>
+                                <span class="company-tag">Lyft</span>
+                            </span>
+                        </div>
+                        <h3>Design a Ride Sharing Service</h3>
+                        <p class="question-description">
+                            Design a ride-sharing platform connecting drivers and passengers in real-time.
+                        </p>
+                    </div>
+                    <div class="question-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            <li>Real-time location tracking</li>
+                            <li>Driver-passenger matching</li>
+                            <li>Trip management and payments</li>
+                            <li>Surge pricing during peak hours</li>
+                            <li>Handle millions of rides daily</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary start-design-btn"
+                            data-question="Design a Ride Sharing Service"
+                            data-requirements="Real-time location tracking. Driver-passenger matching. Trip management and payments. Surge pricing during peak hours. Handle millions of rides daily.">
+                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="question-card" data-difficulty="easy">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="difficulty-badge easy">Easy</span>
+                            <span class="company-tags">
+                                <span class="company-tag">Amazon</span>
+                            </span>
+                        </div>
+                        <h3>Design a Web Crawler</h3>
+                        <p class="question-description">
+                            Design a web crawler that can crawl and index billions of web pages efficiently.
+                        </p>
+                    </div>
+                    <div class="question-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            <li>Crawl billions of web pages</li>
+                            <li>Handle different content types</li>
+                            <li>Respect robots.txt and rate limits</li>
+                            <li>Detect and handle duplicate content</li>
+                            <li>Scalable and fault-tolerant</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary start-design-btn"
+                            data-question="Design a Web Crawler"
+                            data-requirements="Crawl billions of web pages. Handle different content types. Respect robots.txt and rate limits. Detect and handle duplicate content. Scalable and fault-tolerant.">
+                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="question-card" data-difficulty="medium">
+                    <div class="question-header">
+                        <div class="question-meta">
+                            <span class="difficulty-badge medium">Medium</span>
+                            <span class="company-tags">
+                                <span class="company-tag">Twitter</span>
+                                <span class="company-tag">Instagram</span>
+                            </span>
+                        </div>
+                        <h3>Design a Social Media Feed</h3>
+                        <p class="question-description">
+                            Design a social media platform's news feed system for millions of active users.
+                        </p>
+                    </div>
+                    <div class="question-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            <li>Generate personalized feeds</li>
+                            <li>Support posts, likes, comments</li>
+                            <li>Handle viral content</li>
+                            <li>Real-time updates</li>
+                            <li>Content ranking algorithm</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary start-design-btn"
+                            data-question="Design a Social Media Feed"
+                            data-requirements="Generate personalized feeds. Support posts, likes, comments. Handle viral content. Real-time updates. Content ranking algorithm.">
+                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Design Modal -->
+<div class="modal fade" id="designModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="design-header-info">
+                    <h4 class="modal-title" id="currentQuestion">Design Question</h4>
+                    <p class="modal-subtitle" id="currentRequirements">Requirements will appear here</p>
+                </div>
+                <div class="design-actions">
+                    <button type="button" class="btn btn-success me-2" id="submitDesign">
+                        <i class="fas fa-brain me-1"></i>Get Feedback
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Close
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body p-0">
+                <!-- Excalidraw will be mounted here -->
+                <div id="excalidraw-container" style="height: calc(100vh - 120px);"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">System Design Analysis</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="analysisResults">
+                <!-- Analysis results will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load CSS -->
+<link rel="stylesheet" href="{% static 'css/excalidraw/excalidraw.css' %}">
+
+<!-- Load dependencies in correct order -->
+<script src="{% static 'js/excalidraw/react.min.js' %}"></script>
+<script src="{% static 'js/excalidraw/react-dom.min.js' %}"></script>
+<script src="{% static 'js/excalidraw/excalidraw.production.min.js' %}"></script>
+<script src="{% static 'js/excalidraw/excalidraw-wrapper.js' %}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let excalidrawAPI = null;
+    let currentQuestion = '';
+    let currentRequirements = '';
+    let excalidrawInstance = null;
+
+    const designModal = document.getElementById('designModal');
+    const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+
+    // Handle question selection
+    document.querySelectorAll('.start-design-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentQuestion = this.dataset.question;
+            currentRequirements = this.dataset.requirements;
+            
+            document.getElementById('currentQuestion').textContent = currentQuestion;
+            document.getElementById('currentRequirements').textContent = currentRequirements;
+            
+            const modal = new bootstrap.Modal(designModal);
+            modal.show();
+        });
+    });
+
+    // Initialize Excalidraw when modal is shown
+    designModal.addEventListener('shown.bs.modal', function() {
+        if (!excalidrawInstance) {
+            // Wait for modal to be fully rendered
+            setTimeout(() => {
+                console.log('Initializing Excalidraw...');
+                
+                excalidrawInstance = ExcalidrawWrapper.init('excalidraw-container', {
+                    onChange: function(elements, appState, files) {
+                        console.log('Excalidraw onChange triggered');
+                        excalidrawAPI = {
+                            elements: elements,
+                            appState: appState,
+                            files: files || {}
+                        };
+                        
+                        // Update wrapper instance
+                        ExcalidrawWrapper.updateElements('excalidraw-container', elements);
+                    }
+                });
+                
+                if (!excalidrawInstance) {
+                    console.error('Failed to initialize Excalidraw instance');
+                } else {
+                    console.log('Excalidraw initialized successfully');
+                }
+            }, 500); // Increased delay
+        }
+    });
+
+    // Submit design for analysis
+    document.getElementById('submitDesign').addEventListener('click', function() {
+        console.log('Submit button clicked', excalidrawAPI);
+        
+        if (!excalidrawAPI || !excalidrawAPI.elements || excalidrawAPI.elements.length === 0) {
+            alert('Please draw your system design first!');
+            return;
+        }
+
+        const submitBtn = this;
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Analyzing...';
+        submitBtn.disabled = true;
+
+        const designData = {
+            elements: excalidrawAPI.elements,
+            appState: excalidrawAPI.appState,
+            question: currentQuestion,
+            requirements: currentRequirements
+        };
+
+        console.log('Submitting design data:', designData);
+
+        fetch('{% url "analyze-system-design" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(designData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Analysis response:', data);
+            if (data.success) {
+                displayAnalysisResults(data.analysis);
+                bootstrap.Modal.getInstance(designModal).hide();
+                resultsModal.show();
+            } else {
+                alert('Error analyzing design: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while analyzing your design.');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+
+    function displayAnalysisResults(analysis) {
+        const resultsContainer = document.getElementById('analysisResults');
+        
+        resultsContainer.innerHTML = `
+            <div class="score-display">
+                <div class="score-item">
+                    <div class="score-circle overall">${analysis.overall_score}</div>
+                    <h6>Overall Score</h6>
+                </div>
+                <div class="score-item">
+                    <div class="score-circle scalability">${analysis.scalability_score}</div>
+                    <h6>Scalability</h6>
+                </div>
+                <div class="score-item">
+                    <div class="score-circle reliability">${analysis.reliability_score}</div>
+                    <h6>Reliability</h6>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="feedback-section">
+                        <h5><i class="fas fa-thumbs-up text-success me-2"></i>Strengths</h5>
+                        <ul class="feedback-list">
+                            ${analysis.strengths.map(strength => `<li>${strength}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feedback-section">
+                        <h5><i class="fas fa-chart-line text-warning me-2"></i>Areas for Improvement</h5>
+                        <ul class="feedback-list">
+                            ${analysis.weaknesses.map(weakness => `<li>${weakness}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h5><i class="fas fa-exclamation-triangle text-danger me-2"></i>Missing Components</h5>
+                <ul class="feedback-list">
+                    ${analysis.missing_components.map(component => `<li>${component}</li>`).join('')}
+                </ul>
+            </div>
+
+            <div class="feedback-section">
+                <h5><i class="fas fa-lightbulb text-primary me-2"></i>Recommendations</h5>
+                <ul class="feedback-list">
+                    ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    // Debug: Check if all libraries are loaded
+    console.log('React:', typeof React !== 'undefined');
+    console.log('ReactDOM:', typeof ReactDOM !== 'undefined');
+    console.log('ExcalidrawLib:', typeof ExcalidrawLib !== 'undefined');
+    console.log('ExcalidrawWrapper:', typeof ExcalidrawWrapper !== 'undefined');
+});
+</script>
+
+<style>
+    /* Hero Section */
+    .system-design-hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .system-design-hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 0;
+        opacity: 0.9;
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    /* Questions Section */
+    .questions-section {
+        padding: 4rem 0;
+        background: #f8f9fa;
+    }
+
+    .section-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #6c757d;
+        margin: 0;
+    }
+
+    /* Question Cards */
+    .question-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        height: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .question-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .difficulty-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .difficulty-badge.easy {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+
+    .difficulty-badge.medium {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+
+    .difficulty-badge.hard {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+
+    .company-tags {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .company-tag {
+        background: #e5e7eb;
+        color: #374151;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    .question-header h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.75rem;
+    }
+
+    .question-description {
+        color: #6c757d;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    .question-requirements {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .question-requirements h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.75rem;
+    }
+
+    .question-requirements ul {
+        margin: 0;
+        padding-left: 1.25rem;
+    }
+
+    .question-requirements li {
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+        font-size: 0.9rem;
+    }
+
+    .start-design-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 0.875rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        width: 100%;
+    }
+
+    .start-design-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Modal Styles */
+    .design-header-info h4 {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+        color: #6c757d;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .design-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Analysis Results */
+    .score-display {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .score-item {
+        text-align: center;
+        flex: 1;
+    }
+
+    .score-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+    }
+
+    .score-circle.overall {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .score-circle.scalability {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .score-circle.reliability {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .feedback-section {
+        margin-bottom: 2rem;
+    }
+
+    .feedback-section h5 {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1rem;
+    }
+
+    .feedback-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feedback-list li {
+        background: #f8f9fa;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        border-left: 4px solid #667eea;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .question-card {
+            padding: 1.5rem;
+        }
+
+        .score-display {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .design-actions {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+    }
+
+    .excalidraw-error {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .excalidraw-error h3 {
+        color: #dc3545;
+        margin-bottom: 1rem;
+    }
+
+    .excalidraw-error p {
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<!-- CSRF Token -->
+{% csrf_token %}
+{% endblock content %}
