@@ -1,6 +1,250 @@
+# Environment variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Virtual environments
 venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Python
 __pycache__/
-migrations/
-*.sqlite3
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django
+*.log
+local_settings.py
 db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# Database migrations (you had this, but be more specific)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+
+# Media files (user uploads)
+media/
+/media/
+
+# Third-party downloaded libraries (optional)
+static/js/excalidraw/react.min.js
+static/js/excalidraw/react-dom.min.js
+static/js/excalidraw/excalidraw.production.min.js
+
+# Static files (production)
+staticfiles/
+/staticfiles/
+static_root/
+
+# Django secret key backup
+secret_key.txt
+
+# Cache
+.cache/
+.pytest_cache/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Local development
+*.local
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Logs
+*.log
+logs/
+log/
+
+# Node.js (if you add any Node.js tools later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package files
+*.tar.gz
+*.zip
+*.rar
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# AI/ML specific (for your Gemini integration)
+*.pkl
+*.pickle
+model_cache/
+.wandb/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Email backend (if you add email later)
+sent_emails/
+
+# Redis dump (if you add Redis caching)
+dump.rdb
+
+# Elasticsearch (if you add search)
+elasticsearch/
+
+# Docker (if you containerize later)
+docker-compose.override.yml
+.dockerignore
+
+# Local configuration overrides
+local_settings.py
+production_settings.py
+staging_settings.py
+
+# SSL certificates (if you add HTTPS locally)
+*.pem
+*.key
+*.crt
+*.cert
+
+# API keys and secrets (additional protection)
+secrets.json
+credentials.json
+service-account-key.json
+
+# Test coverage
+.coverage
+htmlcov/
+
+# Pytest
+.pytest_cache/
+test-results/
+
+# Custom project specific
+excalidraw_temp/
+user_designs/
+temp_exports/
+
+# Development database backups
+*.db.backup
+*.sql.backup
+
+# Error logs
+error.log
+debug.log
+access.log
+
+# Local uploads directory (if you add file uploads)
+uploads/
+user_uploads/
+
+# Session files
+django_session/
+sessions/
+
+# Compiled messages
+*.mo
+
+# Local development scripts
+run_local.sh
+setup_local.py
+local_*.py
