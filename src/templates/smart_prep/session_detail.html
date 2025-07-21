@@ -1,0 +1,1047 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ session.company_name }} - Preparation Guide{% endblock title %}
+
+{% block content %}
+<!-- Compact Professional Header -->
+<section class="session-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'smart-prep' %}">
+                                <i class="fas fa-chevron-left me-1"></i>Back to Smart Prep
+                            </a>
+                        </li>
+                    </ol>
+                </nav>
+                
+                <!-- Header Card -->
+                <div class="header-card">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="company-info">
+                                <div class="company-logo">
+                                    {{ session.company_name|first|upper }}
+                                </div>
+                                <div class="company-details">
+                                    <h1 class="company-name">{{ session.company_name }}</h1>
+                                    <div class="job-meta">
+                                        <span class="role-tag">{{ session.target_role }}</span>
+                                        <span class="date-tag">
+                                            <i class="fas fa-calendar-plus me-1"></i>
+                                            {{ session.created_at|date:"M d, Y" }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="quick-actions">
+                                <button class="action-btn" onclick="window.print()" title="Print Guide">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="action-btn" onclick="copyToClipboard()" title="Share Link">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="action-btn" onclick="toggleBookmark()" title="Bookmark">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content Grid -->
+<section class="main-content">
+    <div class="container">
+        <div class="row">
+            <!-- Left Column - Navigation -->
+            <div class="col-lg-3">
+                <div class="nav-sidebar">
+                    <div class="nav-header">
+                        <h6>Preparation Guide</h6>
+                        <div class="progress-ring">
+                            <div class="progress-text">0%</div>
+                        </div>
+                    </div>
+                    <nav class="guide-nav">
+                        <a href="#overview" class="nav-item active" data-section="overview">
+                            <span class="nav-indicator"></span>
+                            <i class="fas fa-info-circle"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="#technologies" class="nav-item" data-section="technologies">
+                            <span class="nav-indicator"></span>
+                            <i class="fas fa-code"></i>
+                            <span>Tech Stack</span>
+                        </a>
+                        <a href="#timeline" class="nav-item" data-section="timeline">
+                            <span class="nav-indicator"></span>
+                            <i class="fas fa-road"></i>
+                            <span>Roadmap</span>
+                        </a>
+                        <a href="#tips" class="nav-item" data-section="tips">
+                            <span class="nav-indicator"></span>
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Pro Tips</span>
+                        </a>
+                        <a href="#resources" class="nav-item" data-section="resources">
+                            <span class="nav-indicator"></span>
+                            <i class="fas fa-book-open"></i>
+                            <span>Resources</span>
+                        </a>
+                        <a href="#red-flags" class="nav-item" data-section="red-flags">
+                            <span class="nav-indicator"></span>
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Pitfalls</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Right Column - Content -->
+            <div class="col-lg-9">
+                <div class="content-area">
+                    
+                    <!-- Overview Section -->
+                    <div id="overview" class="content-block">
+                        <div class="block-header">
+                            <div class="block-icon overview-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h2>Company Overview</h2>
+                        </div>
+                        <div class="block-content">
+                            <p class="overview-description">{{ session.company_overview }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Technologies Section -->
+                    <div id="technologies" class="content-block">
+                        <div class="block-header">
+                            <div class="block-icon tech-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h2>Key Technologies</h2>
+                            <span class="item-count">{{ session.key_technologies|length }} skills</span>
+                        </div>
+                        <div class="block-content">
+                            <div class="tech-stack">
+                                {% for tech in session.key_technologies %}
+                                <div class="tech-chip">
+                                    <i class="fas fa-check"></i>
+                                    {{ tech }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline Section -->
+                    <div id="timeline" class="content-block">
+                        <div class="block-header">
+                            <div class="block-icon timeline-icon">
+                                <i class="fas fa-road"></i>
+                            </div>
+                            <h2>4-Week Preparation Roadmap</h2>
+                            <span class="item-count">Step by step</span>
+                        </div>
+                        <div class="block-content">
+                            <div class="roadmap">
+                                {% if session.preparation_timeline %}
+                                    {% for week, tasks in session.preparation_timeline.items %}
+                                    <div class="week-block">
+                                        <div class="week-header">
+                                            <div class="week-badge">W{{ forloop.counter }}</div>
+                                            <h4>{{ week }}</h4>
+                                        </div>
+                                        <div class="tasks-grid">
+                                            {% for task in tasks %}
+                                            <div class="task-card">
+                                                <div class="task-check">
+                                                    <i class="fas fa-circle"></i>
+                                                </div>
+                                                <span>{{ task }}</span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <!-- Fallback content when timeline is empty -->
+                                    <div class="empty-timeline">
+                                        <div class="empty-icon">
+                                            <i class="fas fa-calendar-times"></i>
+                                        </div>
+                                        <h4>Timeline Not Available</h4>
+                                        <p>The preparation timeline couldn't be generated. Please try creating a new guide.</p>
+                                        <a href="{% url 'smart-prep' %}" class="btn-secondary">
+                                            <i class="fas fa-plus me-1"></i>Create New Guide
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- DEBUG INFO (remove in production) -->
+                                    <div class="debug-info" style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-top: 1rem; font-family: monospace; font-size: 0.8rem;">
+                                        <strong>Debug Info:</strong><br>
+                                        Timeline Type: {% if session.preparation_timeline %}Has Data{% else %}Empty{% endif %}<br>
+                                        Timeline Length: {{ session.preparation_timeline|length }}<br>
+                                        Timeline Keys: {% for key in session.preparation_timeline.keys %}{{ key }}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
+                                        Raw Data: {{ session.preparation_timeline|truncatechars:200 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tips Section -->
+                    <div id="tips" class="content-block">
+                        <div class="block-header">
+                            <div class="block-icon tips-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h2>Interview Pro Tips</h2>
+                            <span class="item-count">{{ session.interview_tips|length }} insights</span>
+                        </div>
+                        <div class="block-content">
+                            <div class="tips-container">
+                                {% for tip in session.interview_tips %}
+                                <div class="tip-item">
+                                    <div class="tip-badge">{{ forloop.counter }}</div>
+                                    <div class="tip-content">
+                                        <p>{{ tip }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resources Section -->
+                    <div id="resources" class="content-block">
+                        <div class="block-header">
+                            <div class="block-icon resources-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h2>Study Resources</h2>
+                            <span class="item-count">{{ session.practice_resources|length }} materials</span>
+                        </div>
+                        <div class="block-content">
+                            <div class="resources-grid">
+                                {% for resource in session.practice_resources %}
+                                <div class="resource-card">
+                                    <div class="resource-icon">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </div>
+                                    <div class="resource-text">{{ resource }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Red Flags Section -->
+                    <div id="red-flags" class="content-block">
+                        <div class="block-header">
+                            <div class="block-icon warning-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h2>Common Pitfalls</h2>
+                            <span class="item-count">{{ session.red_flags|length }} to avoid</span>
+                        </div>
+                        <div class="block-content">
+                            <div class="warnings-list">
+                                {% for flag in session.red_flags %}
+                                <div class="warning-item">
+                                    <div class="warning-icon">
+                                        <i class="fas fa-times"></i>
+                                    </div>
+                                    <div class="warning-text">{{ flag }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer Actions -->
+                    <div class="footer-actions">
+                        <div class="action-card">
+                            <div class="action-info">
+                                <h5>Ready to ace your interview?</h5>
+                                <p>You've got all the tools you need. Good luck!</p>
+                            </div>
+                            <a href="{% url 'smart-prep' %}" class="btn-primary">
+                                <i class="fas fa-search me-2"></i>Explore More Guides
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
+/* Header Section */
+.session-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.session-header::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><circle cx="30" cy="30" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+    animation: float 20s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.breadcrumb {
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: white;
+}
+
+.header-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.company-logo {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+}
+
+.company-name {
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+}
+
+.job-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.role-tag {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.date-tag {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.4rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+/* Main Content */
+.main-content {
+    padding: 3rem 0;
+    background: #f8f9fa;
+}
+
+/* Navigation Sidebar */
+.nav-sidebar {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 2rem;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-header h6 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.progress-ring {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.progress-text {
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.guide-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-item:hover {
+    color: #667eea;
+    background: #f8f9fa;
+    transform: translateX(3px);
+}
+
+.nav-item.active {
+    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.nav-indicator {
+    width: 4px;
+    height: 4px;
+    background: currentColor;
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
+.nav-item.active .nav-indicator {
+    opacity: 1;
+    background: white;
+}
+
+.nav-item i {
+    width: 18px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Content Area */
+.content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.content-block {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.block-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.block-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.overview-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.tech-icon { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.timeline-icon { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.tips-icon { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.resources-icon { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.warning-icon { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+
+.block-header h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.4rem;
+    flex: 1;
+}
+
+.item-count {
+    background: #e9ecef;
+    color: #6c757d;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.block-content {
+    padding: 1.5rem;
+}
+
+/* Overview */
+.overview-description {
+    color: #2c3e50;
+    line-height: 1.7;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Technologies */
+.tech-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.tech-chip {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    padding: 1rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+.tech-chip:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.tech-chip i {
+    color: #10b981;
+    font-size: 0.9rem;
+}
+
+/* Timeline */
+.roadmap {
+    display: grid;
+    gap: 2rem;
+}
+
+.week-block {
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.week-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.week-badge {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.week-header h4 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.tasks-grid {
+    padding: 1.5rem;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.task-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.task-card:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.task-check {
+    color: #10b981;
+    font-size: 0.5rem;
+}
+
+.task-card span {
+    color: #2c3e50;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Tips */
+.tips-container {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.tip-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.tip-badge {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.tip-content {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    flex: 1;
+}
+
+.tip-content p {
+    color: #2c3e50;
+    margin: 0;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+/* Resources */
+.resources-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.resource-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.resource-icon {
+    width: 40px;
+    height: 40px;
+    background: #667eea;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.resource-text {
+    color: #2c3e50;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Warnings */
+.warnings-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.warning-item {
+    background: #fff5f5;
+    border: 2px solid #fed7d7;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.warning-icon {
+    width: 35px;
+    height: 35px;
+    background: #e53e3e;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.warning-text {
+    color: #2c3e50;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Footer Actions */
+.footer-actions {
+    margin-top: 1rem;
+}
+
+.action-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.action-info h5 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+}
+
+.action-info p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+    color: white;
+}
+
+/* Empty Timeline Styles */
+.empty-timeline {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: #667eea;
+}
+
+.empty-timeline h4 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.empty-timeline p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+}
+
+.debug-info {
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 1rem !important;
+    border-radius: 10px !important;
+    margin-top: 1rem !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 0.8rem !important;
+    color: #495057 !important;
+    line-height: 1.4 !important;
+}
+
+.debug-info strong {
+    color: #212529 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-content { padding: 2rem 0; }
+    .company-name { font-size: 1.5rem; }
+    .company-info { flex-direction: column; text-align: center; gap: 1rem; }
+    .quick-actions { justify-content: center; margin-top: 1rem; }
+    .nav-sidebar { margin-bottom: 2rem; position: relative !important; top: auto !important; }
+    .tech-stack { grid-template-columns: 1fr; }
+    .action-card { flex-direction: column; text-align: center; }
+    .company-logo { width: 60px; height: 60px; font-size: 1.5rem; }
+}
+
+@media (max-width: 992px) {
+    .session-header { padding: 1.5rem 0; }
+    .header-card { padding: 1.5rem; }
+}
+</style>
+
+<script>
+// Navigation functionality
+document.querySelectorAll('.nav-item').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Add active class to clicked item
+        this.classList.add('active');
+        
+        // Smooth scroll to section
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Copy to clipboard functionality
+function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = event.target.closest('.action-btn');
+        const icon = btn.querySelector('i');
+        const originalClass = icon.className;
+        
+        icon.className = 'fas fa-check';
+        setTimeout(() => {
+            icon.className = originalClass;
+        }, 2000);
+    });
+}
+
+// Bookmark functionality
+function toggleBookmark() {
+    const btn = event.target.closest('.action-btn');
+    const icon = btn.querySelector('i');
+    
+    if (icon.classList.contains('fas')) {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+    } else {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+    }
+}
+
+// Progress tracking
+function updateProgress() {
+    const sections = document.querySelectorAll('.content-block');
+    const progressText = document.querySelector('.progress-text');
+    let visibleSections = 0;
+    
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+            visibleSections++;
+        }
+    });
+    
+    const progress = Math.round((visibleSections / sections.length) * 100);
+    progressText.textContent = progress + '%';
+}
+
+// Update active navigation based on scroll
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.content-block');
+    const navItems = document.querySelectorAll('.nav-item');
+    
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 200;
+        if (window.pageYOffset >= sectionTop) {
+            current = section.getAttribute('id');
+        }
+    });
+    
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + current) {
+            item.classList.add('active');
+        }
+    });
+    
+    updateProgress();
+});
+
+// Initialize progress on load
+document.addEventListener('DOMContentLoaded', updateProgress);
+</script>
+{% endblock content %}

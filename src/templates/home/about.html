@@ -1,0 +1,801 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    About JobSage - Your AI-Powered Interview Preparation Platform
+{% endblock title %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-lightbulb me-2"></i>About JobSage
+                    </div>
+                    <h1 class="hero-title">
+                        Revolutionizing <span class="text-gradient">Interview Preparation</span> with AI
+                    </h1>
+                    <p class="hero-description">
+                        JobSage is an innovative AI-powered platform designed to help software engineers 
+                        master technical interviews through intelligent system design practice and personalized feedback.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">1000+</div>
+                            <div class="stat-label">Practice Questions</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">AI-Powered</div>
+                            <div class="stat-label">Real-time Feedback</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Free to Use</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-brain"></i>
+                        <h4>AI Analysis</h4>
+                        <p>Get instant feedback on your designs</p>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-draw-polygon"></i>
+                        <h4>Visual Design</h4>
+                        <p>Draw system architectures with ease</p>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Track Progress</h4>
+                        <p>Monitor your improvement over time</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="mission-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-badge">Our Mission</div>
+                <h2 class="section-title">Empowering Future Tech Leaders</h2>
+                <p class="section-subtitle">
+                    We believe that every aspiring software engineer deserves access to world-class 
+                    interview preparation tools, regardless of their background or resources.
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Accessibility</h3>
+                    <p>
+                        Making high-quality interview preparation accessible to everyone, 
+                        breaking down barriers to career advancement in tech.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>
+                        Leveraging cutting-edge AI technology to provide personalized, 
+                        intelligent feedback that adapts to each learner's needs.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Excellence</h3>
+                    <p>
+                        Maintaining the highest standards in education quality, 
+                        ensuring every user receives valuable, actionable insights.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-badge">Platform Features</div>
+                <h2 class="section-title">What Makes JobSage Special</h2>
+                <p class="section-subtitle">
+                    Discover the powerful features that set JobSage apart from traditional interview prep platforms
+                </p>
+            </div>
+        </div>
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-draw-polygon"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Interactive System Design</h3>
+                        <p>
+                            Draw system architectures using our intuitive visual interface powered by Excalidraw. 
+                            Create professional diagrams with drag-and-drop simplicity.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Professional drawing tools</li>
+                            <li>Real-time collaboration</li>
+                            <li>Export capabilities</li>
+                            <li>Template library</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>AI-Powered Analysis</h3>
+                        <p>
+                            Get instant, detailed feedback on your system designs from our advanced AI engine 
+                            powered by Google's Gemini model.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Scalability assessment</li>
+                            <li>Reliability analysis</li>
+                            <li>Best practice recommendations</li>
+                            <li>Detailed improvement suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Curated Question Bank</h3>
+                        <p>
+                            Practice with questions from real interviews at top tech companies, 
+                            organized by difficulty and topic areas.
+                        </p>
+                        <ul class="feature-list">
+                            <li>FAANG company questions</li>
+                            <li>Difficulty-based progression</li>
+                            <li>Regular content updates</li>
+                            <li>Industry-relevant scenarios</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Progress Tracking</h3>
+                        <p>
+                            Monitor your improvement over time with detailed analytics and 
+                            personalized learning recommendations.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Performance metrics</li>
+                            <li>Skill gap analysis</li>
+                            <li>Learning path recommendations</li>
+                            <li>Achievement tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technology Stack Section -->
+<section class="tech-stack-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-badge">Technology Stack</div>
+                <h2 class="section-title">Built with Modern Technologies</h2>
+                <p class="section-subtitle">
+                    JobSage leverages cutting-edge technologies to deliver a seamless, powerful experience
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h4>Django</h4>
+                    <p>Robust backend framework for scalable web applications</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4>Google Gemini AI</h4>
+                    <p>Advanced AI model for intelligent design analysis</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <h4>React & Excalidraw</h4>
+                    <p>Interactive drawing interface for system design</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fab fa-bootstrap"></i>
+                    </div>
+                    <h4>Bootstrap 5</h4>
+                    <p>Modern, responsive UI components and styling</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <div class="section-badge">Meet the Creator</div>
+                <h2 class="section-title">Built by Engineers, for Engineers</h2>
+                <p class="section-subtitle">
+                    JobSage was created by passionate software engineers who understand the challenges of technical interviews
+                </p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Vinyas Bharadwaj</h3>
+                    <p class="team-role">Founder & Developer</p>
+                    <p class="team-description">
+                        Passionate software engineer with a mission to democratize access to quality 
+                        interview preparation resources for aspiring tech professionals.
+                    </p>
+                    <div class="team-social">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="cta-content">
+                    <h2>Ready to Ace Your Next Interview?</h2>
+                    <p>Join thousands of engineers who are already improving their system design skills with JobSage</p>
+                    <div class="cta-buttons">
+                        <a href="{% url 'system-design-page' %}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-rocket me-2"></i>Start Practicing Now
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-envelope me-2"></i>Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* About Page Styles */
+    .about-hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-description {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        font-weight: 400;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: #f093fb;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        font-weight: 400;
+    }
+
+    .hero-visual {
+        position: relative;
+        height: 400px;
+    }
+
+    .floating-card {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 1.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        color: #2c3e50;
+        width: 200px;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-card i {
+        font-size: 2rem;
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+
+    .floating-card h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+
+    .floating-card p {
+        font-size: 0.875rem;
+        margin: 0;
+        color: #6c757d;
+        font-weight: 400;
+    }
+
+    .card-1 {
+        top: 20px;
+        right: 50px;
+        animation-delay: 0s;
+    }
+
+    .card-2 {
+        top: 120px;
+        right: 200px;
+        animation-delay: 2s;
+    }
+
+    .card-3 {
+        top: 220px;
+        right: 80px;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+
+    /* Section Styles */
+    .mission-section,
+    .features-section,
+    .tech-stack-section,
+    .team-section {
+        padding: 5rem 0;
+    }
+
+    .mission-section {
+        background: #f8f9fa;
+    }
+
+    .section-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+        letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #6c757d;
+        max-width: 600px;
+        margin: 0 auto;
+        font-weight: 400;
+    }
+
+    .mission-card,
+    .feature-item,
+    .tech-card,
+    .team-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .mission-card:hover,
+    .feature-item:hover,
+    .tech-card:hover,
+    .team-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .mission-icon,
+    .feature-icon,
+    .tech-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .mission-icon i,
+    .feature-icon i,
+    .tech-icon i {
+        font-size: 1.75rem;
+        color: white;
+    }
+
+    .mission-card h3,
+    .feature-item h3,
+    .tech-card h4 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .mission-card p,
+    .feature-item p,
+    .tech-card p {
+        color: #6c757d;
+        line-height: 1.6;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 1rem;
+    }
+
+    .feature-list li {
+        padding: 0.5rem 0;
+        position: relative;
+        padding-left: 1.5rem;
+        color: #6c757d;
+        font-weight: 400;
+    }
+
+    .feature-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #f093fb;
+        font-weight: bold;
+    }
+
+    .team-avatar {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .team-avatar i {
+        font-size: 2rem;
+        color: white;
+    }
+
+    .team-card h3 {
+        color: #2c3e50;
+        font-weight: 700;
+    }
+
+    .team-role {
+        color: #667eea;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .team-description {
+        color: #6c757d;
+        font-weight: 400;
+    }
+
+    .team-social {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #667eea;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .social-link:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-content h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+    }
+
+    .cta-content p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        font-weight: 400;
+    }
+
+    .cta-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        padding: 0.875rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        color: white;
+    }
+
+    .btn-outline-light {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: white;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+        }
+
+        .floating-card {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .cta-content h2 {
+            font-size: 2rem;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cta-buttons .btn {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons .me-3 {
+            margin-right: 0 !important;
+        }
+
+        .hero-visual {
+            height: 300px;
+            margin-top: 2rem;
+        }
+
+        .floating-card {
+            width: 180px;
+        }
+
+        .mission-icon,
+        .feature-icon,
+        .tech-icon {
+            width: 60px;
+            height: 60px;
+        }
+
+        .mission-icon i,
+        .feature-icon i,
+        .tech-icon i {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock content %}
