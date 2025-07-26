@@ -121,7 +121,7 @@
                             <h2>Company Overview</h2>
                         </div>
                         <div class="block-content">
-                            <p class="overview-description">{{ session.company_overview }}</p>
+                            <div class="overview-description">{{ session.company_overview|linebreaks }}</div>
                         </div>
                     </div>
                     
@@ -217,7 +217,7 @@
                                 <div class="tip-item">
                                     <div class="tip-badge">{{ forloop.counter }}</div>
                                     <div class="tip-content">
-                                        <p>{{ tip }}</p>
+                                        <div class="tip-text">{{ tip|linebreaks }}</div>
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -241,7 +241,7 @@
                                     <div class="resource-icon">
                                         <i class="fas fa-external-link-alt"></i>
                                     </div>
-                                    <div class="resource-text">{{ resource }}</div>
+                                    <div class="resource-text">{{ resource|linebreaks }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -264,7 +264,7 @@
                                     <div class="warning-icon">
                                         <i class="fas fa-times"></i>
                                     </div>
-                                    <div class="warning-text">{{ flag }}</div>
+                                    <div class="warning-text">{{ flag|linebreaks }}</div>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -319,9 +319,37 @@
 }
 
 .breadcrumb {
-    background: transparent;
-    margin: 0;
-    padding: 0;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    z-index: 10;
+}
+
+.breadcrumb-item {
+    position: relative;
+    z-index: 10;
+}
+
+.breadcrumb-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.breadcrumb-link:hover {
+    color: white !important;
+    text-decoration: none !important;
+    transform: translateX(-2px);
+}
+
+.breadcrumb-link i {
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
 }
 
 .breadcrumb-item a {
@@ -930,6 +958,43 @@
     color: #212529 !important;
 }
 
+/* Better text formatting */
+.overview-description {
+    color: #2c3e50;
+    line-height: 1.7;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.tip-text,
+.resource-text,
+.warning-text {
+    color: #2c3e50;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.tip-text p,
+.resource-text p,
+.warning-text p {
+    margin: 0 0 0.5rem 0;
+}
+
+.tip-text p:last-child,
+.resource-text p:last-child,
+.warning-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Handle any remaining markdown-style text */
+.tip-text,
+.resource-text,
+.warning-text,
+.overview-description {
+    /* Remove markdown asterisks if they appear */
+    word-wrap: break-word;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content { padding: 2rem 0; }
@@ -1001,47 +1066,153 @@ function toggleBookmark() {
     }
 }
 
-// Progress tracking
+// Enhanced progress tracking
 function updateProgress() {
+    const progressText = document.querySelector('.progress-text');
+    const progressRing = document.querySelector('.progress-ring');
+    
+    // Get the main content area
+    const mainContent = document.querySelector('.main-content');
+    if (!mainContent) return;
+    
+    // Calculate scroll progress based on main content
+    const contentTop = mainContent.offsetTop;
+    const contentHeight = mainContent.offsetHeight;
+    const windowHeight = window.innerHeight;
+    const scrollTop = window.pageYOffset;
+    
+    // Calculate how much of the content area has been scrolled through
+    const scrollableDistance = contentHeight - windowHeight;
+    const scrollProgress = Math.max(0, scrollTop - contentTop);
+    
+    let progressPercentage = 0;
+    if (scrollableDistance > 0) {
+        progressPercentage = Math.min(100, Math.round((scrollProgress / scrollableDistance) * 100));
+    }
+    
+    // Ensure we show some progress when user starts scrolling
+    if (scrollTop > contentTop && progressPercentage === 0) {
+        progressPercentage = 5;
+    }
+    
+    // Update progress text
+    progressText.textContent = progressPercentage + '%';
+    
+    // Add visual feedback to progress ring
+    if (progressPercentage >= 100) {
+        progressRing.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    } else if (progressPercentage >= 75) {
+        progressRing.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+    } else {
+        progressRing.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    }
+}
+
+// Alternative progress tracking based on sections
+function updateProgressBySections() {
     const sections = document.querySelectorAll('.content-block');
     const progressText = document.querySelector('.progress-text');
-    let visibleSections = 0;
+    const progressRing = document.querySelector('.progress-ring');
     
-    sections.forEach(section => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-            visibleSections++;
+    if (sections.length === 0) return;
+    
+    let currentSectionIndex = 0;
+    const scrollPosition = window.pageYOffset + window.innerHeight / 2;
+    
+    // Find which section we're currently viewing
+    sections.forEach((section, index) => {
+        const sectionTop = section.offsetTop;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
+            currentSectionIndex = index;
         }
     });
     
-    const progress = Math.round((visibleSections / sections.length) * 100);
-    progressText.textContent = progress + '%';
+    // Calculate progress as percentage of sections completed
+    const progressPercentage = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
+    
+    // Update progress text
+    progressText.textContent = progressPercentage + '%';
+    
+    // Update progress ring color based on completion
+    if (progressPercentage === 100) {
+        progressRing.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    } else if (progressPercentage >= 75) {
+        progressRing.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+    } else {
+        progressRing.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    }
 }
 
 // Update active navigation based on scroll
-window.addEventListener('scroll', function() {
+function updateActiveNavigation() {
     const sections = document.querySelectorAll('.content-block');
     const navItems = document.querySelectorAll('.nav-item');
     
     let current = '';
+    const scrollPosition = window.pageYOffset + 200; // Offset for better UX
+    
     sections.forEach(section => {
-        const sectionTop = section.offsetTop - 200;
-        if (window.pageYOffset >= sectionTop) {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
             current = section.getAttribute('id');
         }
     });
     
+    // If no section is active, default to first one
+    if (!current && sections.length > 0) {
+        current = sections[0].getAttribute('id');
+    }
+    
+    // Update navigation
     navItems.forEach(item => {
         item.classList.remove('active');
         if (item.getAttribute('href') === '#' + current) {
             item.classList.add('active');
         }
     });
-    
-    updateProgress();
+}
+
+// Combined scroll handler
+function handleScroll() {
+    updateProgress(); // Use the scroll-based progress
+    // updateProgressBySections(); // Alternative: Use this for section-based progress
+    updateActiveNavigation();
+}
+
+// Throttle scroll events for better performance
+let scrollTimeout;
+window.addEventListener('scroll', function() {
+    if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+    }
+    scrollTimeout = setTimeout(handleScroll, 16); // ~60fps
 });
 
-// Initialize progress on load
-document.addEventListener('DOMContentLoaded', updateProgress);
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial progress
+    updateProgress();
+    updateActiveNavigation();
+    
+    // Ensure first navigation item is active initially
+    const firstNavItem = document.querySelector('.nav-item');
+    if (firstNavItem && !document.querySelector('.nav-item.active')) {
+        firstNavItem.classList.add('active');
+    }
+});
+
+// Update progress when user clicks navigation items
+document.querySelectorAll('.nav-item').forEach(link => {
+    link.addEventListener('click', function() {
+        // Small delay to allow scroll to complete, then update progress
+        setTimeout(() => {
+            updateProgress();
+        }, 500);
+    });
+});
 </script>
 {% endblock content %}

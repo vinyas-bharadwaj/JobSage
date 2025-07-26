@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=src.settings
+      - GOOGLE_GEMINI_API_KEY=${GOOGLE_GEMINI_API_KEY}
+      - GOOGLE_OAUTH2_SECRET=${GOOGLE_OAUTH2_SECRET}
+      - GOOGLE_OAUTH2_KEY=${GOOGLE_OAUTH2_KEY}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - PYTHONPATH=/app/src
+    env_file:
+      - .env
+    command: python manage.py runserver 0.0.0.0:8000
+    working_dir: /app/src

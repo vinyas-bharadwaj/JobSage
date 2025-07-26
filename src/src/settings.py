@@ -51,7 +51,9 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'social_django',
+
 ]
+
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',

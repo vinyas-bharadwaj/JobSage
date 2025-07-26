@@ -53,9 +53,9 @@ media/
 /media/
 
 # Third-party downloaded libraries (optional)
-static/js/excalidraw/react.min.js
-static/js/excalidraw/react-dom.min.js
-static/js/excalidraw/excalidraw.production.min.js
+src/static/js/excalidraw/react.min.js
+src/static/js/excalidraw/react-dom.min.js
+src/static/js/excalidraw/excalidraw.production.min.js
 
 # Static files (production)
 staticfiles/

@@ -1,10 +1,8 @@
-from django.db import models
 import uuid
+from django.db import models
 
 class SmartPrepSession(models.Model):
-    """Store smart preparation advice for companies"""
-    
-    # Basic info
+    # User info
     company_name = models.CharField(max_length=200)
     target_role = models.CharField(max_length=200, default="Software Engineer")
     
@@ -30,17 +28,3 @@ class SmartPrepSession(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-
-# Helper function to create session from AI response
-def create_session_from_ai(ai_response, user=None, company_name="", target_role=""):
-    """Create SmartPrepSession from AI response"""
-    return SmartPrepSession.objects.create(
-        company_name=company_name,
-        target_role=target_role,
-        company_overview=ai_response.company_overview,
-        key_technologies=ai_response.key_technologies,
-        preparation_timeline=ai_response.preparation_timeline,
-        interview_tips=ai_response.interview_tips,
-        practice_resources=ai_response.practice_resources,
-        red_flags=ai_response.red_flags,
-    )

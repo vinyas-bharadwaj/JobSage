@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db.models import Q, Count  
 import json
 import logging
-from .models import SmartPrepSession, create_session_from_ai
+from .models import SmartPrepSession
 from .agent import get_company_prep_advice
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ def smart_prep_page(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def create_prep_session(request):
+def create_prep_session(request): 
     """Create new preparation session via AJAX"""
     
     try:
@@ -65,55 +65,44 @@ def create_prep_session(request):
         ).first()
         
         if existing_session:
-            # DEBUG: Log existing timeline
-            logger.info(f"Existing timeline: {existing_session.preparation_timeline}")
             return JsonResponse({
                 'success': True,
                 'session_id': existing_session.session_id,
-                'message': 'Found existing preparation guide',
-                'data': {
-                    'company_overview': existing_session.company_overview,
-                    'key_technologies': existing_session.key_technologies,
-                    'preparation_timeline': existing_session.preparation_timeline,
-                    'interview_tips': existing_session.interview_tips,
-                    'practice_resources': existing_session.practice_resources,
-                    'red_flags': existing_session.red_flags,
-                }
+                'message': 'Found existing preparation guide'
             })
         
         # Generate new advice using AI
+        logger.info(f"Generating AI advice for {company_name}")
         ai_response = get_company_prep_advice(
             company_name=company_name,
             user_experience=user_experience,
             target_role=target_role
         )
         
-        # DEBUG: Log AI response timeline
-        logger.info(f"AI timeline response: {ai_response.preparation_timeline}")
+        # Convert timeline to dict BEFORE creating session
+        timeline_dict = ai_response.preparation_timeline.to_dict()
+        logger.info(f"Converted timeline: {timeline_dict}")
         
-        # Create session
-        session = create_session_from_ai(
-            ai_response=ai_response,
-            user=request.user if request.user.is_authenticated else None,
+        # Create session manually with converted data
+        session = SmartPrepSession.objects.create(
             company_name=company_name,
-            target_role=target_role
+            target_role=target_role,
+            company_overview=ai_response.company_overview,
+            key_technologies=ai_response.key_technologies,
+            preparation_timeline=timeline_dict,  # Use converted dict
+            interview_tips=ai_response.interview_tips,
+            practice_resources=ai_response.practice_resources,
+            red_flags=ai_response.red_flags
         )
         
-        # DEBUG: Log saved timeline
-        logger.info(f"Saved timeline: {session.preparation_timeline}")
+        # Verify what was saved
+        session.refresh_from_db()
+        logger.info(f"Saved session {session.session_id} with timeline: {session.preparation_timeline}")
         
         return JsonResponse({
             'success': True,
             'session_id': session.session_id,
-            'message': 'New preparation guide created',
-            'data': {
-                'company_overview': session.company_overview,
-                'key_technologies': session.key_technologies,
-                'preparation_timeline': session.preparation_timeline,
-                'interview_tips': session.interview_tips,
-                'practice_resources': session.practice_resources,
-                'red_flags': session.red_flags,
-            }
+            'message': 'New preparation guide created'  
         })
         
     except json.JSONDecodeError:
@@ -125,7 +114,7 @@ def create_prep_session(request):
         logger.error(f"Error creating session: {str(e)}")
         return JsonResponse({
             'success': False,
-            'error': str(e)
+            'error': f'Failed to create session: {str(e)}'
         }, status=500)
 
 def prep_session_detail(request, session_id):
@@ -136,6 +125,8 @@ def prep_session_detail(request, session_id):
         
         # DEBUG: Log timeline data
         logger.info(f"Session {session_id} timeline: {session.preparation_timeline}")
+        logger.info(f"Timeline type: {type(session.preparation_timeline)}")
+        logger.info(f"Timeline keys: {list(session.preparation_timeline.keys()) if session.preparation_timeline else 'No keys'}")
         
         context = {
             'session': session,
