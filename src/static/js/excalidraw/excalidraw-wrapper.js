@@ -1,146 +1,126 @@
 (function(window) {
     'use strict';
     
-    window.ExcalidrawWrapper = {
-        instances: new Map(),
-        isLoaded: false,
+    window.ExcalidrawWrapper = (function() {
+        const instances = new Map();
         
-        init: function(containerId, options = {}, silent = false) {
-            const container = document.getElementById(containerId);
-            if (!container) {
-                console.error('Container not found:', containerId);
-                return null;
-            }
-            
-            // Only show loading if not a silent re-initialization
-            if (!silent) {
-                this.showLoading(container);
-            }
-            
-            // Check if Excalidraw is available
-            if (typeof ExcalidrawLib === 'undefined' || !ExcalidrawLib.Excalidraw) {
-                console.error('ExcalidrawLib not found');
-                this.showError(container, 'Drawing library not loaded');
-                return null;
-            }
-            
-            const defaultOptions = {
-                initialData: {
-                    elements: [],
-                    appState: {
-                        viewBackgroundColor: "#ffffff",
-                        theme: "light",
-                        gridSize: null,
-                        currentItemFillStyle: "solid",
-                        currentItemStrokeWidth: 2,
-                        currentItemStrokeColor: "#000000",
-                        name: "System Design"
-                    }
-                },
-                onChange: function(elements, appState, files) {
-                    console.log('Excalidraw changed:', elements.length, 'elements');
+        return {
+            init: function(containerId, options = {}) {
+                const container = document.getElementById(containerId);
+                if (!container) {
+                    throw new Error(`Container with id "${containerId}" not found`);
                 }
-            };
-            
-            const config = Object.assign({}, defaultOptions, options);
-            
-            try {
-                // Clear container
-                container.innerHTML = '';
-                
-                const excalidrawElement = React.createElement(
-                    ExcalidrawLib.Excalidraw,
-                    Object.assign({}, config, {
-                        ref: (api) => {
-                            // Store the API reference for direct manipulation
-                            const instance = this.instances.get(containerId);
-                            if (instance) {
-                                instance.excalidrawAPI = api;
-                            }
+
+                // Check if Excalidraw is available
+                if (typeof window.Excalidraw === 'undefined') {
+                    console.error('Excalidraw not loaded');
+                    return null;
+                }
+
+                let excalidrawAPI = null;
+                let currentElements = [];
+                let currentAppState = {};
+
+                // Create Excalidraw instance - Fixed the reference
+                const excalidrawComponent = React.createElement(window.Excalidraw, {
+                    onChange: (elements, appState, files) => {
+                        currentElements = elements || [];
+                        currentAppState = appState || {};
+                        
+                        // Store in instance
+                        const instance = instances.get(containerId);
+                        if (instance) {
+                            instance.elements = currentElements;
+                            instance.appState = currentAppState;
                         }
-                    })
-                );
-                
-                ReactDOM.render(excalidrawElement, container);
-                
-                // Store instance reference
-                this.instances.set(containerId, {
-                    container: container,
-                    config: config,
-                    elements: [],
-                    excalidrawAPI: null // Will be set by the ref callback
-                });
-                
-                this.isLoaded = true;
-                
-                // Return interface with clear method
-                return {
-                    reinitialize: () => this.reinitialize(containerId),
-                    getElements: () => this.getElements(containerId)
-                };
-                
-            } catch (error) {
-                console.error('Failed to initialize Excalidraw:', error);
-                this.showError(container, 'Failed to initialize drawing tool');
-                return null;
-            }
-        },
-        
-        reinitialize: function(containerId, silent = false) {
-            console.log('Reinitializing Excalidraw for:', containerId);
-            const instance = this.instances.get(containerId);
-            if (instance) {
-                const container = instance.container;
-                const config = instance.config;
-                
-                // Create new config with empty elements
-                const newConfig = Object.assign({}, config, {
-                    initialData: {
-                        elements: [],
-                        appState: config.initialData.appState
+                        
+                        // Call user's onChange if provided
+                        if (options.onChange) {
+                            options.onChange(elements, appState, files);
+                        }
+                    },
+                    ref: (api) => {
+                        excalidrawAPI = api;
+                        instances.set(containerId, {
+                            api: api,
+                            elements: currentElements,
+                            appState: currentAppState
+                        });
+                        console.log('Excalidraw API stored for container:', containerId);
                     }
                 });
-                
-                // Pass silent flag to init
-                return this.init(containerId, newConfig, silent);
+
+                // Render the component
+                ReactDOM.render(excalidrawComponent, container);
+
+                return excalidrawAPI;
+            },
+
+            getElements: function(containerId) {
+                const instance = instances.get(containerId);
+                if (instance && instance.api) {
+                    try {
+                        const elements = instance.api.getSceneElements();
+                        return elements || [];
+                    } catch (e) {
+                        console.warn('Error getting elements, using cached:', e);
+                        return instance.elements || [];
+                    }
+                }
+                console.warn(`No instance found for container: ${containerId}`);
+                return [];
+            },
+
+            getAppState: function(containerId) {
+                const instance = instances.get(containerId);
+                if (instance && instance.api) {
+                    try {
+                        const appState = instance.api.getAppState();
+                        return appState || {};
+                    } catch (e) {
+                        console.warn('Error getting app state, using cached:', e);
+                        return instance.appState || {};
+                    }
+                }
+                console.warn(`No instance found for container: ${containerId}`);
+                return {};
+            },
+
+            loadScene: function(containerId, elements, appState) {
+                const instance = instances.get(containerId);
+                if (instance && instance.api) {
+                    try {
+                        instance.api.updateScene({
+                            elements: elements || [],
+                            appState: appState || {}
+                        });
+                        return true;
+                    } catch (e) {
+                        console.error('Error loading scene:', e);
+                        return false;
+                    }
+                }
+                console.warn(`No instance found for container: ${containerId}`);
+                return false;
+            },
+
+            clear: function(containerId) {
+                const instance = instances.get(containerId);
+                if (instance && instance.api) {
+                    try {
+                        instance.api.updateScene({
+                            elements: [],
+                            appState: {}
+                        });
+                        return true;
+                    } catch (e) {
+                        console.error('Error clearing scene:', e);
+                        return false;
+                    }
+                }
+                return false;
             }
-            return null;
-        },
-        
-        showLoading: function(container) {
-            container.innerHTML = `
-                <div class="excalidraw-loading">
-                    <div class="spinner"></div>
-                    <h4>Loading Drawing Tool...</h4>
-                    <p>Please wait while we prepare the drawing interface.</p>
-                </div>
-            `;
-        },
-        
-        showError: function(container, message) {
-            container.innerHTML = `
-                <div class="excalidraw-error">
-                    <i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #dc3545;"></i>
-                    <h3>Drawing Tool Unavailable</h3>
-                    <p>${message || 'Unable to load the drawing interface.'}</p>
-                    <button onclick="location.reload()" class="btn btn-primary">
-                        <i class="fas fa-sync-alt me-1"></i>Refresh Page
-                    </button>
-                </div>
-            `;
-        },
-        
-        getElements: function(containerId) {
-            const instance = this.instances.get(containerId);
-            return instance ? instance.elements : [];
-        },
-        
-        updateElements: function(containerId, elements) {
-            const instance = this.instances.get(containerId);
-            if (instance) {
-                instance.elements = elements;
-            }
-        }
-    };
+        };
+    })();
     
 })(window);

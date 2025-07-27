@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -8,13 +8,67 @@ import json
 import logging
 from .models import SmartPrepSession
 from .agent import get_company_prep_advice
+from .forms import SmartPrepForm
 
 logger = logging.getLogger(__name__)
 
 def smart_prep_page(request):
-    """Main smart prep page showing existing sessions and search"""
+    """Main smart prep page with form and existing sessions"""
     
-    # Get search query
+    # Handle form submission
+    if request.method == 'POST':
+        form = SmartPrepForm(request.POST)
+        if form.is_valid():
+            company_name = form.cleaned_data['company_name']
+            target_role = form.cleaned_data['target_role']
+            user_experience = form.cleaned_data['user_experience']
+            
+            try:
+                # Check if session already exists
+                existing_session = SmartPrepSession.objects.filter(
+                    company_name__iexact=company_name,
+                    target_role__iexact=target_role
+                ).first()
+                
+                if existing_session:
+                    messages.info(request, f'Found existing preparation guide for {company_name}!')
+                    return redirect('prep-session-detail', session_id=existing_session.session_id)
+                
+                # Generate new advice using AI
+                logger.info(f"Generating AI advice for {company_name}")
+                ai_response = get_company_prep_advice(
+                    company_name=company_name,
+                    user_experience=user_experience,
+                    target_role=target_role
+                )
+                
+                # Convert timeline to dict
+                timeline_dict = ai_response.preparation_timeline.to_dict()
+                
+                # Create new session
+                session = SmartPrepSession.objects.create(
+                    company_name=company_name,
+                    target_role=target_role,
+                    company_overview=ai_response.company_overview,
+                    key_technologies=ai_response.key_technologies,
+                    preparation_timeline=timeline_dict,
+                    interview_tips=ai_response.interview_tips,
+                    practice_resources=ai_response.practice_resources,
+                    red_flags=ai_response.red_flags
+                )
+                
+                messages.success(request, f'Created new preparation guide for {company_name}!')
+                return redirect('prep-session-detail', session_id=session.session_id)
+                
+            except Exception as e:
+                logger.error(f"Error creating session: {str(e)}")
+                messages.error(request, f'Failed to create preparation guide. Please try again.')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = SmartPrepForm()
+    
+    # Get search query for filtering existing sessions
     search_query = request.GET.get('search', '').strip()
     
     # Filter sessions
@@ -26,14 +80,15 @@ def smart_prep_page(request):
             Q(target_role__icontains=search_query)
         )
     
-    # Get popular companies (companies with most sessions)
+    # Get popular companies
     popular_companies = (SmartPrepSession.objects
                         .values('company_name')
                         .annotate(count=Count('company_name')) 
                         .order_by('-count')[:10])
     
     context = {
-        'sessions': sessions[:20],  # Limit to 20 recent sessions
+        'form': form,
+        'sessions': sessions[:20],
         'search_query': search_query,
         'popular_companies': popular_companies,
         'total_sessions': SmartPrepSession.objects.count(),
@@ -119,22 +174,11 @@ def create_prep_session(request):
 
 def prep_session_detail(request, session_id):
     """View detailed preparation session"""
+    session = get_object_or_404(SmartPrepSession, session_id=session_id)
     
-    try:
-        session = SmartPrepSession.objects.get(session_id=session_id)
-        
-        # DEBUG: Log timeline data
-        logger.info(f"Session {session_id} timeline: {session.preparation_timeline}")
-        logger.info(f"Timeline type: {type(session.preparation_timeline)}")
-        logger.info(f"Timeline keys: {list(session.preparation_timeline.keys()) if session.preparation_timeline else 'No keys'}")
-        
-        context = {
-            'session': session,
-        }
-        
-        return render(request, 'smart_prep/session_detail.html', context)
-        
-    except SmartPrepSession.DoesNotExist:
-        messages.error(request, 'Preparation session not found.')
-        return redirect('smart-prep')
+    context = {
+        'session': session,
+    }
+    
+    return render(request, 'smart_prep/session_detail.html', context)
 

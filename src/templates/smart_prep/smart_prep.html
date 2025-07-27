@@ -1,816 +1,900 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Smart Interview Prep - JobSage{% endblock title %}
+{% block title %}Smart Prep - AI Interview Preparation{% endblock title %}
 
 {% block content %}
-<!-- Hero Section - Compact -->
-<section class="smart-prep-hero">
+<!-- Compact Hero Section -->
+<section class="hero-section">
     <div class="container">
-        <div class="row align-items-center py-5">
-            <div class="col-lg-7">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
                 <div class="hero-content">
                     <div class="hero-badge">
-                        <i class="fas fa-brain me-2"></i>AI-Powered Preparation
+                        <i class="fas fa-brain me-2"></i>AI-Powered
                     </div>
                     <h1 class="hero-title">
-                        Smart Interview <br><span class="text-gradient">Preparation</span>
+                        Smart Interview <span class="text-gradient">Prep</span>
                     </h1>
                     <p class="hero-subtitle">
-                        Get personalized, company-specific preparation guides powered by AI.
+                        Get personalized preparation guides for any company with AI-generated study plans.
                     </p>
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">{{ total_sessions }}+</span>
-                            <span class="stat-label">Guides</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">AI</span>
-                            <span class="stat-label">Powered</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">Free</span>
-                            <span class="stat-label">To Use</span>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="col-lg-5">
-                <div class="hero-visual">
-                    <div class="main-card">
-                        <div class="card-header">
-                            <div class="card-dots">
-                                <span></span><span></span><span></span>
-                            </div>
-                            <div class="card-title">Preparation Dashboard</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="prep-item">
-                                <i class="fas fa-building"></i>
-                                <span>Company Research</span>
-                                <div class="status-badge complete">✓</div>
-                            </div>
-                            <div class="prep-item">
-                                <i class="fas fa-code"></i>
-                                <span>Technical Skills</span>
-                                <div class="status-badge in-progress">50%</div>
-                            </div>
-                            <div class="prep-item">
-                                <i class="fas fa-lightbulb"></i>
-                                <span>Interview Tips</span>
-                                <div class="status-badge pending">—</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-lg-4 text-lg-end">
+                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#prepGuideModal">
+                    <i class="fas fa-plus me-2"></i>Create Guide
+                </button>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Main Content -->
+<!-- Messages -->
+{% if messages %}
+<section class="messages-section">
+    <div class="container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle me-2"></i>
+            {% elif message.tags == 'error' %}
+                <i class="fas fa-exclamation-triangle me-2"></i>
+            {% elif message.tags == 'info' %}
+                <i class="fas fa-info-circle me-2"></i>
+            {% endif %}
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Main Content Section -->
 <section class="main-section">
     <div class="container">
-        <div class="row">
-            <!-- Search & Create - Left Column -->
-            <div class="col-lg-4">
-                <div class="sticky-sidebar">
-                    <!-- Search Form -->
-                    <div class="search-card">
-                        <h4 class="card-title">
-                            <i class="fas fa-search me-2"></i>Find Guide
-                        </h4>
-                        <form method="GET" class="search-form">
+        <!-- Header with Search and Stats -->
+        <div class="content-header">
+            <div class="row align-items-center g-3">
+                <div class="col-lg-6">
+                    <div class="search-wrapper">
+                        <form method="get" class="search-form">
                             <div class="search-input-group">
-                                <input type="text" name="search" class="search-input" 
-                                       placeholder="Company or role..." 
-                                       value="{{ search_query }}">
-                                <button class="search-btn" type="submit">
-                                    <i class="fas fa-search"></i>
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" 
+                                       name="search" 
+                                       value="{{ search_query }}" 
+                                       placeholder="Search companies or roles..."
+                                       class="search-input">
+                                {% if search_query %}
+                                <button type="button" class="clear-search" onclick="clearSearch()">
+                                    <i class="fas fa-times"></i>
                                 </button>
+                                {% endif %}
                             </div>
                         </form>
-                        {% if search_query %}
-                            <a href="{% url 'smart-prep' %}" class="clear-search">
-                                <i class="fas fa-times me-1"></i>Clear
-                            </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="header-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ total_sessions }}</span>
+                            <span class="stat-label">Guides</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <span class="stat-number">85%</span>
+                            <span class="stat-label">Success</span>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#prepGuideModal">
+                            <i class="fas fa-plus me-1"></i>New
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Company Guides Grid -->
+        {% if sessions %}
+        <div class="guides-section">
+            <div class="section-meta">
+                <h3>
+                    {% if search_query %}
+                        Search Results
+                        <span class="result-count">({{ sessions|length }})</span>
+                    {% else %}
+                        Recent Guides
+                        <span class="result-count">({{ sessions|length }})</span>
+                    {% endif %}
+                </h3>
+            </div>
+            
+            <div class="guides-grid">
+                {% for session in sessions %}
+                <div class="guide-card" onclick="window.location.href='{% url 'prep-session-detail' session.session_id %}'">
+                    <div class="card-header">
+                        <div class="company-avatar">
+                            {{ session.company_name|first|upper }}
+                        </div>
+                        <div class="company-details">
+                            <h4>{{ session.company_name }}</h4>
+                            <span class="role-tag">{{ session.target_role }}</span>
+                        </div>
+                        <div class="card-menu">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="card-content">
+                        <div class="info-row">
+                            <span class="info-label">Created</span>
+                            <span class="info-value">{{ session.created_at|date:"M d" }}</span>
+                        </div>
+                        
+                        {% if session.key_technologies %}
+                        <div class="tech-stack">
+                            {% for tech in session.key_technologies|slice:":4" %}
+                            <span class="tech-badge">{{ tech }}</span>
+                            {% endfor %}
+                            {% if session.key_technologies|length > 4 %}
+                            <span class="tech-more">+{{ session.key_technologies|length|add:"-4" }}</span>
+                            {% endif %}
+                        </div>
                         {% endif %}
                     </div>
                     
-                    <!-- Create New -->
-                    <div class="create-card">
-                        <h4 class="card-title">
-                            <i class="fas fa-plus-circle me-2"></i>Create New Guide
-                        </h4>
-                        <form id="createPrepForm" class="create-form">
-                            <div class="form-group">
-                                <input type="text" id="companyName" class="form-control" 
-                                       placeholder="Company name *" required>
+                    <div class="card-footer">
+                        <div class="completion-indicator">
+                            <div class="completion-bar">
+                                <div class="completion-fill"></div>
                             </div>
-                            <div class="form-group">
-                                <input type="text" id="targetRole" class="form-control" 
-                                       placeholder="Role" value="Software Engineer">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="userExperience" class="form-control" 
-                                       placeholder="Experience level">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-create" id="createBtn">
-                                <i class="fas fa-magic me-2"></i>Generate Guide
-                            </button>
-                        </form>
-                    </div>
-                    
-                    <!-- Popular Companies -->
-                    {% if popular_companies %}
-                    <div class="popular-card">
-                        <h5 class="card-title">
-                            <i class="fas fa-fire me-2"></i>Popular
-                        </h5>
-                        <div class="companies-list">
-                            {% for company in popular_companies|slice:":6" %}
-                                <a href="?search={{ company.company_name }}" class="company-tag">
-                                    {{ company.company_name }}
-                                    <span class="count">{{ company.count }}</span>
-                                </a>
-                            {% endfor %}
+                            <span class="completion-text">Ready</span>
                         </div>
                     </div>
-                    {% endif %}
                 </div>
-            </div>
-            
-            <!-- Sessions Grid - Right Column -->
-            <div class="col-lg-8">
-                <div class="sessions-header">
-                    <div class="section-badge">{{ total_sessions }} Available</div>
-                    <h2 class="section-title">Preparation Library</h2>
-                </div>
-                
-                {% if sessions %}
-                    <div class="sessions-grid">
-                        {% for session in sessions %}
-                        <div class="session-card">
-                            <div class="session-header">
-                                <div class="company-info">
-                                    <div class="company-icon">{{ session.company_name|first|upper }}</div>
-                                    <div class="company-details">
-                                        <h5 class="company-name">{{ session.company_name }}</h5>
-                                        <span class="role-text">{{ session.target_role }}</span>
-                                    </div>
-                                </div>
-                                <div class="session-date">
-                                    {{ session.created_at|date:"M d" }}
-                                </div>
-                            </div>
-                            
-                            <p class="session-overview">{{ session.company_overview|truncatewords:20 }}</p>
-                            
-                            <div class="session-stats">
-                                <span class="stat-item">
-                                    <i class="fas fa-code"></i>{{ session.key_technologies|length }}
-                                </span>
-                                <span class="stat-item">
-                                    <i class="fas fa-lightbulb"></i>{{ session.interview_tips|length }}
-                                </span>
-                                <span class="stat-item">
-                                    <i class="fas fa-calendar-check"></i>4 weeks
-                                </span>
-                            </div>
-                            
-                            <a href="{% url 'prep-session-detail' session.session_id %}" 
-                               class="btn btn-primary btn-sm session-btn">
-                                View Guide <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h4>No guides found</h4>
-                        <p>{% if search_query %}Try a different search{% else %}Create the first guide{% endif %}</p>
-                    </div>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
+        {% else %}
+        <!-- Minimal Empty State -->
+        <div class="empty-state">
+            <div class="empty-content">
+                <div class="empty-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3>No guides yet</h3>
+                <p>Create your first interview preparation guide</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#prepGuideModal">
+                    <i class="fas fa-plus me-2"></i>Get Started
+                </button>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Popular Companies - Compact -->
+        {% if popular_companies %}
+        <div class="popular-section">
+            <div class="popular-header">
+                <h4>Popular</h4>
+                <div class="popular-chips">
+                    {% for company in popular_companies|slice:":6" %}
+                    <button class="popular-chip" onclick="openModalWithCompany('{{ company.company_name }}')">
+                        {{ company.company_name }}
+                        <span class="chip-count">{{ company.count }}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
 
-<!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
+<!-- Compact Modal -->
+<div class="modal fade" id="prepGuideModal" tabindex="-1" aria-labelledby="prepGuideModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-body text-center">
-                <div class="loading-spinner">
-                    <div class="spinner"></div>
-                </div>
-                <h6 class="mt-3 mb-1">Generating Guide</h6>
-                <small class="text-muted">This may take a moment...</small>
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-brain me-2"></i>Create Prep Guide
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="prepForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Company*</label>
+                            {{ form.company_name }}
+                            {% if form.company_name.errors %}
+                                <div class="error-text">{{ form.company_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            {{ form.target_role }}
+                            {% if form.target_role.errors %}
+                                <div class="error-text">{{ form.target_role.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label class="form-label">Background (Optional)</label>
+                            {{ form.user_experience }}
+                            {% if form.user_experience.errors %}
+                                <div class="error-text">{{ form.user_experience.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="prepForm" class="btn btn-primary" id="generateBtn">
+                    <i class="fas fa-magic me-1"></i>Generate
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Compact Hero Section */
-.smart-prep-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Minimal Design Variables */
+:root {
+    --primary: #6366f1;
+    --primary-light: #a5b4fc;
+    --accent: #ec4899;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --radius: 12px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* Compact Hero */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.smart-prep-hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-    opacity: 0.4;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
+    padding: 2rem 0;
 }
 
 .hero-badge {
     display: inline-flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0.4rem 0.8rem;
-    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
     font-size: 0.8rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    backdrop-filter: blur(10px);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
 }
 
 .hero-title {
     font-size: 2.5rem;
     font-weight: 800;
     line-height: 1.1;
-    margin-bottom: 1rem;
-    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
 }
 
 .text-gradient {
-    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(45deg, #fbbf24 0%, #f59e0b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .hero-subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
+    font-size: 1rem;
     opacity: 0.9;
+    margin: 0;
     line-height: 1.5;
 }
 
-.hero-stats {
+/* Messages */
+.messages-section {
+    padding: 0.75rem 0;
+    background: var(--gray-50);
+}
+
+.alert {
+    border-radius: var(--radius);
+    border: none;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0.5rem;
+}
+
+/* Main Section */
+.main-section {
+    padding: 2rem 0;
+    background: white;
+    min-height: 70vh;
+}
+
+.content-header {
+    margin-bottom: 2rem;
+}
+
+.search-wrapper {
+    margin-bottom: 0;
+}
+
+.search-input-group {
+    position: relative;
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    transition: all 0.2s;
+}
+
+.search-input-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    font-size: 0.9rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.clear-search {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--gray-300);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
     display: flex;
-    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-600);
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.clear-search:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.header-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-end;
 }
 
 .stat-item {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .stat-number {
-    display: block;
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #f093fb;
+    color: var(--gray-900);
     line-height: 1;
 }
 
 .stat-label {
     font-size: 0.75rem;
-    opacity: 0.8;
-}
-
-/* Compact Hero Visual */
-.hero-visual {
-    position: relative;
-    height: 300px;
-    z-index: 2;
-}
-
-.main-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 280px;
-    animation: float 8s ease-in-out infinite;
-}
-
-.card-header {
-    padding: 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.card-dots {
-    display: flex;
-    gap: 0.3rem;
-}
-
-.card-dots span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-}
-
-.card-dots span:nth-child(1) { background: #667eea; }
-.card-dots span:nth-child(2) { background: #f093fb; }
-.card-dots span:nth-child(3) { background: #f5576c; }
-
-.card-title {
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 0.8rem;
-}
-
-.card-content {
-    padding: 1rem;
-}
-
-.prep-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    padding: 0.6rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.prep-item i {
-    color: #667eea;
-    font-size: 0.9rem;
-    width: 16px;
-}
-
-.prep-item span {
-    flex: 1;
-    font-size: 0.8rem;
+    color: var(--gray-500);
     font-weight: 500;
-    color: #2c3e50;
 }
 
-.status-badge {
-    padding: 0.2rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    min-width: 30px;
-    text-align: center;
+.stat-divider {
+    width: 1px;
+    height: 30px;
+    background: var(--gray-200);
 }
 
-.status-badge.complete { background: #d4edda; color: #155724; }
-.status-badge.in-progress { background: #fff3cd; color: #856404; }
-.status-badge.pending { background: #f8d7da; color: #721c24; }
-
-@keyframes float {
-    0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
-    50% { transform: translate(-50%, -50%) translateY(-10px); }
-}
-
-/* Main Section Layout */
-.main-section {
-    padding: 3rem 0;
-    background: #f8f9fa;
-    min-height: 70vh;
-}
-
-.sticky-sidebar {
-    position: sticky;
-    top: 2rem;
-}
-
-/* Compact Cards */
-.search-card,
-.create-card,
-.popular-card {
-    background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-.card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-}
-
-.card-title i {
-    color: #667eea;
-}
-
-/* Search Form */
-.search-input-group {
-    position: relative;
-    display: flex;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.search-input-group:focus-within {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.search-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    outline: none;
-}
-
-.search-btn {
-    background: transparent;
-    border: none;
-    padding: 0.75rem;
-    color: #6c757d;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.search-btn:hover {
-    color: #667eea;
-}
-
-.clear-search {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    color: #6c757d;
-    text-decoration: none;
-    padding: 0.25rem 0.5rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.clear-search:hover {
-    color: #dc3545;
-    background: #f8f9fa;
-}
-
-/* Create Form */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    padding: 0.75rem;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    outline: none;
-}
-
-.btn-create {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-/* Popular Companies */
-.companies-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.company-tag {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f8f9fa;
-    padding: 0.6rem 0.8rem;
-    border-radius: 10px;
-    text-decoration: none;
-    color: #2c3e50;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.company-tag:hover {
-    background: #e9ecef;
-    color: #667eea;
-}
-
-.count {
-    background: #667eea;
-    color: white;
-    padding: 0.2rem 0.5rem;
-    border-radius: 8px;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
-/* Sessions Section */
-.sessions-header {
+/* Guides Section */
+.guides-section {
     margin-bottom: 2rem;
 }
 
-.section-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.section-meta {
+    margin-bottom: 1.5rem;
 }
 
-.section-title {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #2c3e50;
+.section-meta h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
     margin: 0;
-    letter-spacing: -0.02em;
-}
-
-/* Compact Sessions Grid */
-.sessions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.session-card {
-    background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.session-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-}
-
-.session-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-}
-
-.session-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.company-info {
+.result-count {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gray-500);
+}
+
+/* Guides Grid */
+.guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.guide-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 1rem;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.guide-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+}
+
+.card-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
-.company-icon {
-    width: 35px;
-    height: 35px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.company-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 1rem;
     flex-shrink: 0;
 }
 
-.company-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 0;
-    line-height: 1.2;
+.company-details {
+    flex: 1;
+    min-width: 0;
 }
 
-.role-text {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    padding: 0.2rem 0.6rem;
+.company-details h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0 0 0.25rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.role-tag {
+    background: var(--gray-100);
+    color: var(--gray-600);
+    padding: 0.125rem 0.5rem;
     border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.card-menu {
+    color: var(--gray-400);
+    font-size: 0.8rem;
+}
+
+.guide-card:hover .card-menu {
+    color: var(--primary);
+}
+
+.card-content {
+    margin-bottom: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 0.8rem;
+    color: var(--gray-900);
+    font-weight: 600;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.tech-badge {
+    background: #ecfdf5;
+    color: #065f46;
+    padding: 0.125rem 0.5rem;
+    border-radius: 10px;
     font-size: 0.7rem;
     font-weight: 600;
 }
 
-.session-date {
-    color: #6c757d;
-    font-size: 0.8rem;
-    font-weight: 500;
+.tech-more {
+    background: var(--gray-100);
+    color: var(--gray-500);
+    padding: 0.125rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
 }
 
-.session-overview {
-    color: #6c757d;
-    line-height: 1.4;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+.card-footer {
+    border-top: 1px solid var(--gray-100);
+    padding-top: 0.75rem;
 }
 
-.session-stats {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.stat-item {
+.completion-indicator {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.8rem;
-    color: #6c757d;
-    font-weight: 500;
+    gap: 0.75rem;
 }
 
-.stat-item i {
-    color: #667eea;
-    font-size: 0.75rem;
+.completion-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--gray-200);
+    border-radius: 2px;
+    overflow: hidden;
 }
 
-.session-btn {
+.completion-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
     width: 100%;
-    padding: 0.6rem;
-    border-radius: 10px;
+    border-radius: 2px;
+}
+
+.completion-text {
+    font-size: 0.75rem;
+    color: var(--primary);
     font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.3s ease;
 }
 
 /* Empty State */
 .empty-state {
     text-align: center;
-    padding: 3rem 1rem;
-    color: #6c757d;
+    padding: 4rem 2rem;
+}
+
+.empty-content {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .empty-icon {
-    width: 60px;
-    height: 60px;
-    background: #e9ecef;
+    width: 80px;
+    height: 80px;
+    background: var(--gray-100);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
-    font-size: 1.5rem;
-    color: #667eea;
+    margin: 0 auto 1.5rem;
+    color: var(--gray-400);
+    font-size: 2rem;
 }
 
-.empty-state h4 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #2c3e50;
+.empty-state h3 {
+    color: var(--gray-900);
+    font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
-/* Compact Loading Modal */
-.loading-spinner {
-    margin: 1rem 0;
+.empty-state p {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
 }
 
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f8f9fa;
-    border-top: 3px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
+/* Popular Section */
+.popular-section {
+    border-top: 1px solid var(--gray-200);
+    padding-top: 1.5rem;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.popular-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
-/* Button Styles */
-.btn-primary {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    border: none;
-    padding: 0.6rem 1.5rem;
-    border-radius: 12px;
+.popular-header h4 {
+    font-size: 1rem;
     font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(240, 147, 251, 0.3);
-    font-size: 0.85rem;
+    color: var(--gray-900);
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.popular-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.popular-chip {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.popular-chip:hover {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: white;
+}
+
+.chip-count {
+    background: var(--gray-200);
+    color: var(--gray-600);
+    padding: 0.125rem 0.375rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.popular-chip:hover .chip-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Modal */
+.modal-content {
+    border-radius: var(--radius);
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.modal-body {
+    padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--gray-300);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 0.1);
+    outline: none;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 0.625rem 1.25rem;
 }
 
 .btn-primary:hover {
+    background: #4f46e5;
+    color: white;
     transform: translateY(-1px);
-    box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
-    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
 }
 
-/* Responsive Design */
+.btn-outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    padding: 0.5rem 1rem;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-light {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    padding: 0.625rem 1.25rem;
+}
+
+.btn-light:hover {
+    background: var(--gray-200);
+    color: var(--gray-800);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .hero-title { font-size: 2rem; }
-    .main-section { padding: 2rem 0; }
-    .sticky-sidebar { position: relative; margin-bottom: 2rem; }
-    .sessions-grid { grid-template-columns: 1fr; }
-    .session-stats { justify-content: space-between; }
-    .hero-visual { height: 250px; margin-top: 1.5rem; }
-    .main-card { width: 250px; }
+    .hero-section {
+        padding: 1.5rem 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .content-header .row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .header-stats {
+        justify-content: center;
+    }
+    
+    .guides-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .popular-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-@media (max-width: 992px) {
-    .col-lg-4, .col-lg-8 { margin-bottom: 2rem; }
+@media (max-width: 576px) {
+    .main-section {
+        padding: 1.5rem 0;
+    }
+    
+    .popular-chips {
+        justify-content: center;
+    }
 }
 </style>
 
 <script>
-document.getElementById('createPrepForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+// Minimal JavaScript - only essential functionality
+function openModalWithCompany(companyName) {
+    const modal = new bootstrap.Modal(document.getElementById('prepGuideModal'));
+    const companyInput = document.getElementById('id_company_name');
     
-    const companyName = document.getElementById('companyName').value.trim();
-    const targetRole = document.getElementById('targetRole').value.trim();
-    const userExperience = document.getElementById('userExperience').value.trim();
-    
-    if (!companyName) {
-        document.getElementById('companyName').focus();
-        return;
+    if (companyInput) {
+        companyInput.value = companyName;
     }
     
-    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-    loadingModal.show();
+    modal.show();
+}
+
+function clearSearch() {
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.closest('form').submit();
+    }
+}
+
+// Auto-submit search
+let searchTimeout;
+const searchInput = document.querySelector('input[name="search"]');
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            if (this.value.length >= 2 || this.value.length === 0) {
+                this.closest('form').submit();
+            }
+        }, 500);
+    });
+}
+
+// Form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const generateBtn = document.getElementById('generateBtn');
+    const prepForm = document.getElementById('prepForm');
     
-    try {
-        const response = await fetch('{% url "create-prep-session" %}', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                company_name: companyName,
-                target_role: targetRole,
-                user_experience: userExperience
-            })
+    if (prepForm) {
+        prepForm.addEventListener('submit', function() {
+            generateBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-1"></div>Generating...';
+            generateBtn.disabled = true;
         });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            window.location.href = `/smart-prep/session/${data.session_id}/`;
-        } else {
-            alert('Error: ' + data.error);
-        }
-        
-    } catch (error) {
-        alert('An error occurred: ' + error.message);
-    } finally {
-        loadingModal.hide();
     }
 });
 </script>

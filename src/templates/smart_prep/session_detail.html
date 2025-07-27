@@ -4,7 +4,7 @@
 {% block title %}{{ session.company_name }} - Preparation Guide{% endblock title %}
 
 {% block content %}
-<!-- Compact Professional Header -->
+<!-- Header Section -->
 <section class="session-header">
     <div class="container">
         <div class="row">
@@ -13,7 +13,7 @@
                 <nav aria-label="breadcrumb" class="mb-3">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{% url 'smart-prep' %}">
+                            <a href="{% url 'smart-prep' %}" class="breadcrumb-link">
                                 <i class="fas fa-chevron-left me-1"></i>Back to Smart Prep
                             </a>
                         </li>
@@ -74,32 +74,32 @@
                         </div>
                     </div>
                     <nav class="guide-nav">
-                        <a href="#overview" class="nav-item active" data-section="overview">
+                        <a href="#overview" class="guide-nav-item active" data-section="overview">
                             <span class="nav-indicator"></span>
                             <i class="fas fa-info-circle"></i>
                             <span>Overview</span>
                         </a>
-                        <a href="#technologies" class="nav-item" data-section="technologies">
+                        <a href="#technologies" class="guide-nav-item" data-section="technologies">
                             <span class="nav-indicator"></span>
                             <i class="fas fa-code"></i>
                             <span>Tech Stack</span>
                         </a>
-                        <a href="#timeline" class="nav-item" data-section="timeline">
+                        <a href="#timeline" class="guide-nav-item" data-section="timeline">
                             <span class="nav-indicator"></span>
                             <i class="fas fa-road"></i>
                             <span>Roadmap</span>
                         </a>
-                        <a href="#tips" class="nav-item" data-section="tips">
+                        <a href="#tips" class="guide-nav-item" data-section="tips">
                             <span class="nav-indicator"></span>
                             <i class="fas fa-lightbulb"></i>
                             <span>Pro Tips</span>
                         </a>
-                        <a href="#resources" class="nav-item" data-section="resources">
+                        <a href="#resources" class="guide-nav-item" data-section="resources">
                             <span class="nav-indicator"></span>
                             <i class="fas fa-book-open"></i>
                             <span>Resources</span>
                         </a>
-                        <a href="#red-flags" class="nav-item" data-section="red-flags">
+                        <a href="#red-flags" class="guide-nav-item" data-section="red-flags">
                             <span class="nav-indicator"></span>
                             <i class="fas fa-exclamation-triangle"></i>
                             <span>Pitfalls</span>
@@ -177,7 +177,6 @@
                                     </div>
                                     {% endfor %}
                                 {% else %}
-                                    <!-- Fallback content when timeline is empty -->
                                     <div class="empty-timeline">
                                         <div class="empty-icon">
                                             <i class="fas fa-calendar-times"></i>
@@ -187,15 +186,6 @@
                                         <a href="{% url 'smart-prep' %}" class="btn-secondary">
                                             <i class="fas fa-plus me-1"></i>Create New Guide
                                         </a>
-                                    </div>
-                                    
-                                    <!-- DEBUG INFO (remove in production) -->
-                                    <div class="debug-info" style="background: #f8f9fa; padding: 1rem; border-radius: 10px; margin-top: 1rem; font-family: monospace; font-size: 0.8rem;">
-                                        <strong>Debug Info:</strong><br>
-                                        Timeline Type: {% if session.preparation_timeline %}Has Data{% else %}Empty{% endif %}<br>
-                                        Timeline Length: {{ session.preparation_timeline|length }}<br>
-                                        Timeline Keys: {% for key in session.preparation_timeline.keys %}{{ key }}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
-                                        Raw Data: {{ session.preparation_timeline|truncatechars:200 }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -291,16 +281,29 @@
 </section>
 
 <style>
-/* Global Styles */
-* {
+/* Reset and ensure no conflicts with base navbar */
+.session-header,
+.session-header *,
+.main-content,
+.main-content * {
     box-sizing: border-box;
 }
 
-/* Header Section */
+/* Override any Bootstrap navbar conflicts */
+.session-header .breadcrumb,
+.session-header .breadcrumb-item,
+.session-header .breadcrumb-link {
+    position: relative !important;
+    z-index: 1 !important;
+    background: transparent !important;
+}
+
+/* Header Section - Lower z-index */
 .session-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 2rem 0;
     position: relative;
+    z-index: 1; /* Lower than main navbar */
     overflow: hidden;
 }
 
@@ -311,6 +314,7 @@
     height: 200%;
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><circle cx="30" cy="30" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
     animation: float 20s linear infinite;
+    z-index: -1;
 }
 
 @keyframes float {
@@ -318,23 +322,25 @@
     100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+/* Fix breadcrumb styling */
 .breadcrumb {
     background: transparent !important;
     margin: 0 !important;
     padding: 0 !important;
     position: relative;
-    z-index: 10;
+    z-index: 2;
 }
 
 .breadcrumb-item {
     position: relative;
-    z-index: 10;
+    z-index: 2;
 }
 
 .breadcrumb-link {
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
     text-decoration: none !important;
     font-size: 0.9rem;
+    font-weight: 500;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
@@ -345,22 +351,6 @@
     color: white !important;
     text-decoration: none !important;
     transform: translateX(-2px);
-}
-
-.breadcrumb-link i {
-    margin-right: 0.5rem;
-    font-size: 0.8rem;
-}
-
-.breadcrumb-item a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.breadcrumb-item a:hover {
-    color: white;
 }
 
 .header-card {
@@ -456,9 +446,11 @@
 .main-content {
     padding: 3rem 0;
     background: #f8f9fa;
+    position: relative;
+    z-index: 1; /* Lower than main navbar */
 }
 
-/* Navigation Sidebar */
+/* Fixed Navigation Sidebar - Ensure no conflicts */
 .nav-sidebar {
     background: white;
     border-radius: 20px;
@@ -467,6 +459,7 @@
     position: sticky;
     top: 2rem;
     border: 1px solid rgba(0,0,0,0.05);
+    z-index: 10; /* Higher than content but lower than main navbar */
 }
 
 .nav-header {
@@ -508,7 +501,8 @@
     gap: 0.5rem;
 }
 
-.nav-item {
+/* Fixed guide navigation items - renamed to avoid conflicts */
+.guide-nav-item {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -520,18 +514,28 @@
     font-size: 0.9rem;
     transition: all 0.3s ease;
     position: relative;
+    cursor: pointer;
+    border: none;
+    background: none;
 }
 
-.nav-item:hover {
-    color: #667eea;
-    background: #f8f9fa;
+.guide-nav-item:hover {
+    color: #667eea !important;
+    background: rgba(102, 126, 234, 0.1) !important;
     transform: translateX(3px);
+    text-decoration: none !important;
 }
 
-.nav-item.active {
-    color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.guide-nav-item.active {
+    color: white !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none !important;
+}
+
+.guide-nav-item:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
 }
 
 .nav-indicator {
@@ -542,12 +546,12 @@
     opacity: 0.5;
 }
 
-.nav-item.active .nav-indicator {
+.guide-nav-item.active .nav-indicator {
     opacity: 1;
     background: white;
 }
 
-.nav-item i {
+.guide-nav-item i {
     width: 18px;
     text-align: center;
     font-size: 0.9rem;
@@ -761,7 +765,7 @@
     flex: 1;
 }
 
-.tip-content p {
+.tip-text {
     color: #2c3e50;
     margin: 0;
     line-height: 1.6;
@@ -887,9 +891,10 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
     color: white;
+    text-decoration: none;
 }
 
-/* Empty Timeline Styles */
+/* Empty Timeline */
 .empty-timeline {
     text-align: center;
     padding: 3rem 1rem;
@@ -933,6 +938,7 @@
     display: inline-flex;
     align-items: center;
     font-size: 0.9rem;
+    border: none;
 }
 
 .btn-secondary:hover {
@@ -940,105 +946,183 @@
     color: white;
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
-}
-
-.debug-info {
-    background: #f8f9fa !important;
-    border: 1px solid #dee2e6 !important;
-    padding: 1rem !important;
-    border-radius: 10px !important;
-    margin-top: 1rem !important;
-    font-family: 'Courier New', monospace !important;
-    font-size: 0.8rem !important;
-    color: #495057 !important;
-    line-height: 1.4 !important;
-}
-
-.debug-info strong {
-    color: #212529 !important;
-}
-
-/* Better text formatting */
-.overview-description {
-    color: #2c3e50;
-    line-height: 1.7;
-    font-size: 1rem;
-    margin: 0;
-}
-
-.tip-text,
-.resource-text,
-.warning-text {
-    color: #2c3e50;
-    font-weight: 500;
-    line-height: 1.6;
-}
-
-.tip-text p,
-.resource-text p,
-.warning-text p {
-    margin: 0 0 0.5rem 0;
-}
-
-.tip-text p:last-child,
-.resource-text p:last-child,
-.warning-text p:last-child {
-    margin-bottom: 0;
-}
-
-/* Handle any remaining markdown-style text */
-.tip-text,
-.resource-text,
-.warning-text,
-.overview-description {
-    /* Remove markdown asterisks if they appear */
-    word-wrap: break-word;
+    text-decoration: none;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .main-content { padding: 2rem 0; }
-    .company-name { font-size: 1.5rem; }
-    .company-info { flex-direction: column; text-align: center; gap: 1rem; }
-    .quick-actions { justify-content: center; margin-top: 1rem; }
-    .nav-sidebar { margin-bottom: 2rem; position: relative !important; top: auto !important; }
-    .tech-stack { grid-template-columns: 1fr; }
-    .action-card { flex-direction: column; text-align: center; }
-    .company-logo { width: 60px; height: 60px; font-size: 1.5rem; }
+    .main-content { 
+        padding: 2rem 0; 
+    }
+    
+    .company-name { 
+        font-size: 1.5rem; 
+    }
+    
+    .company-info { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 1rem; 
+    }
+    
+    .quick-actions { 
+        justify-content: center; 
+        margin-top: 1rem; 
+    }
+    
+    .nav-sidebar { 
+        margin-bottom: 2rem; 
+        position: relative !important; 
+        top: auto !important; 
+    }
+    
+    .tech-stack { 
+        grid-template-columns: 1fr; 
+    }
+    
+    .action-card { 
+        flex-direction: column; 
+        text-align: center; 
+    }
+    
+    .company-logo { 
+        width: 60px; 
+        height: 60px; 
+        font-size: 1.5rem; 
+    }
 }
 
 @media (max-width: 992px) {
-    .session-header { padding: 1.5rem 0; }
-    .header-card { padding: 1.5rem; }
+    .session-header { 
+        padding: 1.5rem 0; 
+    }
+    
+    .header-card { 
+        padding: 1.5rem; 
+    }
 }
 </style>
 
 <script>
-// Navigation functionality
-document.querySelectorAll('.nav-item').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
+// Navigation functionality with proper event handling
+document.addEventListener('DOMContentLoaded', function() {
+    const guideNavItems = document.querySelectorAll('.guide-nav-item');
+    const sections = document.querySelectorAll('.content-block');
+    
+    // Navigation click handling
+    guideNavItems.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Remove active class from all items
+            guideNavItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Smooth scroll to section
+            const targetId = this.getAttribute('href');
+            const target = document.querySelector(targetId);
+            
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Enhanced progress tracking
+    function updateProgress() {
+        const progressText = document.querySelector('.progress-text');
+        const progressRing = document.querySelector('.progress-ring');
         
-        // Remove active class from all items
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.remove('active');
+        if (!progressText || !progressRing) return;
+        
+        const mainContent = document.querySelector('.content-area');
+        if (!mainContent) return;
+        
+        const contentTop = mainContent.offsetTop;
+        const contentHeight = mainContent.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.pageYOffset;
+        
+        const scrollableDistance = contentHeight - windowHeight;
+        const scrollProgress = Math.max(0, scrollTop - contentTop + 200);
+        
+        let progressPercentage = 0;
+        if (scrollableDistance > 0) {
+            progressPercentage = Math.min(100, Math.round((scrollProgress / scrollableDistance) * 100));
+        }
+        
+        if (scrollTop > contentTop && progressPercentage === 0) {
+            progressPercentage = 5;
+        }
+        
+        progressText.textContent = progressPercentage + '%';
+        
+        // Update progress ring color
+        if (progressPercentage >= 100) {
+            progressRing.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        } else if (progressPercentage >= 75) {
+            progressRing.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+        } else {
+            progressRing.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        }
+    }
+    
+    // Update active navigation based on scroll
+    function updateActiveNavigation() {
+        let current = '';
+        const scrollPosition = window.pageYOffset + 200;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
         });
         
-        // Add active class to clicked item
-        this.classList.add('active');
-        
-        // Smooth scroll to section
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+        guideNavItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === '#' + current) {
+                item.classList.add('active');
+            }
+        });
+    }
+    
+    // Throttled scroll handler
+    let scrollTimeout;
+    function handleScroll() {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
         }
-    });
+        scrollTimeout = setTimeout(() => {
+            updateProgress();
+            updateActiveNavigation();
+        }, 16);
+    }
+    
+    // Event listeners
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initialize
+    updateProgress();
+    updateActiveNavigation();
+    
+    // Ensure first nav item is active if none are
+    if (!document.querySelector('.guide-nav-item.active') && guideNavItems.length > 0) {
+        guideNavItems[0].classList.add('active');
+    }
 });
 
-// Copy to clipboard functionality
+// Utility functions
 function copyToClipboard() {
     navigator.clipboard.writeText(window.location.href).then(() => {
         const btn = event.target.closest('.action-btn');
@@ -1049,10 +1133,11 @@ function copyToClipboard() {
         setTimeout(() => {
             icon.className = originalClass;
         }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
     });
 }
 
-// Bookmark functionality
 function toggleBookmark() {
     const btn = event.target.closest('.action-btn');
     const icon = btn.querySelector('i');
@@ -1065,154 +1150,5 @@ function toggleBookmark() {
         icon.classList.add('fas');
     }
 }
-
-// Enhanced progress tracking
-function updateProgress() {
-    const progressText = document.querySelector('.progress-text');
-    const progressRing = document.querySelector('.progress-ring');
-    
-    // Get the main content area
-    const mainContent = document.querySelector('.main-content');
-    if (!mainContent) return;
-    
-    // Calculate scroll progress based on main content
-    const contentTop = mainContent.offsetTop;
-    const contentHeight = mainContent.offsetHeight;
-    const windowHeight = window.innerHeight;
-    const scrollTop = window.pageYOffset;
-    
-    // Calculate how much of the content area has been scrolled through
-    const scrollableDistance = contentHeight - windowHeight;
-    const scrollProgress = Math.max(0, scrollTop - contentTop);
-    
-    let progressPercentage = 0;
-    if (scrollableDistance > 0) {
-        progressPercentage = Math.min(100, Math.round((scrollProgress / scrollableDistance) * 100));
-    }
-    
-    // Ensure we show some progress when user starts scrolling
-    if (scrollTop > contentTop && progressPercentage === 0) {
-        progressPercentage = 5;
-    }
-    
-    // Update progress text
-    progressText.textContent = progressPercentage + '%';
-    
-    // Add visual feedback to progress ring
-    if (progressPercentage >= 100) {
-        progressRing.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-    } else if (progressPercentage >= 75) {
-        progressRing.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-    } else {
-        progressRing.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-    }
-}
-
-// Alternative progress tracking based on sections
-function updateProgressBySections() {
-    const sections = document.querySelectorAll('.content-block');
-    const progressText = document.querySelector('.progress-text');
-    const progressRing = document.querySelector('.progress-ring');
-    
-    if (sections.length === 0) return;
-    
-    let currentSectionIndex = 0;
-    const scrollPosition = window.pageYOffset + window.innerHeight / 2;
-    
-    // Find which section we're currently viewing
-    sections.forEach((section, index) => {
-        const sectionTop = section.offsetTop;
-        const sectionBottom = sectionTop + section.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
-            currentSectionIndex = index;
-        }
-    });
-    
-    // Calculate progress as percentage of sections completed
-    const progressPercentage = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
-    
-    // Update progress text
-    progressText.textContent = progressPercentage + '%';
-    
-    // Update progress ring color based on completion
-    if (progressPercentage === 100) {
-        progressRing.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-    } else if (progressPercentage >= 75) {
-        progressRing.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-    } else {
-        progressRing.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-    }
-}
-
-// Update active navigation based on scroll
-function updateActiveNavigation() {
-    const sections = document.querySelectorAll('.content-block');
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    let current = '';
-    const scrollPosition = window.pageYOffset + 200; // Offset for better UX
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    // If no section is active, default to first one
-    if (!current && sections.length > 0) {
-        current = sections[0].getAttribute('id');
-    }
-    
-    // Update navigation
-    navItems.forEach(item => {
-        item.classList.remove('active');
-        if (item.getAttribute('href') === '#' + current) {
-            item.classList.add('active');
-        }
-    });
-}
-
-// Combined scroll handler
-function handleScroll() {
-    updateProgress(); // Use the scroll-based progress
-    // updateProgressBySections(); // Alternative: Use this for section-based progress
-    updateActiveNavigation();
-}
-
-// Throttle scroll events for better performance
-let scrollTimeout;
-window.addEventListener('scroll', function() {
-    if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-    }
-    scrollTimeout = setTimeout(handleScroll, 16); // ~60fps
-});
-
-// Initialize on load
-document.addEventListener('DOMContentLoaded', function() {
-    // Set initial progress
-    updateProgress();
-    updateActiveNavigation();
-    
-    // Ensure first navigation item is active initially
-    const firstNavItem = document.querySelector('.nav-item');
-    if (firstNavItem && !document.querySelector('.nav-item.active')) {
-        firstNavItem.classList.add('active');
-    }
-});
-
-// Update progress when user clicks navigation items
-document.querySelectorAll('.nav-item').forEach(link => {
-    link.addEventListener('click', function() {
-        // Small delay to allow scroll to complete, then update progress
-        setTimeout(() => {
-            updateProgress();
-        }, 500);
-    });
-});
 </script>
 {% endblock content %}

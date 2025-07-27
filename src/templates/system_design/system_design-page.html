@@ -60,6 +60,27 @@
     </div>
 </section>
 
+<!-- Messages -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {% if message.tags == 'success' %}
+            <i class="fas fa-check-circle me-2"></i>
+        {% elif message.tags == 'error' %}
+            <i class="fas fa-exclamation-triangle me-2"></i>
+        {% elif message.tags == 'warning' %}
+            <i class="fas fa-exclamation-circle me-2"></i>
+        {% else %}
+            <i class="fas fa-info-circle me-2"></i>
+        {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <!-- Questions Section -->
 <section id="questions" class="questions-section">
     <div class="container">
@@ -111,11 +132,10 @@
                         </div>
                     </div>
                     
-                    <button class="btn btn-primary start-design-btn" 
-                            data-question="{{ question.title }}"
-                            data-requirements="{{ question.description }}">
+                    <!-- Updated button to use new URL pattern -->
+                    <a href="{% url 'design-question' question.id %}" class="btn btn-primary start-design-btn">
                         <i class="fas fa-pencil-ruler me-2"></i>Start Designing
-                    </button>
+                    </a>
                 </div>
             </div>
             {% empty %}
@@ -139,17 +159,6 @@
             </div>
             {% endfor %}
         </div>
-        
-        <!-- Load More Button -->
-        {% if questions.count >= 6 %}
-        <div class="row mt-5">
-            <div class="col-12 text-center">
-                <button class="btn btn-outline-primary btn-lg" id="loadMoreBtn">
-                    <i class="fas fa-plus me-2"></i>Load More Questions
-                </button>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </section>
 
@@ -158,466 +167,143 @@
 <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-header-content">
-                    <h4 class="modal-title" id="addQuestionModalLabel">
-                        <i class="fas fa-plus-circle me-2 text-primary"></i>Add System Design Question
-                    </h4>
-                    <p class="modal-subtitle">Help the community by sharing an interesting system design question</p>
+            <form method="post" action="{% url 'system-design-page' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <div class="modal-header-content">
+                        <h4 class="modal-title" id="addQuestionModalLabel">
+                            <i class="fas fa-plus-circle me-2 text-primary"></i>Add System Design Question
+                        </h4>
+                        <p class="modal-subtitle">Help the community by sharing an interesting system design question</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="questionForm" class="question-form">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">
-                                    <i class="fas fa-heading me-1"></i>Question Title*
-                                </label>
-                                <input type="text" class="form-control" id="title" 
-                                       placeholder="e.g., Design a URL Shortener like bit.ly" required>
-                                <div class="form-text">Make it clear and specific</div>
+                <div class="modal-body">
+                    <div class="question-form">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">
+                                        <i class="fas fa-heading me-1"></i>Question Title*
+                                    </label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                    <div class="form-text">Make it clear and specific</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.difficulty.id_for_label }}" class="form-label">
+                                        <i class="fas fa-chart-bar me-1"></i>Difficulty
+                                    </label>
+                                    {{ form.difficulty }}
+                                    {% if form.difficulty.errors %}
+                                        <div class="text-danger small">{{ form.difficulty.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="difficulty" class="form-label">
-                                    <i class="fas fa-chart-bar me-1"></i>Difficulty
-                                </label>
-                                <select class="form-select" id="difficulty">
-                                    <option value="Easy">Easy</option>
-                                    <option value="Medium" selected>Medium</option>
-                                    <option value="Hard">Hard</option>
-                                </select>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>Description*
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Include requirements, constraints, and expected scale</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.company.id_for_label }}" class="form-label">
+                                <i class="fas fa-building me-1"></i>Company (Optional)
+                            </label>
+                            {{ form.company }}
+                            {% if form.company.errors %}
+                                <div class="text-danger small">{{ form.company.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Which company asked this question?</div>
+                        </div>
+                        
+                        <!-- Live Preview -->
+                        <div class="question-preview mt-4">
+                            <h6 class="text-muted mb-2">
+                                <i class="fas fa-eye me-1"></i>Preview
+                            </h6>
+                            <div class="preview-card">
+                                <div class="preview-meta">
+                                    <span class="difficulty-badge medium" id="previewDifficulty">Medium</span>
+                                    <span class="company-tag" id="previewCompany" style="display: none;"></span>
+                                </div>
+                                <h5 id="previewTitle">Your question title will appear here</h5>
+                                <p id="previewDescription" class="text-muted">Your description will appear here...</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="description" class="form-label">
-                            <i class="fas fa-align-left me-1"></i>Description*
-                        </label>
-                        <textarea class="form-control" id="description" rows="4" 
-                                  placeholder="Describe the system requirements, constraints, scale expectations, and any specific features..." required></textarea>
-                        <div class="form-text">Include requirements, constraints, and expected scale</div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="company" class="form-label">
-                            <i class="fas fa-building me-1"></i>Company (Optional)
-                        </label>
-                        <input type="text" class="form-control" id="company" 
-                               placeholder="e.g., Google, Amazon, Meta, Netflix">
-                        <div class="form-text">Which company asked this question?</div>
-                    </div>
-                    
-                    <!-- Question Preview -->
-                    <div class="question-preview mt-4">
-                        <h6 class="text-muted mb-2">
-                            <i class="fas fa-eye me-1"></i>Preview
-                        </h6>
-                        <div class="preview-card">
-                            <div class="preview-meta">
-                                <span class="difficulty-badge medium" id="previewDifficulty">Medium</span>
-                                <span class="company-tag" id="previewCompany" style="display: none;"></span>
-                            </div>
-                            <h5 id="previewTitle">Your question title will appear here</h5>
-                            <p id="previewDescription" class="text-muted">Your description will appear here...</p>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancel
-                </button>
-                <button type="submit" form="questionForm" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i>Add Question
-                </button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Add Question
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 {% endif %}
 
-<!-- Design Modal -->
-<div class="modal fade" id="designModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="design-header-info">
-                    <h4 class="modal-title" id="currentQuestion">Design Question</h4>
-                    <p class="modal-subtitle" id="currentRequirements">Requirements will appear here</p>
-                </div>
-                <div class="design-actions">
-                    <button type="button" class="btn btn-success me-2" id="submitDesign">
-                        <i class="fas fa-brain me-1"></i>Get Feedback
-                    </button>
-                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Close
-                    </button>
-                </div>
-            </div>
-            <div class="modal-body p-0">
-                <!-- Excalidraw will be mounted here -->
-                <div id="excalidraw-container" style="height: calc(100vh - 120px);"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Results Modal -->
-<div class="modal fade" id="resultsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">System Design Analysis</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="analysisResults">
-                <!-- Analysis results will be populated here -->
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Load CSS -->
-<link rel="stylesheet" href="{% static 'css/excalidraw/excalidraw.css' %}">
-
-<!-- Load dependencies in correct order -->
-<script src="{% static 'js/excalidraw/react.min.js' %}"></script>
-<script src="{% static 'js/excalidraw/react-dom.min.js' %}"></script>
-<script src="{% static 'js/excalidraw/excalidraw.production.min.js' %}"></script>
-<script src="{% static 'js/excalidraw/excalidraw-wrapper.js' %}"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let excalidrawAPI = null;
-    let currentQuestion = '';
-    let currentRequirements = '';
-    let excalidrawInstance = null;
+    // Live preview functionality (minimal JS)
+    const titleInput = document.getElementById('title');
+    const descriptionInput = document.getElementById('description');
+    const companyInput = document.getElementById('company');
+    const difficultySelect = document.getElementById('difficulty');
 
-    const designModal = document.getElementById('designModal');
-    const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
-
-    // Handle question form submission
-    const questionForm = document.getElementById('questionForm');
-    if (questionForm) {
-        questionForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Form submitted'); // Debug log
-            addQuestion();
-        });
-
-        // Live preview functionality
-        const titleInput = document.getElementById('title');
-        const descriptionInput = document.getElementById('description');
-        const companyInput = document.getElementById('company');
-        const difficultySelect = document.getElementById('difficulty');
-
-        if (titleInput && descriptionInput && companyInput && difficultySelect) {
-            titleInput.addEventListener('input', updatePreview);
-            descriptionInput.addEventListener('input', updatePreview);
-            companyInput.addEventListener('input', updatePreview);
-            difficultySelect.addEventListener('change', updatePreview);
-        }
-
-        function updatePreview() {
-            const title = titleInput.value || 'Your question title will appear here';
-            const description = descriptionInput.value || 'Your description will appear here...';
-            const company = companyInput.value;
-            const difficulty = difficultySelect.value;
-
-            const previewTitle = document.getElementById('previewTitle');
-            const previewDescription = document.getElementById('previewDescription');
-            const difficultyBadge = document.getElementById('previewDifficulty');
-            const companyTag = document.getElementById('previewCompany');
-
-            if (previewTitle) previewTitle.textContent = title;
-            if (previewDescription) {
-                previewDescription.textContent = 
-                    description.length > 100 ? description.substring(0, 100) + '...' : description;
-            }
-            
-            if (difficultyBadge) {
-                difficultyBadge.textContent = difficulty;
-                difficultyBadge.className = `difficulty-badge ${difficulty.toLowerCase()}`;
-            }
-
-            if (companyTag) {
-                if (company) {
-                    companyTag.textContent = company;
-                    companyTag.style.display = 'inline-block';
-                } else {
-                    companyTag.style.display = 'none';
-                }
-            }
-        }
+    if (titleInput && descriptionInput && companyInput && difficultySelect) {
+        titleInput.addEventListener('input', updatePreview);
+        descriptionInput.addEventListener('input', updatePreview);
+        companyInput.addEventListener('input', updatePreview);
+        difficultySelect.addEventListener('change', updatePreview);
     }
 
-    // Add new question function
-    function addQuestion() {
-        console.log('addQuestion function called'); // Debug log
-        
-        const title = document.getElementById('title')?.value;
-        const description = document.getElementById('description')?.value;
-        const company = document.getElementById('company')?.value || '';
-        const difficulty = document.getElementById('difficulty')?.value || 'Medium';
-        
-        console.log('Form data:', { title, description, company, difficulty }); // Debug log
-        
-        if (!title || !description) {
-            showNotification('Please fill in required fields', 'warning');
-            return;
+    function updatePreview() {
+        const title = titleInput.value || 'Your question title will appear here';
+        const description = descriptionInput.value || 'Your description will appear here...';
+        const company = companyInput.value;
+        const difficulty = difficultySelect.value;
+
+        const previewTitle = document.getElementById('previewTitle');
+        const previewDescription = document.getElementById('previewDescription');
+        const difficultyBadge = document.getElementById('previewDifficulty');
+        const companyTag = document.getElementById('previewCompany');
+
+        if (previewTitle) previewTitle.textContent = title;
+        if (previewDescription) {
+            previewDescription.textContent = 
+                description.length > 100 ? description.substring(0, 100) + '...' : description;
         }
         
-        const submitBtn = document.querySelector('#questionForm button[type="submit"]');
-        if (!submitBtn) {
-            console.error('Submit button not found');
-            return;
+        if (difficultyBadge) {
+            difficultyBadge.textContent = difficulty;
+            difficultyBadge.className = `difficulty-badge ${difficulty.toLowerCase()}`;
         }
-        
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Adding...';
-        submitBtn.disabled = true;
-        
-        // Get CSRF token
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-        console.log('CSRF Token:', csrfToken); // Debug log
-        
-        const requestData = {
-            title: title,
-            description: description,
-            company: company,
-            difficulty: difficulty
-        };
-        
-        console.log('Sending request with data:', requestData); // Debug log
-        
-        fetch('{% url "add-question" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => {
-            console.log('Response status:', response.status); // Debug log
-            return response.json();
-        })
-        .then(data => {
-            console.log('Response data:', data); // Debug log
-            if (data.success) {
-                showNotification('Question added successfully!', 'success');
-                questionForm.reset();
-                updatePreview(); // Reset preview
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addQuestionModal'));
-                if (modal) modal.hide();
-                setTimeout(() => location.reload(), 1500);
+
+        if (companyTag) {
+            if (company) {
+                companyTag.textContent = company;
+                companyTag.style.display = 'inline-block';
             } else {
-                showNotification('Error: ' + (data.error || 'Unknown error'), 'error');
+                companyTag.style.display = 'none';
             }
-        })
-        .catch(error => {
-            console.error('Error adding question:', error);
-            showNotification('Failed to add question: ' + error.message, 'error');
-        })
-        .finally(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        });
-    }
-
-    // Handle question selection
-    document.querySelectorAll('.start-design-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            currentQuestion = this.dataset.question;
-            currentRequirements = this.dataset.requirements;
-            
-            document.getElementById('currentQuestion').textContent = currentQuestion;
-            document.getElementById('currentRequirements').textContent = currentRequirements;
-            
-            const modal = new bootstrap.Modal(designModal);
-            modal.show();
-        });
-    });
-
-    // Initialize Excalidraw when modal is shown
-    designModal.addEventListener('shown.bs.modal', function() {
-        if (!excalidrawInstance) {
-            setTimeout(() => {
-                console.log('Initializing Excalidraw...');
-                
-                if (typeof ExcalidrawWrapper !== 'undefined') {
-                    excalidrawInstance = ExcalidrawWrapper.init('excalidraw-container', {
-                        onChange: function(elements, appState, files) {
-                            console.log('Excalidraw onChange triggered');
-                            excalidrawAPI = {
-                                elements: elements,
-                                appState: appState,
-                                files: files || {}
-                            };
-                            
-                            ExcalidrawWrapper.updateElements('excalidraw-container', elements);
-                        }
-                    });
-                    
-                    if (!excalidrawInstance) {
-                        console.error('Failed to initialize Excalidraw instance');
-                    } else {
-                        console.log('Excalidraw initialized successfully');
-                    }
-                } else {
-                    console.error('ExcalidrawWrapper not found');
-                }
-            }, 500);
         }
-    });
-
-    // Submit design for analysis
-    document.getElementById('submitDesign')?.addEventListener('click', function() {
-        console.log('Submit button clicked', excalidrawAPI);
-        
-        if (!excalidrawAPI || !excalidrawAPI.elements || excalidrawAPI.elements.length === 0) {
-            showNotification('Please draw your system design first!', 'warning');
-            return;
-        }
-
-        const submitBtn = this;
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Analyzing...';
-        submitBtn.disabled = true;
-
-        const designData = {
-            elements: excalidrawAPI.elements,
-            appState: excalidrawAPI.appState,
-            question: currentQuestion,
-            requirements: currentRequirements
-        };
-
-        console.log('Submitting design data:', designData);
-
-        fetch('{% url "analyze-system-design" %}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value
-            },
-            body: JSON.stringify(designData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Analysis response:', data);
-            if (data.success) {
-                displayAnalysisResults(data.analysis);
-                bootstrap.Modal.getInstance(designModal).hide();
-                resultsModal.show();
-            } else {
-                showNotification('Error analyzing design: ' + data.error, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('An error occurred while analyzing your design.', 'error');
-        })
-        .finally(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        });
-    });
-
-    function displayAnalysisResults(analysis) {
-        const resultsContainer = document.getElementById('analysisResults');
-        
-        resultsContainer.innerHTML = `
-            <div class="score-display">
-                <div class="score-item">
-                    <div class="score-circle overall">${analysis.overall_score}</div>
-                    <h6>Overall Score</h6>
-                </div>
-                <div class="score-item">
-                    <div class="score-circle scalability">${analysis.scalability_score}</div>
-                    <h6>Scalability</h6>
-                </div>
-                <div class="score-item">
-                    <div class="score-circle reliability">${analysis.reliability_score}</div>
-                    <h6>Reliability</h6>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="feedback-section">
-                        <h5><i class="fas fa-thumbs-up text-success me-2"></i>Strengths</h5>
-                        <ul class="feedback-list">
-                            ${analysis.strengths.map(strength => `<li>${strength}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="feedback-section">
-                        <h5><i class="fas fa-chart-line text-warning me-2"></i>Areas for Improvement</h5>
-                        <ul class="feedback-list">
-                            ${analysis.weaknesses.map(weakness => `<li>${weakness}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="feedback-section">
-                <h5><i class="fas fa-exclamation-triangle text-danger me-2"></i>Missing Components</h5>
-                <ul class="feedback-list">
-                    ${analysis.missing_components.map(component => `<li>${component}</li>`).join('')}
-                </ul>
-            </div>
-
-            <div class="feedback-section">
-                <h5><i class="fas fa-lightbulb text-primary me-2"></i>Recommendations</h5>
-                <ul class="feedback-list">
-                    ${analysis.recommendations.map(rec => `<li>${rec}</li>`).join('')}
-                </ul>
-            </div>
-        `;
     }
-
-    function showNotification(message, type = 'info') {
-        // Remove existing notifications
-        const existingNotifications = document.querySelectorAll('.custom-notification');
-        existingNotifications.forEach(notification => notification.remove());
-        
-        // Create new notification
-        const notification = document.createElement('div');
-        notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info'} position-fixed custom-notification`;
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-        notification.innerHTML = `
-            <div class="d-flex align-items-center">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
-                <span>${message}</span>
-                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Auto-remove after 4 seconds
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 4000);
-    }
-
-    // Debug: Check if all libraries are loaded
-    console.log('React:', typeof React !== 'undefined');
-    console.log('ReactDOM:', typeof ReactDOM !== 'undefined');
-    console.log('ExcalidrawLib:', typeof ExcalidrawLib !== 'undefined');
-    console.log('ExcalidrawWrapper:', typeof ExcalidrawWrapper !== 'undefined');
-    
-    // Debug: Check if form elements exist
-    console.log('Question form found:', !!document.getElementById('questionForm'));
-    console.log('Submit button found:', !!document.querySelector('#questionForm button[type="submit"]'));
 });
 </script>
 
@@ -885,11 +571,17 @@ document.addEventListener('DOMContentLoaded', function() {
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         width: 100%;
+        text-decoration: none;
+        color: white;
+        display: block;
+        text-align: center;
     }
 
     .start-design-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
     }
 
     /* Empty State */
@@ -999,78 +691,6 @@ document.addEventListener('DOMContentLoaded', function() {
         line-height: 1.4;
     }
 
-    /* Modal Styles */
-    .design-header-info h4 {
-        color: #2c3e50;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .design-actions {
-        display: flex;
-        align-items: center;
-    }
-
-    /* Analysis Results */
-    .score-display {
-        display: flex;
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .score-item {
-        text-align: center;
-        flex: 1;
-    }
-
-    .score-circle {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 0.5rem;
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: white;
-    }
-
-    .score-circle.overall {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .score-circle.scalability {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    }
-
-    .score-circle.reliability {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    }
-
-    .feedback-section {
-        margin-bottom: 2rem;
-    }
-
-    .feedback-section h5 {
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 1rem;
-    }
-
-    .feedback-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .feedback-list li {
-        background: #f8f9fa;
-        padding: 0.75rem;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-        border-left: 4px solid #667eea;
-    }
-
     /* Button Styles */
     .btn-primary {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -1088,20 +708,32 @@ document.addEventListener('DOMContentLoaded', function() {
         background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
     }
 
-    /* Notifications */
-    .custom-notification {
-        animation: slideIn 0.3s ease-out;
+    /* Message alerts */
+    .alert {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-    
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+
+    .alert-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+
+    .alert-error,
+    .alert-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
     }
 
     /* Responsive Design */
@@ -1116,17 +748,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         .question-card {
             padding: 1.5rem;
-        }
-
-        .score-display {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .design-actions {
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: stretch;
         }
 
         .hero-stats {
@@ -1147,6 +768,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 </style>
 
-<!-- CSRF Token -->
-{% csrf_token %}
 {% endblock content %}
