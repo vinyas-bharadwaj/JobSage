@@ -1,6 +1,9 @@
-<!-- Updated design_question.html with CDN -->
 {% extends "base.html" %}
 {% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/app/design_question.css' %}">
+{% endblock head %}
 
 {% block title %}{{ question.title }} - JobSage{% endblock title %}
 
@@ -12,7 +15,7 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <div class="question-info">
-                        <div class="question-meta mb-2">
+                        <div class="question-meta">
                             <span class="difficulty-badge {{ question.difficulty|lower }}">{{ question.difficulty }}</span>
                             {% if question.company %}
                             <span class="company-tag">{{ question.company }}</span>
@@ -22,15 +25,15 @@
                         <p class="question-description">{{ question.description }}</p>
                     </div>
                 </div>
-                <div class="col-md-4 text-end">
+                <div class="col-md-4">
                     <div class="design-actions">
                         {% if existing_submission %}
-                        <a href="{% url 'design-results' existing_submission.id %}" class="btn btn-outline-primary me-2">
-                            <i class="fas fa-chart-line me-1"></i>View Results
+                        <a href="{% url 'design-results' existing_submission.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-line"></i>View Results
                         </a>
                         {% endif %}
-                        <button type="button" class="btn btn-success" id="submitDesignBtn" disabled>
-                            <i class="fas fa-brain me-1"></i>Analyze Design
+                        <button type="button" class="btn btn-outline-success" id="submitDesignBtn" disabled>
+                            <i class="fas fa-brain"></i>Draw Something First
                         </button>
                     </div>
                 </div>
@@ -49,6 +52,17 @@
         <input type="hidden" name="excalidraw_elements" id="excalidraw_elements">
         <input type="hidden" name="excalidraw_app_state" id="excalidraw_app_state">
     </form>
+</div>
+
+<!-- Debug button (hidden by default) -->
+<button id="debugBtn" style="display: none;">
+    <i class="fas fa-bug"></i>
+</button>
+
+<!-- Debug info panel -->
+<div id="debugInfo">
+    <h6>Debug Information</h6>
+    <div id="debugContent"></div>
 </div>
 
 <!-- Use CDN for reliable loading -->
@@ -91,16 +105,20 @@ document.addEventListener('DOMContentLoaded', function() {
             html += `<div style="color: ${color};">${key}: ${value}</div>`;
         }
         
-        debugContent.innerHTML = html;
+        if (debugContent) {
+            debugContent.innerHTML = html;
+        }
         console.log('Debug Info:', info);
     }
 
     // Debug button click
-    debugBtn.addEventListener('click', function() {
-        debugMode = !debugMode;
-        debugInfo.style.display = debugMode ? 'block' : 'none';
-        updateDebugInfo();
-    });
+    if (debugBtn) {
+        debugBtn.addEventListener('click', function() {
+            debugMode = !debugMode;
+            debugInfo.style.display = debugMode ? 'block' : 'none';
+            updateDebugInfo();
+        });
+    }
 
     // Show loading state initially
     container.innerHTML = `
@@ -229,8 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Enable button for testing
         submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-outline-success');
         submitBtn.classList.add('btn-warning');
-        submitBtn.innerHTML = '<i class="fas fa-vial me-1"></i>Test Submission';
+        submitBtn.innerHTML = '<i class="fas fa-vial"></i>Test Submission';
     }
 
     function updateButtonState() {
@@ -239,11 +258,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (hasDrawing) {
             submitBtn.classList.remove('btn-outline-success', 'btn-warning');
             submitBtn.classList.add('btn-success');
-            submitBtn.innerHTML = '<i class="fas fa-brain me-1"></i>Analyze Design';
+            submitBtn.innerHTML = '<i class="fas fa-brain"></i>Analyze Design';
         } else {
             submitBtn.classList.remove('btn-success', 'btn-warning');
             submitBtn.classList.add('btn-outline-success');
-            submitBtn.innerHTML = '<i class="fas fa-brain me-1"></i>Draw Something First';
+            submitBtn.innerHTML = '<i class="fas fa-brain"></i>Draw Something First';
         }
     }
 
@@ -304,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Form data set, submitting...');
 
             // Show loading state
-            submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Analyzing...';
+            submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>Analyzing...';
             submitBtn.disabled = true;
 
             // Submit form
@@ -318,128 +337,9 @@ document.addEventListener('DOMContentLoaded', function() {
             updateButtonState();
         }
     });
+
+    // Initialize button state
+    updateButtonState();
 });
 </script>
-
-<style>
-    .design-workspace {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .question-header-section {
-        background: white;
-        border-bottom: 1px solid #e5e7eb;
-        padding: 1rem 0;
-        flex-shrink: 0;
-        z-index: 10;
-        position: relative;
-    }
-
-    .question-info h2 {
-        color: #2c3e50;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .question-description {
-        color: #6c757d;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    .design-canvas {
-        flex: 1;
-        min-height: 0;
-        position: relative;
-    }
-
-    #excalidraw-container {
-        height: 100%;
-        width: 100%;
-    }
-
-    .difficulty-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-right: 0.5rem;
-    }
-
-    .difficulty-badge.easy {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-    }
-
-    .difficulty-badge.medium {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: white;
-    }
-
-    .difficulty-badge.hard {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-    }
-
-    .company-tag {
-        background: #e5e7eb;
-        color: #374151;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        font-weight: 500;
-    }
-
-    .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-    
-    .btn-warning {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        border: none;
-        color: white;
-    }
-    
-    .excalidraw-loading,
-    .excalidraw-error {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        text-align: center;
-        padding: 2rem;
-    }
-    
-    .excalidraw-error {
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
-    
-    .excalidraw-error h3 {
-        color: #dc3545;
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-    }
-    
-    .excalidraw-loading .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #5e5ad8;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 1rem;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-</style>
 {% endblock content %}

@@ -25,4 +25,5 @@ urlpatterns = [
     path('resume/', include('resume.urls')),
     path('system-design/',include('system_design.urls')),
     path('smart-prep/', include('smart_prep.urls')),
+    path('blog/', include('blog.urls')),
 ]

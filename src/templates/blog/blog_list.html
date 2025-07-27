@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/blog/blog_list.css' %}">
+{% endblock head %}
+
+{% block title %}Blog - JobSage{% endblock title %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="blog-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1 class="hero-title">
+                    <i class="fas fa-blog me-3"></i>Our Blog
+                </h1>
+                <p class="hero-subtitle">
+                    Insights, tutorials, and industry knowledge to help you ace your next technical interview
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'blog:create' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Write a Post
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Posts -->
+{% if featured_blogs %}
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-star me-2"></i>Featured Posts
+        </h2>
+        <div class="row g-4">
+            {% for blog in featured_blogs %}
+            <div class="col-lg-4 col-md-6">
+                <article class="featured-card">
+                    <div class="featured-image">
+                        {% if blog.featured_image %}
+                            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+                        {% else %}
+                            <div class="placeholder-image">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                        <div class="featured-badge">
+                            <i class="fas fa-star"></i>Featured
+                        </div>
+                    </div>
+                    <div class="featured-content">
+                        <div class="featured-meta">
+                            {% if blog.category %}
+                                <span class="category-tag" style="background-color: {{ blog.category.color }}">
+                                    {{ blog.category.name }}
+                                </span>
+                            {% endif %}
+                            <span class="reading-time">
+                                <i class="fas fa-clock me-1"></i>{{ blog.reading_time }} min read
+                            </span>
+                        </div>
+                        <h3 class="featured-title">
+                            <a href="{{ blog.get_absolute_url }}">{{ blog.title }}</a>
+                        </h3>
+                        <p class="featured-excerpt">{{ blog.excerpt|truncatewords:20 }}</p>
+                        <div class="featured-author">
+                            <div class="author-info">
+                                <span class="author-name">{{ blog.author.get_full_name|default:blog.author.username }}</span>
+                                <span class="publish-date">{{ blog.published_at|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="blog-stats">
+                                <span><i class="fas fa-eye me-1"></i>{{ blog.views_count }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Search and Filter -->
+<section class="filter-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <form method="get" class="search-form">
+                    <div class="search-input-group">
+                        <input type="text" name="search" value="{{ search_query }}" 
+                               placeholder="Search articles..." class="form-control">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4">
+                <form method="get" class="filter-form">
+                    {% if search_query %}
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                    {% endif %}
+                    <select name="category" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}" 
+                                    {% if category.slug == selected_category %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Posts -->
+<section class="posts-section">
+    <div class="container">
+        {% if blogs %}
+            <div class="row g-4">
+                {% for blog in blogs %}
+                <div class="col-lg-4 col-md-6">
+                    <article class="blog-card">
+                        <div class="blog-image">
+                            {% if blog.featured_image %}
+                                <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+                            {% else %}
+                                <div class="placeholder-image">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                {% if blog.category %}
+                                    <span class="category-tag" style="background-color: {{ blog.category.color }}">
+                                        {{ blog.category.name }}
+                                    </span>
+                                {% endif %}
+                                <span class="reading-time">
+                                    <i class="fas fa-clock me-1"></i>{{ blog.reading_time }} min
+                                </span>
+                            </div>
+                            <h3 class="blog-title">
+                                <a href="{{ blog.get_absolute_url }}">{{ blog.title }}</a>
+                            </h3>
+                            <p class="blog-excerpt">{{ blog.excerpt|truncatewords:15 }}</p>
+                            <div class="blog-footer">
+                                <div class="author-info">
+                                    <span class="author-name">{{ blog.author.get_full_name|default:blog.author.username }}</span>
+                                    <span class="publish-date">{{ blog.published_at|date:"M d" }}</span>
+                                </div>
+                                <div class="blog-stats">
+                                    <span><i class="fas fa-eye me-1"></i>{{ blog.views_count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if blogs.has_other_pages %}
+            <div class="pagination-wrapper">
+                <nav aria-label="Blog pagination">
+                    <ul class="pagination">
+                        {% if blogs.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ blogs.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in blogs.paginator.page_range %}
+                            {% if page_num == blogs.number %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if blogs.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ blogs.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="no-posts">
+                <div class="text-center">
+                    <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                    <h3>No posts found</h3>
+                    <p class="text-muted">
+                        {% if search_query %}
+                            No posts match your search criteria.
+                        {% else %}
+                            Be the first to write a blog post!
+                        {% endif %}
+                    </p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'blog:create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Write First Post
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}

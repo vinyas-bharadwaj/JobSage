@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/blog/my_blogs.css' %}">
+{% endblock head %}
+
+{% block title %}My Blogs - JobSage{% endblock title %}
+
+{% block content %}
+<div class="my-blogs-container">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="page-title">
+                        <i class="fas fa-user-edit me-3"></i>My Blog Posts
+                    </h1>
+                    <p class="page-subtitle">Manage and track all your published content</p>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <a href="{% url 'blog:create' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>New Post
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="row">
+                <div class="col-lg-6">
+                    <form method="get" class="filter-form">
+                        <div class="input-group">
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Posts</option>
+                                <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Drafts</option>
+                                <option value="published" {% if status_filter == 'published' %}selected{% endif %}>Published</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span>{{ blogs.paginator.count }} Total Posts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Posts -->
+        {% if blogs %}
+            <div class="posts-grid">
+                {% for blog in blogs %}
+                <div class="blog-item">
+                    <div class="blog-image">
+                        {% if blog.featured_image %}
+                            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}">
+                        {% else %}
+                            <div class="placeholder-image">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                        {% endif %}
+                        <div class="status-badge status-{{ blog.status }}">
+                            {% if blog.status == 'published' %}
+                                <i class="fas fa-eye me-1"></i>Published
+                            {% else %}
+                                <i class="fas fa-edit me-1"></i>Draft
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            {% if blog.category %}
+                                <span class="category-tag" style="background-color: {{ blog.category.color }}">
+                                    {{ blog.category.name }}
+                                </span>
+                            {% endif %}
+                            <span class="reading-time">
+                                <i class="fas fa-clock me-1"></i>{{ blog.reading_time }} min
+                            </span>
+                        </div>
+                        
+                        <h3 class="blog-title">
+                            {% if blog.status == 'published' %}
+                                <a href="{{ blog.get_absolute_url }}">{{ blog.title }}</a>
+                            {% else %}
+                                {{ blog.title }}
+                            {% endif %}
+                        </h3>
+                        
+                        <p class="blog-excerpt">{{ blog.excerpt|truncatewords:15 }}</p>
+                        
+                        <div class="blog-stats">
+                            <div class="stats-left">
+                                <span class="views">
+                                    <i class="fas fa-eye me-1"></i>{{ blog.views_count }}
+                                </span>
+                                <span class="created-date">
+                                    <i class="fas fa-calendar me-1"></i>{{ blog.created_at|date:"M d, Y" }}
+                                </span>
+                            </div>
+                            
+                            <div class="blog-actions">
+                                {% if blog.status == 'published' %}
+                                    <a href="{{ blog.get_absolute_url }}" class="btn btn-outline-primary btn-sm" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'blog:edit' blog.slug %}" class="btn btn-outline-secondary btn-sm" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'blog:delete' blog.slug %}" class="btn btn-outline-danger btn-sm" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if blogs.has_other_pages %}
+            <div class="pagination-wrapper">
+                <nav aria-label="My blogs pagination">
+                    <ul class="pagination">
+                        {% if blogs.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ blogs.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for page_num in blogs.paginator.page_range %}
+                            {% if page_num == blogs.number %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_num }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if blogs.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ blogs.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="no-posts">
+                <div class="text-center">
+                    <i class="fas fa-file-alt fa-4x mb-4 text-muted"></i>
+                    <h3>No blog posts yet</h3>
+                    <p class="text-muted mb-4">
+                        {% if status_filter %}
+                            No posts found with the selected filter.
+                        {% else %}
+                            Start sharing your knowledge by creating your first blog post!
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'blog:create' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create Your First Post
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

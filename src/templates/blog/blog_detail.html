@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/blog/blog_detail.css' %}">
+    <meta name="description" content="{{ blog.excerpt }}">
+    <meta property="og:title" content="{{ blog.title }}">
+    <meta property="og:description" content="{{ blog.excerpt }}">
+    {% if blog.featured_image %}
+        <meta property="og:image" content="{{ blog.featured_image.url }}">
+    {% endif %}
+{% endblock head %}
+
+{% block title %}{{ blog.title }} - JobSage{% endblock title %}
+
+{% block content %}
+<article class="blog-detail">
+    <!-- Blog Header -->
+    <header class="blog-header">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="blog-meta">
+                        {% if blog.category %}
+                            <span class="category-tag" style="background-color: {{ blog.category.color }}">
+                                {{ blog.category.name }}
+                            </span>
+                        {% endif %}
+                        <span class="reading-time">
+                            <i class="fas fa-clock me-1"></i>{{ blog.reading_time }} min read
+                        </span>
+                        <span class="view-count">
+                            <i class="fas fa-eye me-1"></i>{{ blog.views_count }} views
+                        </span>
+                    </div>
+                    
+                    <h1 class="blog-title">{{ blog.title }}</h1>
+                    
+                    <div class="author-section">
+                        <div class="author-info">
+                            <div class="author-details">
+                                <h5 class="author-name">{{ blog.author.get_full_name|default:blog.author.username }}</h5>
+                                <div class="publish-info">
+                                    <span class="publish-date">{{ blog.published_at|date:"F d, Y" }}</span>
+                                    {% if blog.updated_at != blog.created_at %}
+                                        <span class="updated-date">• Updated {{ blog.updated_at|date:"M d, Y" }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if user == blog.author %}
+                            <div class="author-actions">
+                                <a href="{% url 'blog:edit' blog.slug %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </a>
+                                <a href="{% url 'blog:delete' blog.slug %}" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Featured Image -->
+    {% if blog.featured_image %}
+    <div class="featured-image-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="featured-image">
+                        <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Blog Content -->
+    <div class="blog-content-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="blog-content">
+                        {{ blog.content|safe }}
+                    </div>
+                    
+                    <!-- Share Section -->
+                    <div class="share-section">
+                        <h6>Share this article</h6>
+                        <div class="share-buttons">
+                            <a href="https://twitter.com/intent/tweet?text={{ blog.title }}&url={{ request.build_absolute_uri }}" 
+                               target="_blank" class="share-btn twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                               target="_blank" class="share-btn facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                               target="_blank" class="share-btn linkedin">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" onclick="copyToClipboard()" class="share-btn copy">
+                                <i class="fas fa-link"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Posts -->
+    {% if related_blogs %}
+    <section class="related-posts">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h3 class="section-title">Related Articles</h3>
+                    <div class="row g-4">
+                        {% for related_blog in related_blogs %}
+                        <div class="col-lg-4 col-md-6">
+                            <article class="related-card">
+                                <div class="related-image">
+                                    {% if related_blog.featured_image %}
+                                        <img src="{{ related_blog.featured_image.url }}" alt="{{ related_blog.title }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="related-content">
+                                    <h5 class="related-title">
+                                        <a href="{{ related_blog.get_absolute_url }}">{{ related_blog.title }}</a>
+                                    </h5>
+                                    <p class="related-excerpt">{{ related_blog.excerpt|truncatewords:12 }}</p>
+                                    <div class="related-meta">
+                                        <span class="reading-time">
+                                            <i class="fas fa-clock me-1"></i>{{ related_blog.reading_time }} min
+                                        </span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Navigation -->
+    <div class="blog-navigation">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="nav-actions">
+                        <a href="{% url 'blog:list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Blog
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'blog:create' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Write a Post
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+<script>
+function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        // Show success message
+        const copyBtn = document.querySelector('.share-btn.copy');
+        const originalIcon = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        copyBtn.style.background = '#28a745';
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalIcon;
+            copyBtn.style.background = '';
+        }, 2000);
+    });
+}
+</script>
+{% endblock content %}

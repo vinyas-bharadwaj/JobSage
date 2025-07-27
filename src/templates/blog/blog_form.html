@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/blog/blog_form.css' %}">
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+{% endblock head %}
+
+{% block title %}{{ title }} - JobSage{% endblock title %}
+
+{% block content %}
+<div class="blog-form-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="blog-form-card">
+                    <div class="form-header">
+                        <h1 class="form-title">
+                            <i class="fas fa-edit me-3"></i>{{ title }}
+                        </h1>
+                        <p class="form-subtitle">Create engaging content for your readers</p>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" class="blog-form">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <!-- Title -->
+                                <div class="form-group">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">
+                                        <i class="fas fa-heading me-2"></i>Title
+                                    </label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="form-error">{{ form.title.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Content with Rich Text Editor -->
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-align-left me-2"></i>Content
+                                    </label>
+                                    <div id="editor-container" class="rich-editor">
+                                        <div id="quill-editor"></div>
+                                    </div>
+                                    {{ form.content }}
+                                    {% if form.content.errors %}
+                                        <div class="form-error">{{ form.content.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Excerpt -->
+                                <div class="form-group">
+                                    <label for="{{ form.excerpt.id_for_label }}" class="form-label">
+                                        <i class="fas fa-quote-left me-2"></i>Excerpt
+                                        <span class="text-muted">(Optional)</span>
+                                    </label>
+                                    {{ form.excerpt }}
+                                    <div class="form-text">Brief summary that appears in blog listings</div>
+                                    {% if form.excerpt.errors %}
+                                        <div class="form-error">{{ form.excerpt.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4">
+                                <div class="sidebar-settings">
+                                    <h5 class="sidebar-title">
+                                        <i class="fas fa-cogs me-2"></i>Settings
+                                    </h5>
+                                    
+                                    <!-- Featured Image -->
+                                    <div class="form-group">
+                                        <label for="{{ form.featured_image.id_for_label }}" class="form-label">
+                                            <i class="fas fa-image me-2"></i>Featured Image
+                                        </label>
+                                        <div class="image-upload-area">
+                                            {{ form.featured_image }}
+                                            <div class="upload-placeholder">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                                <span>Choose or drag image here</span>
+                                            </div>
+                                        </div>
+                                        {% if form.featured_image.errors %}
+                                            <div class="form-error">{{ form.featured_image.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Category -->
+                                    <div class="form-group">
+                                        <label for="{{ form.category.id_for_label }}" class="form-label">
+                                            <i class="fas fa-folder me-2"></i>Category
+                                        </label>
+                                        {{ form.category }}
+                                        {% if form.category.errors %}
+                                            <div class="form-error">{{ form.category.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Status -->
+                                    <div class="form-group">
+                                        <label for="{{ form.status.id_for_label }}" class="form-label">
+                                            <i class="fas fa-eye me-2"></i>Status
+                                        </label>
+                                        {{ form.status }}
+                                        {% if form.status.errors %}
+                                            <div class="form-error">{{ form.status.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Reading Time -->
+                                    <div class="form-group">
+                                        <label for="{{ form.reading_time.id_for_label }}" class="form-label">
+                                            <i class="fas fa-clock me-2"></i>Reading Time (minutes)
+                                        </label>
+                                        {{ form.reading_time }}
+                                        {% if form.reading_time.errors %}
+                                            <div class="form-error">{{ form.reading_time.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Featured -->
+                                    <div class="form-group">
+                                        <div class="form-check form-switch">
+                                            {{ form.is_featured }}
+                                            <label for="{{ form.is_featured.id_for_label }}" class="form-check-label">
+                                                <i class="fas fa-star me-2"></i>Featured Post
+                                            </label>
+                                        </div>
+                                        {% if form.is_featured.errors %}
+                                            <div class="form-error">{{ form.is_featured.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>{{ button_text }}
+                            </button>
+                            <a href="{% url 'blog:list' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Quill editor
+    var quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'align': [] }],
+                ['blockquote', 'code-block'],
+                ['link', 'image'],
+                ['clean']
+            ]
+        },
+        placeholder: 'Write your blog content here...',
+    });
+    
+    // Set initial content if editing
+    {% if blog %}
+        quill.root.innerHTML = {{ blog.content|safe|escapejs }};
+    {% endif %}
+    
+    // Sync with hidden textarea
+    var contentInput = document.getElementById('{{ form.content.id_for_label }}');
+    contentInput.style.display = 'none';
+    
+    quill.on('text-change', function() {
+        contentInput.value = quill.root.innerHTML;
+    });
+    
+    // Set initial value
+    contentInput.value = quill.root.innerHTML;
+    
+    // Image upload preview
+    const imageInput = document.getElementById('{{ form.featured_image.id_for_label }}');
+    const uploadArea = document.querySelector('.image-upload-area');
+    
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadArea.style.backgroundImage = `url(${e.target.result})`;
+                uploadArea.style.backgroundSize = 'cover';
+                uploadArea.style.backgroundPosition = 'center';
+                uploadArea.querySelector('.upload-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
+{% endblock content %}
