@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'authentication',
     'system_design',
     'smart_prep',
-    'blog',
+    'user_profile',
 
     # 3rd party apps
     'social_django',
@@ -147,6 +147,9 @@ STATICFILES_DIRS = [
 
 # For production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
