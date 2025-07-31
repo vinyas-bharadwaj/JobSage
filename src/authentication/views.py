@@ -37,13 +37,23 @@ def signup_view(request):
             messages.error(request, "Account with that email already exists")
             return redirect('/auth/signup')
         
-        user = User.objects.create_user(username=username, password=password)
-        login(request, user)
-        return redirect('/')
-
+        # Create user and set email
+        user = User.objects.create_user(username=username, email=email, password=password)
+        
+        # Authenticate the user first, then login
+        authenticated_user = authenticate(request, username=username, password=password)
+        if authenticated_user is not None:
+            login(request, authenticated_user)
+            messages.success(request, f"Welcome to JobSage, {username}!")
+            return redirect('/')
+        else:
+            # Fallback: redirect to login if authentication fails
+            messages.success(request, "Account created successfully! Please log in.")
+            return redirect('/auth/login')
 
     return render(request, 'auth/signup.html', context={})
 
 def logout_view(request):
     logout(request)
+    messages.info(request, "You have been logged out successfully.")
     return redirect('/auth/login')

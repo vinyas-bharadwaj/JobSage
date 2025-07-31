@@ -201,3 +201,333 @@
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%) !important;
     backdrop-filter: blur(20px);
 }
+
+/* User Dropdown Styles */
+.user-dropdown {
+    padding: 0.25rem 0.75rem !important;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+}
+
+.user-dropdown:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 32px; /* Fixed height to prevent stretching */
+}
+
+.profile-pic {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    border-radius: 50% !important;
+    object-fit: cover;
+    object-position: center;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    transition: all 0.3s ease;
+    display: block;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.profile-pic-placeholder {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.dropdown-profile-pic {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: 50% !important;
+    object-fit: cover;
+    object-position: center;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    display: block;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.dropdown-profile-placeholder {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.username {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    line-height: 1.2;
+    margin: 0;
+    display: inline-block;
+}
+
+/* User Dropdown Menu */
+.user-dropdown-menu {
+    min-width: 280px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    overflow: hidden;
+    background: white;
+}
+
+/* Dropdown Header with Profile Info */
+.dropdown-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    margin: 0;
+    border: none;
+}
+
+.user-dropdown-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px; /* Fixed minimum height */
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    word-break: break-all;
+}
+
+/* Dropdown Items */
+.user-dropdown-menu .dropdown-item {
+    padding: 0.75rem 1rem;
+    color: #2c3e50;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    background: transparent;
+}
+
+.user-dropdown-menu .dropdown-item:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+    color: #667eea !important;
+    transform: translateX(2px);
+}
+
+/* Active dropdown item styling - matches your theme */
+.user-dropdown-menu .dropdown-item.active,
+.user-dropdown-menu .dropdown-item:active,
+.user-dropdown-menu .dropdown-item:focus {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    transform: translateX(2px);
+}
+
+/* Fix dropdown background */
+.user-dropdown-menu {
+    min-width: 280px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    overflow: hidden;
+    background: white !important;
+}
+
+/* Override any Bootstrap active states */
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Specific fix for profile page dropdown item */
+.dropdown-menu .dropdown-item[href*="profile"].active,
+.dropdown-menu .dropdown-item[href*="profile"]:active,
+.dropdown-menu .dropdown-item[href*="profile"]:focus {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Hover state for active items */
+.dropdown-menu .dropdown-item.active:hover,
+.dropdown-menu .dropdown-item:active:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+    color: white !important;
+    transform: translateX(3px);
+}
+
+/* Icon colors for active items */
+.user-dropdown-menu .dropdown-item.active i,
+.user-dropdown-menu .dropdown-item:active i {
+    color: white !important;
+}
+
+/* Icon colors for hovered items */
+.user-dropdown-menu .dropdown-item:hover i {
+    color: #667eea !important;
+}
+
+.user-dropdown-menu .dropdown-item.active:hover i,
+.user-dropdown-menu .dropdown-item:active:hover i {
+    color: white !important;
+}
+
+/* Override any conflicting Bootstrap styles */
+.navbar .dropdown-menu .dropdown-item:not(.active):not(:active) {
+    background: transparent !important;
+    color: #2c3e50 !important;
+}
+
+.navbar .dropdown-menu .dropdown-item:not(.active):not(:active):hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+    color: #667eea !important;
+}
+
+/* Make sure the gradient shows properly */
+.user-dropdown-menu .dropdown-item.active,
+.user-dropdown-menu .dropdown-item:active {
+    background-color: transparent !important;
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+}
+
+/* Animation for dropdown */
+.user-dropdown-menu {
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fix dropdown arrow positioning */
+.user-dropdown {
+    padding: 0.25rem 0.75rem !important;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+}
+
+.user-dropdown:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 32px; /* Fixed height to prevent stretching */
+}
+
+/* Fix dropdown arrow - move to right of username */
+.user-dropdown::after {
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+    margin-left: 0.5rem !important;
+    margin-top: 0 !important;
+    vertical-align: middle;
+    display: inline-block;
+    opacity: 0.8;
+}
+
+/* Remove any default Bootstrap dropdown arrow positioning */
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.user-dropdown.dropdown-toggle::after {
+    display: inline-block !important;
+    margin-left: 0.5rem !important;
+    margin-top: 0 !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure username and arrow are in same line */
+.username {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    line-height: 1.2;
+    margin: 0;
+    display: inline-block;
+}
+
+/* Mobile adjustments */
+@media (max-width: 991px) {
+    .user-dropdown::after {
+        margin-left: 0.4rem !important;
+        border-top-width: 0.25em;
+        border-right-width: 0.25em;
+        border-left-width: 0.25em;
+    }
+    
+    .username {
+        font-size: 0.8rem;
+    }
+}

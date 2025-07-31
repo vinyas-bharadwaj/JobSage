@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/app/profile.css' %}">
+{% endblock head %}
+
+{% block title %}Profile - JobSage{% endblock title %}
+
+{% block content %}
+<!-- Profile Hero Section -->
+<section class="profile-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="profile-header">
+                    <div class="profile-badge">
+                        <i class="fas fa-user me-2"></i>Your Profile
+                    </div>
+                    <h1 class="profile-title">
+                        Welcome, <span class="text-gradient">{{ user.first_name|default:user.username }}</span>
+                    </h1>
+                    <p class="profile-subtitle">
+                        Complete your profile to get personalized recommendations and showcase your skills.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Profile Form Section -->
+<section class="profile-form-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    <div class="card-header">
+                        <div class="card-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="card-title">Profile Information</div>
+                    </div>
+                    
+                    <div class="card-content">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        <form method="post" enctype="multipart/form-data" class="profile-form">
+                            {% csrf_token %}
+                            
+                            <!-- Avatar Section -->
+                            <div class="avatar-section">
+                                <div class="current-avatar">
+                                    {% if profile.avatar %}
+                                        <img src="{{ profile.avatar.url }}" alt="Profile Picture" class="avatar-image">
+                                    {% else %}
+                                        <div class="avatar-placeholder">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="avatar-upload">
+                                    <label for="id_avatar" class="upload-btn">
+                                        <i class="fas fa-camera me-2"></i>Change Photo
+                                    </label>
+                                    <input type="file" id="id_avatar" name="avatar" accept="image/*" hidden>
+                                    <small class="upload-help">JPG, PNG up to 5MB</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Basic Information -->
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-user-circle me-2"></i>Basic Information
+                                </h3>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="first_name" class="form-label">First Name</label>
+                                            <input type="text" id="first_name" name="first_name" 
+                                                   class="form-control" value="{{ user.first_name }}"
+                                                   placeholder="Enter your first name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="last_name" class="form-label">Last Name</label>
+                                            <input type="text" id="last_name" name="last_name" 
+                                                   class="form-control" value="{{ user.last_name }}"
+                                                   placeholder="Enter your last name">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" id="email" name="email" 
+                                           class="form-control" value="{{ user.email }}"
+                                           placeholder="Enter your email">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="location" class="form-label">Location</label>
+                                    <input type="text" id="location" name="location" 
+                                           class="form-control" value="{{ profile.location }}"
+                                           placeholder="City, Country">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="bio" class="form-label">Bio</label>
+                                    <textarea id="bio" name="bio" class="form-control" rows="4"
+                                              placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
+                                    <small class="form-help">{{ profile.bio|length }}/300 characters</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Social Links -->
+                            <div class="form-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-link me-2"></i>Social Links
+                                </h3>
+                                
+                                <div class="form-group">
+                                    <label for="github_url" class="form-label">
+                                        <i class="fab fa-github me-2"></i>GitHub Profile
+                                    </label>
+                                    <input type="url" id="github_url" name="github_url" 
+                                           class="form-control" value="{{ profile.github_url }}"
+                                           placeholder="https://github.com/yourusername">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="linkedin_url" class="form-label">
+                                        <i class="fab fa-linkedin me-2"></i>LinkedIn Profile
+                                    </label>
+                                    <input type="url" id="linkedin_url" name="linkedin_url" 
+                                           class="form-control" value="{{ profile.linkedin_url }}"
+                                           placeholder="https://linkedin.com/in/yourusername">
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>Save Profile
+                                </button>
+                                <a href="{% url 'home-page' %}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

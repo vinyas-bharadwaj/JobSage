@@ -46,25 +46,49 @@
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user-circle me-1"></i>{{ user.username }}
+                        <a class="nav-link dropdown-toggle user-dropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-info">
+                                {% if user.profile.avatar %}
+                                    <img src="{{ user.profile.avatar.url }}" alt="Profile" class="profile-pic">
+                                {% else %}
+                                    <div class="profile-pic-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <span class="username">{{ user.first_name|default:user.username }}</span>
+                            </div>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+                            <li class="dropdown-header">
+                                <div class="user-dropdown-info">
+                                    {% if user.profile.avatar %}
+                                        <img src="{{ user.profile.avatar.url }}" alt="Profile" class="dropdown-profile-pic">
+                                    {% else %}
+                                        <div class="dropdown-profile-placeholder">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="user-details">
+                                        <div class="user-name">{{ user.first_name|default:user.username }} {{ user.last_name }}</div>
+                                        <div class="user-email">{{ user.email }}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user me-2"></i>Profile
+                                <a class="dropdown-item" href="{% url 'profile' %}">
+                                    <i class="fas fa-user"></i>Profile
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cog me-2"></i>Settings
+                                    <i class="fas fa-cog"></i>Settings
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="{% url 'logout-page' %}">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    <i class="fas fa-sign-out-alt"></i>Logout
                                 </a>
                             </li>
                         </ul>
