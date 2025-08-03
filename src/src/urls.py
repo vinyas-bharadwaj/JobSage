@@ -28,4 +28,5 @@ urlpatterns = [
     path('system-design/',include('system_design.urls')),
     path('smart-prep/', include('smart_prep.urls')),
     path('profile/', include('user_profile.urls')),
+    path('blogs/', include('blogs.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

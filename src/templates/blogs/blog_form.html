@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+<style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --shadow-light: 0 5px 20px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --border-radius-lg: 20px;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-hero {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 3rem 0 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.form-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.form-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: 2rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-title {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 800;
+    margin-bottom: var(--spacing-md);
+    letter-spacing: -0.02em;
+}
+
+.form-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    font-weight: 400;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-section {
+    padding: var(--spacing-xl) 0;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.form-container {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
+    position: relative;
+}
+
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+}
+
+.form-body {
+    padding: var(--spacing-xl);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    width: 100%;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    outline: none;
+}
+
+.form-control:hover {
+    border-color: #b8c5f2;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 200px;
+    line-height: 1.6;
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    transition: var(--transition);
+}
+
+.form-check:hover {
+    border-color: #b8c5f2;
+    background: #f0f3ff;
+}
+
+.form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid #667eea;
+    border-radius: 4px;
+    margin: 0;
+}
+
+.form-check-input:checked {
+    background: var(--primary-gradient);
+    border-color: #667eea;
+}
+
+.form-check-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    cursor: pointer;
+}
+
+.form-actions {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background: #f8f9fa;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    color: white;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-message::before {
+    content: '⚠';
+    font-size: 1rem;
+}
+
+.row-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .form-body, .form-actions {
+        padding-left: var(--spacing-md);
+        padding-right: var(--spacing-md);
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+    
+    .row-form {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .form-hero {
+        padding: 2rem 0 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Form Hero -->
+<section class="form-hero">
+    <div class="container">
+        <div class="form-content">
+            <div class="form-icon">
+                <i class="fas fa-{% if blog %}edit{% else %}plus{% endif %}"></i>
+            </div>
+            <h1 class="form-title">{{ title }}</h1>
+            <p class="form-subtitle">
+                {% if blog %}
+                    Update your blog post and share your latest insights with the community.
+                {% else %}
+                    Share your knowledge and insights with the developer community.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Form Section -->
+<section class="form-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="form-container">
+                    <form method="post" class="form-body">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">
+                                <i class="fas fa-heading me-2"></i>Blog Title
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="error-message">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">
+                                <i class="fas fa-align-left me-2"></i>Content
+                            </label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="error-message">{{ form.content.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row-form">
+                            <div class="form-group">
+                                <label for="{{ form.tags.id_for_label }}" class="form-label">
+                                    <i class="fas fa-tags me-2"></i>Tags
+                                </label>
+                                {{ form.tags }}
+                                <div class="form-text">{{ form.tags.help_text }}</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">
+                                    <i class="fas fa-folder me-2"></i>Category
+                                </label>
+                                {{ form.category }}
+                                <div class="form-text">{{ form.category.help_text }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.target_role.id_for_label }}" class="form-label">
+                                <i class="fas fa-bullseye me-2"></i>Target Role
+                            </label>
+                            {{ form.target_role }}
+                            <div class="form-text">{{ form.target_role.help_text }}</div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                {{ form.is_published }}
+                                <label class="form-check-label" for="{{ form.is_published.id_for_label }}">
+                                    <i class="fas fa-globe me-2"></i>Publish this blog immediately
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="form-actions">
+                        <button type="submit" form="id_form" class="btn btn-primary">
+                            <i class="fas fa-{% if blog %}save{% else %}plus{% endif %} me-2"></i>
+                            {% if blog %}Update Blog{% else %}Create Blog{% endif %}
+                        </button>
+                        <a href="{% url 'blog_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Add form ID to the form element
+document.querySelector('form').id = 'id_form';
+</script>
+{% endblock %}

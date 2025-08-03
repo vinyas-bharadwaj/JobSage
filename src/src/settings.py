@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'system_design',
     'smart_prep',
     'user_profile',
+    'blogs',
 
     # 3rd party apps
     'social_django',

@@ -1,0 +1,505 @@
+{% extends 'base.html' %}
+
+{% block title %}My Blogs{% endblock %}
+
+{% block head %}
+<style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --shadow-light: 0 5px 20px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --border-radius-md: 16px;
+    --border-radius-lg: 20px;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.my-blogs-hero {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 4rem 0 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.my-blogs-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.section-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    backdrop-filter: blur(10px);
+}
+
+.hero-title {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 800;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin-bottom: var(--spacing-lg);
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.blogs-section {
+    padding: 3rem 0;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    min-height: 60vh;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.blog-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-light);
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: var(--spacing-md);
+}
+
+.blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: translateY(-4px);
+    transition: var(--transition);
+}
+
+.blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+}
+
+.blog-card:hover::before {
+    transform: translateY(0);
+}
+
+.blog-card-body {
+    padding: var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.blog-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.blog-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.3;
+}
+
+.blog-excerpt {
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 400;
+}
+
+.blog-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.meta-item i {
+    color: #667eea;
+}
+
+.status-badge {
+    background: var(--accent-gradient);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-light);
+}
+
+.status-badge.draft {
+    background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+    color: #212529;
+}
+
+.status-badge.published {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.blog-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.btn-view {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-edit {
+    background: #6c757d;
+    color: white;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+    color: white;
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    color: white;
+}
+
+.btn-create {
+    background: var(--accent-gradient);
+    color: white;
+    padding: 0.875rem 2rem;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+.btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+    color: white;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-light);
+    margin: 2rem 0;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: 2rem;
+    color: white;
+}
+
+.empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: var(--spacing-sm);
+}
+
+.empty-subtitle {
+    color: #6c757d;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.1rem;
+}
+
+.pagination {
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.page-link {
+    border: none;
+    padding: 0.75rem 1rem;
+    color: #667eea;
+    background: white;
+    border-radius: 50px;
+    margin: 0 0.25rem;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow-light);
+}
+
+.page-link:hover {
+    background: var(--primary-gradient);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: var(--shadow-medium);
+}
+
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+    
+    .blog-card-body {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .blog-actions {
+        align-self: stretch;
+        justify-content: space-between;
+    }
+    
+    .btn {
+        flex: 1;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+    
+    .my-blogs-hero {
+        padding: 3rem 0 1.5rem;
+    }
+    
+    .hero-title {
+        text-align: center;
+    }
+    
+    .hero-subtitle {
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .blog-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        flex: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="my-blogs-hero">
+    <div class="container">
+        <div class="hero-content text-center">
+            <div class="section-badge">
+                <i class="fas fa-user-edit me-2"></i>My Dashboard
+            </div>
+            <h1 class="hero-title">My Blogs</h1>
+            <p class="hero-subtitle">
+                Manage your blog posts, track performance, and share your expertise with the community
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Blogs Section -->
+<section class="blogs-section">
+    <div class="container">
+        {% if page_obj %}
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-blog me-2"></i>Your Blog Posts ({{ page_obj.paginator.count }})
+                </h2>
+                <a href="{% url 'blog_create' %}" class="btn btn-create">
+                    <i class="fas fa-plus me-2"></i>Create New Blog
+                </a>
+            </div>
+
+            {% for blog in page_obj %}
+                <article class="blog-card">
+                    <div class="blog-card-body">
+                        <div class="blog-content">
+                            <h3 class="blog-title">{{ blog.title }}</h3>
+                            <p class="blog-excerpt">{{ blog.content|truncatewords:30 }}</p>
+                            <div class="blog-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>{{ blog.created_at|date:"M d, Y" }}</span>
+                                </div>
+                                {% if blog.updated_at != blog.created_at %}
+                                    <div class="meta-item">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Updated {{ blog.updated_at|date:"M d, Y" }}</span>
+                                    </div>
+                                {% endif %}
+                                <div class="meta-item">
+                                    {% if blog.is_published %}
+                                        <span class="status-badge published">
+                                            <i class="fas fa-check-circle me-1"></i>Published
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge draft">
+                                            <i class="fas fa-clock me-1"></i>Draft
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="blog-actions">
+                            <a href="{% url 'blog_detail' blog.pk %}" class="btn btn-view">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="{% url 'blog_update' blog.pk %}" class="btn btn-edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'blog_delete' blog.pk %}" class="btn btn-delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <nav aria-label="My blogs pagination">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-blog"></i>
+                </div>
+                <h3 class="empty-title">No blogs yet</h3>
+                <p class="empty-subtitle">
+                    You haven't created any blogs yet. Start sharing your knowledge and insights with the community!
+                </p>
+                <a href="{% url 'blog_create' %}" class="btn btn-create">
+                    <i class="fas fa-plus me-2"></i>Create Your First Blog
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
