@@ -12,6 +12,11 @@ services:
       - GOOGLE_OAUTH2_SECRET=${GOOGLE_OAUTH2_SECRET}
       - GOOGLE_OAUTH2_KEY=${GOOGLE_OAUTH2_KEY}
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
       - PYTHONPATH=/app/src
     env_file:
       - .env
@@ -22,20 +27,24 @@ services:
         condition: service_healthy
         restart: true
   db:
-    image: postgres:17
+    image: pgvector/pgvector:pg17-trixie
     container_name: postgres_db
     volumes:
       - postgres_db:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 30s
+    env_file:
+      - .env
 
 volumes:
   postgres_db:

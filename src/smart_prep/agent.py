@@ -3,12 +3,9 @@ from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic_ai.models.gemini import GeminiModel
 from pydantic import BaseModel, Field
 from typing import List, Dict
-import os
-from dotenv import load_dotenv
+from django.conf import settings
 
-load_dotenv()
-
-GEMINI_API_KEY = os.getenv('GOOGLE_GEMINI_API_KEY')
+GEMINI_API_KEY = settings.GEMINI_API_KEY
 
 class PreparationTimeline(BaseModel):
     """4-week preparation timeline with explicit fields for Gemini compatibility"""

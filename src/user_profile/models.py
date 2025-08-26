@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from PIL import Image
+from pgvector.django import VectorField
 
 class Profile(models.Model):
     # Basic fields
@@ -12,6 +13,7 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to='avatars/', default='avatars/default.webp')
     github_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
+    embeddings = VectorField(dimensions=768, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     # Simple fields for TF-IDF

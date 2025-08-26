@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from pgvector.django import VectorField
 
 class Blog(models.Model):
     # Basic fields
@@ -10,7 +11,9 @@ class Blog(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    embeddings = VectorField(dimensions=768, null=True, blank=True)
     is_published = models.BooleanField(default=True)
+    
     
     # Fields for TF-IDF matching with user profiles
     tags = models.CharField(
@@ -41,27 +44,24 @@ class Blog(models.Model):
         return reverse('blog_detail', kwargs={'pk': self.pk})
     
     @property
-    def tags_list(self):
-        """Returns tags as a list for TF-IDF"""
+    def info(self):
+        """Returns combination of tags, content, category, target_role as an array"""
+        info_array = []
+        
+        # Add tags
         if self.tags:
-            return [t.strip().lower() for t in self.tags.split(',') if t.strip()]
-        return []
-    
-    def get_text_for_matching(self):
-        """Get all text for TF-IDF matching with user profiles"""
-        text_parts = []
+            info_array.extend([t.strip().lower() for t in self.tags.split(',') if t.strip()])
         
-        # Include title and content (first 500 chars to avoid too much noise)
-        text_parts.append(self.title.lower())
-        text_parts.append(self.content[:500].lower())
+        # Add content
+        if self.content:
+            info_array.append(self.content.strip())
         
-        # Include category and target role
+        # Add category
         if self.category:
-            text_parts.append(self.category.lower())
+            info_array.append(self.category.strip().lower())
+        
+        # Add target_role
         if self.target_role:
-            text_parts.append(self.target_role.lower())
+            info_array.append(self.target_role.strip().lower())
         
-        # Include tags
-        text_parts.extend(self.tags_list)
-        
-        return ' '.join(text_parts)
+        return info_array

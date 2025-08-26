@@ -1,15 +1,13 @@
-import os
 import json
-from dotenv import load_dotenv
 from pydantic_ai import Agent
 from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic import BaseModel, Field
 from typing import List
+from django.conf import settings
 
-load_dotenv()
 
-GEMINI_API_KEY = os.getenv('GOOGLE_GEMINI_API_KEY')
+GEMINI_API_KEY = settings.GEMINI_API_KEY
 
 class SystemDesignResponse(BaseModel):
     overall_score: int = Field(..., ge=1, le=100, description="Overall system design quality score from 1-100")

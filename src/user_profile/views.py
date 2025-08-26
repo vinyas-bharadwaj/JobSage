@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
+from blogs.embeddings import generate_embeddings
 from .models import Profile
 
 @login_required
@@ -18,6 +19,10 @@ def profile_view(request):
         
         # Update profile fields
         profile.bio = request.POST.get('bio', '')
+        
+        if profile.bio != "":
+            profile.embeddings = generate_embeddings(profile.bio)
+
         profile.location = request.POST.get('location', '')
         profile.github_url = request.POST.get('github_url', '')
         profile.linkedin_url = request.POST.get('linkedin_url', '')

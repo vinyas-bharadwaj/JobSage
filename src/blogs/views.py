@@ -2,14 +2,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from pgvector.django import L2Distance
 from .models import Blog
 from .forms import BlogForm
-from .utils import get_ranked_blogs
+from .embeddings import generate_embeddings
 
 def blog_list(request):
     """Display all published blogs"""
-    user = request.user
-    blogs = get_ranked_blogs(user.profile.id)
+    profile = request.user.profile
+
+    # Checking for similarity using L2Distance in pgvector
+    blogs = Blog.objects.order_by(L2Distance('embeddings', profile.embeddings))
+
     paginator = Paginator(blogs, 10)  # 10 blogs per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -29,6 +33,7 @@ def blog_create(request):
         if form.is_valid():
             blog = form.save(commit=False)
             blog.author = request.user
+            blog.embeddings = generate_embeddings(blog.info)
             blog.save()
             messages.success(request, 'Blog created successfully!')
             return redirect('blog_detail', pk=blog.pk)

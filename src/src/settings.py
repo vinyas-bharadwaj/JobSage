@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'social_django',
+    'pgvector.django',
 
 ]
 
@@ -177,3 +178,5 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
+
+GEMINI_API_KEY = os.getenv('GOOGLE_GEMINI_API_KEY')
