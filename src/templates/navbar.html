@@ -1,145 +1,232 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow-lg">
-    <div class="container">
-        <!-- Brand/Logo -->
-        <a class="navbar-brand fw-bold" href="/">
-            <i class="fas fa-briefcase me-2"></i>JobSage
-        </a>
+<nav class="bg-white border-b-2 border-gray-200 relative z-50">
+    <div class="container mx-auto px-6">
+        <div class="flex items-center justify-between h-16">
+            <!-- Brand/Logo -->
+            <a href="/" class="flex items-center space-x-3 text-gray-900 hover:text-indigo-600 transition-colors duration-200">
+                <div class="w-8 h-8 bg-gray-900 flex items-center justify-center">
+                    <i class="fas fa-briefcase text-white text-sm"></i>
+                </div>
+                <span class="text-xl font-black uppercase tracking-wide">JobSage</span>
+            </a>
 
-        <!-- Mobile toggle button -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex items-center space-x-8">
+                <a href="{% url 'home-page' %}" class="nav-link text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 pb-4 border-b-2 border-transparent hover:border-indigo-600">
+                    Home
+                </a>
+                <a href="{% url 'resume-page' %}" class="nav-link text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 pb-4 border-b-2 border-transparent hover:border-indigo-600">
+                    Resume
+                </a>
+                <a href="{% url 'blog_list' %}" class="nav-link text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 pb-4 border-b-2 border-transparent hover:border-indigo-600">
+                    Blogs
+                </a>
+                <a href="{% url 'system-design-page' %}" class="nav-link text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 pb-4 border-b-2 border-transparent hover:border-indigo-600">
+                    System Design
+                </a>
+                <a href="{% url 'smart-prep' %}" class="nav-link text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 pb-4 border-b-2 border-transparent hover:border-indigo-600">
+                    Smart Prep
+                </a>
+                <a href="{% url 'about-page' %}" class="nav-link text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 pb-4 border-b-2 border-transparent hover:border-indigo-600">
+                    About
+                </a>
+            </div>
 
-        <!-- Navigation items -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{% url 'home-page' %}">
-                        <i class="fas fa-home me-1"></i>Home
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{% url 'resume-page' %}">
-                        <i class="fas fa-code me-1"></i>Resume
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{% url 'blog_list' %}">
-                        <i class="fas fa-code me-1"></i>Blogs
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{% url 'system-design-page' %}">
-                        <i class="fas fa-microphone me-1"></i>System Design
-                    </a>
-                </li>
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{% url 'smart-prep' %}">
-                        <i class="fas fa-book me-1"></i>Smart Prep
-                    </a>
-                </li>
-                
-                <li class="nav-item me-3">
-                    <a class="nav-link" href="{% url 'about-page' %}">
-                        <i class="fas fa-chart-line me-1"></i>About Us
-                    </a>
-                </li>
-            </ul>
-
-            <!-- User authentication section -->
-            <ul class="navbar-nav">
+            <!-- User Section -->
+            <div class="hidden lg:flex items-center space-x-4">
                 {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle user-dropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="user-info">
-                                {% if user.profile.avatar %}
-                                    <img src="{{ user.profile.avatar.url }}" alt="Profile" class="profile-pic">
-                                {% else %}
-                                    <div class="profile-pic-placeholder">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                {% endif %}
-                                <span class="username">{{ user.first_name|default:user.username }}</span>
-                            </div>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
-                            <li class="dropdown-header">
-                                <div class="user-dropdown-info">
+                    <!-- User Dropdown -->
+                    <div class="relative">
+                        <button id="user-dropdown-button" class="flex items-center space-x-3 px-4 py-2 border-2 border-gray-200 hover:border-gray-900 transition-colors duration-200 focus:outline-none">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}" alt="Profile" class="w-8 h-8 object-cover">
+                            {% else %}
+                                <div class="w-8 h-8 bg-gray-900 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                            {% endif %}
+                            <span class="text-sm font-semibold text-gray-900 uppercase tracking-wide">{{ user.first_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down text-gray-600 text-xs transition-transform duration-200" id="dropdown-arrow"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-64 bg-white border-2 border-gray-200 shadow-2xl opacity-0 invisible transform translate-y-2 transition-all duration-200">
+                            <!-- User Info Header -->
+                            <div class="p-4 border-b border-gray-200">
+                                <div class="flex items-center space-x-3">
                                     {% if user.profile.avatar %}
-                                        <img src="{{ user.profile.avatar.url }}" alt="Profile" class="dropdown-profile-pic">
+                                        <img src="{{ user.profile.avatar.url }}" alt="Profile" class="w-12 h-12 object-cover">
                                     {% else %}
-                                        <div class="dropdown-profile-placeholder">
-                                            <i class="fas fa-user"></i>
+                                        <div class="w-12 h-12 bg-gray-900 flex items-center justify-center">
+                                            <i class="fas fa-user text-white"></i>
                                         </div>
                                     {% endif %}
-                                    <div class="user-details">
-                                        <div class="user-name">{{ user.first_name|default:user.username }} {{ user.last_name }}</div>
-                                        <div class="user-email">{{ user.email }}</div>
+                                    <div>
+                                        <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">{{ user.first_name|default:user.username }} {{ user.last_name }}</div>
+                                        <div class="text-xs text-gray-600 font-light">{{ user.email }}</div>
                                     </div>
                                 </div>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'profile' %}">
-                                    <i class="fas fa-user"></i>Profile
+                            </div>
+                            
+                            <!-- Menu Items -->
+                            <div class="py-2">
+                                <a href="{% url 'profile' %}" class="flex items-center px-4 py-3 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                                    <i class="fas fa-user w-4 mr-3"></i>Profile
                                 </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cog"></i>Settings
+                                <div class="border-t border-gray-200 my-2"></div>
+                                <a href="{% url 'logout-page' %}" class="flex items-center px-4 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 uppercase tracking-wide transition-colors duration-200">
+                                    <i class="fas fa-sign-out-alt w-4 mr-3"></i>Logout
                                 </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'logout-page' %}">
-                                    <i class="fas fa-sign-out-alt"></i>Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                            </div>
+                        </div>
+                    </div>
                 {% else %}
-                    <li class="nav-item me-2">
-                        <a class="nav-link" href="{% url 'login-page' %}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light px-3" href="{% url 'signup-page' %}">
-                            <i class="fas fa-user-plus me-1"></i>Sign Up
-                        </a>
-                    </li>
+                    <a href="{% url 'login-page' %}" class="text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                        Sign In
+                    </a>
+                    <a href="{% url 'signup-page' %}" class="px-6 py-2 bg-gray-900 text-white font-semibold uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200">
+                        Start Now
+                    </a>
                 {% endif %}
-            </ul>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="lg:hidden flex items-center justify-center w-10 h-10 border-2 border-gray-200 hover:border-gray-900 transition-colors duration-200">
+                <svg class="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t-2 border-gray-200 py-4">
+            <div class="space-y-4">
+                <a href="{% url 'home-page' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                    Home
+                </a>
+                <a href="{% url 'resume-page' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                    Resume
+                </a>
+                <a href="{% url 'blog_list' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                    Blogs
+                </a>
+                <a href="{% url 'system-design-page' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                    System Design
+                </a>
+                <a href="{% url 'smart-prep' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                    Smart Prep
+                </a>
+                <a href="{% url 'about-page' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                    About
+                </a>
+                
+                {% if user.is_authenticated %}
+                    <div class="border-t border-gray-200 pt-4 mt-4">
+                        <div class="flex items-center space-x-3 mb-4">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}" alt="Profile" class="w-8 h-8 object-cover">
+                            {% else %}
+                                <div class="w-8 h-8 bg-gray-900 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                            {% endif %}
+                            <span class="text-sm font-bold text-gray-900 uppercase tracking-wide">{{ user.first_name|default:user.username }}</span>
+                        </div>
+                        <a href="{% url 'profile' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 mb-2">
+                            Profile
+                        </a>
+                        <a href="#" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200 mb-2">
+                            Settings
+                        </a>
+                        <a href="{% url 'logout-page' %}" class="block text-sm font-semibold text-red-600 uppercase tracking-wide">
+                            Logout
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="border-t border-gray-200 pt-4 mt-4 space-y-3">
+                        <a href="{% url 'login-page' %}" class="block text-sm font-semibold text-gray-600 hover:text-gray-900 uppercase tracking-wide transition-colors duration-200">
+                            Sign In
+                        </a>
+                        <a href="{% url 'signup-page' %}" class="inline-block px-6 py-2 bg-gray-900 text-white font-semibold uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200">
+                            Start Now
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>
 
 <script>
-    // Add scroll effect to navbar
-    window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // User dropdown toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropdownButton = document.getElementById('user-dropdown-button');
+        const dropdownMenu = document.getElementById('user-dropdown-menu');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
+        
+        if (dropdownButton && dropdownMenu) {
+            let isOpen = false;
+            
+            dropdownButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                if (isOpen) {
+                    // Close dropdown
+                    dropdownMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+                    dropdownMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                    dropdownArrow.classList.remove('rotate-180');
+                    isOpen = false;
+                } else {
+                    // Open dropdown
+                    dropdownMenu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+                    dropdownMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
+                    dropdownArrow.classList.add('rotate-180');
+                    isOpen = true;
+                }
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                if (isOpen) {
+                    dropdownMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+                    dropdownMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                    dropdownArrow.classList.remove('rotate-180');
+                    isOpen = false;
+                }
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
         }
     });
 
     // Add active state to current page
     document.addEventListener('DOMContentLoaded', function() {
         const currentPath = window.location.pathname;
-        const navLinks = document.querySelectorAll('.nav-link, .dropdown-item');
+        const navLinks = document.querySelectorAll('.nav-link');
         
         navLinks.forEach(link => {
             if (link.getAttribute('href') === currentPath) {
-                link.classList.add('active');
-                // If it's a dropdown item, also highlight the parent dropdown
-                const dropdown = link.closest('.dropdown');
-                if (dropdown) {
-                    dropdown.querySelector('.dropdown-toggle').classList.add('active');
-                }
+                link.classList.remove('border-transparent', 'text-gray-600');
+                link.classList.add('border-indigo-600', 'text-gray-900');
             }
         });
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('nav');
+        if (window.scrollY > 50) {
+            navbar.classList.add('shadow-lg');
+        } else {
+            navbar.classList.remove('shadow-lg');
+        }
     });
 </script>

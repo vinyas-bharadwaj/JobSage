@@ -1,135 +1,167 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Blogs{% endblock %}
-
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/my_blogs.css' %}">
-{% endblock %}
+{% block title %}My Blogs - JobSage{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="my-blogs-hero">
-    <div class="container">
-        <div class="hero-content text-center">
-            <div class="section-badge">
-                <i class="fas fa-user-edit me-2"></i>My Dashboard
+<section class="min-h-screen bg-white relative overflow-hidden">
+    <!-- Sharp geometric background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 left-0 w-1/3 h-full bg-gray-900 transform -skew-x-12 origin-top-left"></div>
+        <div class="absolute top-0 left-0 w-1/4 h-full bg-gray-800 transform -skew-x-6 origin-top-left"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex items-center min-h-screen">
+            <div class="w-full text-center">
+                <div class="max-w-5xl mx-auto space-y-6">
+                    <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider">
+                        <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                        My Dashboard
+                    </div>
+                    
+                    <h1 class="text-6xl lg:text-8xl font-black text-gray-900 leading-none tracking-tight">
+                        MY BLOGS
+                        <br>
+                        <span class="text-indigo-600">DASHBOARD</span>
+                    </h1>
+                    
+                    <div class="w-32 h-1 bg-indigo-600 mx-auto"></div>
+                    
+                    <p class="text-2xl text-gray-700 leading-relaxed font-light max-w-3xl mx-auto">
+                        Manage your blog posts, track performance, and share your expertise with the community.
+                    </p>
+                    
+                    <div class="pt-8">
+                        <a href="{% url 'blog_create' %}" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                            <div class="w-3 h-3 bg-white mr-3"></div>
+                            Create New Blog
+                        </a>
+                    </div>
+                </div>
             </div>
-            <h1 class="hero-title">My Blogs</h1>
-            <p class="hero-subtitle">
-                Manage your blog posts, track performance, and share your expertise with the community
-            </p>
         </div>
     </div>
 </section>
 
 <!-- Blogs Section -->
-<section class="blogs-section">
-    <div class="container">
+<section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6">
         {% if page_obj %}
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-blog me-2"></i>Your Blog Posts ({{ page_obj.paginator.count }})
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-6">
+                    <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                    {{ page_obj.paginator.count }} Posts
+                </div>
+                <h2 class="text-5xl lg:text-6xl font-black text-gray-900 mb-6 leading-none tracking-tight">
+                    YOUR BLOG
+                    <br>
+                    <span class="text-indigo-600">POSTS</span>
                 </h2>
-                <a href="{% url 'blog_create' %}" class="btn btn-create">
-                    <i class="fas fa-plus me-2"></i>Create New Blog
-                </a>
+                <div class="w-24 h-1 bg-indigo-600 mx-auto"></div>
             </div>
 
-            {% for blog in page_obj %}
-                <article class="blog-card">
-                    <div class="blog-card-body">
-                        <div class="blog-content">
-                            <h3 class="blog-title">{{ blog.title }}</h3>
-                            <p class="blog-excerpt">{{ blog.content|truncatewords:30 }}</p>
-                            <div class="blog-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-calendar"></i>
-                                    <span>{{ blog.created_at|date:"M d, Y" }}</span>
+            <div class="space-y-8 mb-12">
+                {% for blog in page_obj %}
+                    <article class="bg-white border-2 border-gray-300 hover:border-gray-900 transition-colors duration-200">
+                        <!-- Header -->
+                        <div class="bg-gray-900 text-white px-6 py-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500"></div>
+                                    <div class="w-3 h-3 bg-yellow-500"></div>
+                                    <div class="w-3 h-3 bg-green-500"></div>
                                 </div>
-                                {% if blog.updated_at != blog.created_at %}
-                                    <div class="meta-item">
-                                        <i class="fas fa-edit"></i>
-                                        <span>Updated {{ blog.updated_at|date:"M d, Y" }}</span>
-                                    </div>
-                                {% endif %}
-                                <div class="meta-item">
+                                <div class="text-sm font-mono font-bold uppercase tracking-wider">
                                     {% if blog.is_published %}
-                                        <span class="status-badge published">
-                                            <i class="fas fa-check-circle me-1"></i>Published
-                                        </span>
+                                        PUBLISHED
                                     {% else %}
-                                        <span class="status-badge draft">
-                                            <i class="fas fa-clock me-1"></i>Draft
-                                        </span>
+                                        DRAFT
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
-                        <div class="blog-actions">
-                            <a href="{% url 'blog_detail' blog.pk %}" class="btn btn-view">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                            <a href="{% url 'blog_update' blog.pk %}" class="btn btn-edit">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <a href="{% url 'blog_delete' blog.pk %}" class="btn btn-delete">
-                                <i class="fas fa-trash"></i> Delete
-                            </a>
+                        
+                        <!-- Content -->
+                        <div class="p-6">
+                            <div class="grid lg:grid-cols-4 gap-6 items-center">
+                                <div class="lg:col-span-3">
+                                    <h3 class="text-2xl font-black text-gray-900 mb-3 uppercase tracking-wide leading-tight">{{ blog.title }}</h3>
+                                    <p class="text-gray-700 font-light mb-4 leading-relaxed">{{ blog.content|truncatewords:30 }}</p>
+                                    
+                                    <div class="flex flex-wrap items-center gap-6 text-sm text-gray-600 font-medium uppercase tracking-wide">
+                                        <span><i class="fas fa-calendar mr-2"></i>{{ blog.created_at|date:"M d, Y" }}</span>
+                                        {% if blog.updated_at != blog.created_at %}
+                                            <span><i class="fas fa-edit mr-2"></i>Updated {{ blog.updated_at|date:"M d, Y" }}</span>
+                                        {% endif %}
+                                        <span class="{% if blog.is_published %}text-green-600{% else %}text-yellow-600{% endif %} font-bold">
+                                            {% if blog.is_published %}
+                                                <i class="fas fa-check-circle mr-1"></i>Published
+                                            {% else %}
+                                                <i class="fas fa-clock mr-1"></i>Draft
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-wrap lg:flex-col gap-2">
+                                    <a href="{% url 'blog_detail' blog.pk %}" class="flex-1 lg:w-full py-2 px-4 bg-gray-900 text-white font-bold text-center uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200 text-sm">
+                                        <i class="fas fa-eye mr-1"></i> View
+                                    </a>
+                                    <a href="{% url 'blog_update' blog.pk %}" class="flex-1 lg:w-full py-2 px-4 bg-indigo-600 text-white font-bold text-center uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200 text-sm">
+                                        <i class="fas fa-edit mr-1"></i> Edit
+                                    </a>
+                                    <a href="{% url 'blog_delete' blog.pk %}" class="flex-1 lg:w-full py-2 px-4 bg-red-600 text-white font-bold text-center uppercase tracking-wide hover:bg-red-500 transition-colors duration-200 text-sm">
+                                        <i class="fas fa-trash mr-1"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </article>
-            {% endfor %}
+                    </article>
+                {% endfor %}
+            </div>
 
             <!-- Pagination -->
             {% if page_obj.has_other_pages %}
-                <nav aria-label="My blogs pagination">
-                    <ul class="pagination">
+                <div class="flex justify-center">
+                    <nav class="flex items-center space-x-2">
                         {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1">
-                                    <i class="fas fa-angle-double-left"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
-                                    <i class="fas fa-angle-left"></i>
-                                </a>
-                            </li>
+                            <a href="?page=1" class="w-10 h-10 bg-gray-900 text-white flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="w-10 h-10 bg-gray-900 text-white flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
                         {% endif %}
 
-                        <li class="page-item active">
-                            <span class="page-link">
-                                {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                            </span>
-                        </li>
+                        <span class="px-4 py-2 bg-indigo-600 text-white font-bold uppercase tracking-wide">
+                            {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
 
                         {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                                    <i class="fas fa-angle-right"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
-                                    <i class="fas fa-angle-double-right"></i>
-                                </a>
-                            </li>
+                            <a href="?page={{ page_obj.next_page_number }}" class="w-10 h-10 bg-gray-900 text-white flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="w-10 h-10 bg-gray-900 text-white flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
                         {% endif %}
-                    </ul>
-                </nav>
+                    </nav>
+                </div>
             {% endif %}
         {% else %}
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-blog"></i>
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-gray-300 flex items-center justify-center mx-auto mb-8">
+                    <i class="fas fa-blog text-gray-600 text-4xl"></i>
                 </div>
-                <h3 class="empty-title">No blogs yet</h3>
-                <p class="empty-subtitle">
+                <h3 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-wide">No blogs yet</h3>
+                <p class="text-gray-600 mb-8 font-light max-w-md mx-auto">
                     You haven't created any blogs yet. Start sharing your knowledge and insights with the community!
                 </p>
-                <a href="{% url 'blog_create' %}" class="btn btn-create">
-                    <i class="fas fa-plus me-2"></i>Create Your First Blog
+                <a href="{% url 'blog_create' %}" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                    <div class="w-3 h-3 bg-white mr-3"></div>
+                    Create Your First Blog
                 </a>
             </div>
         {% endif %}

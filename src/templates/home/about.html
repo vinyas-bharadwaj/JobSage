@@ -1,64 +1,210 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/about.css' %}">
-{% endblock head %}
-
-
 {% block title %}
     About JobSage - Your AI-Powered Interview Preparation Platform
 {% endblock title %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="about-hero-section">
-    <div class="container">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-lightbulb me-2"></i>About JobSage
+<section class="py-16 bg-white relative overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="w-full text-center">
+            <div class="max-w-5xl mx-auto space-y-4">
+                <div class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider">
+                    <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                    About JobSage
+                </div>
+                
+                <h1 class="text-4xl lg:text-6xl font-black text-gray-900 leading-none tracking-tight">
+                    REVOLUTIONIZING
+                    <br>
+                    <span class="text-indigo-600">INTERVIEW</span>
+                    <br>
+                    PREPARATION
+                </h1>
+                
+                <div class="w-24 h-1 bg-indigo-600 mx-auto"></div>
+                
+                <p class="text-lg text-gray-700 leading-relaxed font-light max-w-3xl mx-auto">
+                    Born from the need to democratize access to elite technical interview preparation. 
+                    JobSage combines cutting-edge AI with intuitive design to create an unparalleled learning experience.
+                </p>
+                
+                <!-- Key metrics in a horizontal layout -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <div class="text-3xl font-black text-gray-900 mb-1">2024</div>
+                        <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Founded</div>
                     </div>
-                    <h1 class="hero-title">
-                        Revolutionizing <span class="text-gradient">Interview Preparation</span> with AI
-                    </h1>
-                    <p class="hero-description">
-                        JobSage is an innovative AI-powered platform designed to help software engineers 
-                        master technical interviews through intelligent system design practice and personalized feedback.
-                    </p>
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <div class="stat-number">1000+</div>
-                            <div class="stat-label">Practice Questions</div>
+                    <div class="text-center">
+                        <div class="text-3xl font-black text-indigo-600 mb-1">AI</div>
+                        <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Powered</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-black text-gray-900 mb-1">100%</div>
+                        <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Free</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-black text-gray-900 mb-1">∞</div>
+                        <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Potential</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="py-12 bg-gray-900 text-white">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center px-4 py-2 bg-white text-gray-900 text-sm font-medium uppercase tracking-wider mb-4">
+                    <div class="w-2 h-2 bg-indigo-600 mr-3"></div>
+                    Our Story
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-black mb-4 leading-none tracking-tight">
+                    THE JOURNEY
+                    <br>
+                    <span class="text-indigo-400">BEGINS</span>
+                </h2>
+                <div class="w-16 h-1 bg-indigo-400 mx-auto"></div>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Story timeline -->
+                <div class="relative">
+                    <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-indigo-400"></div>
+                    
+                    <div class="relative flex items-start space-x-6 mb-6">
+                        <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-lightbulb text-white text-sm"></i>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">AI-Powered</div>
-                            <div class="stat-label">Real-time Feedback</div>
+                        <div>
+                            <h3 class="text-lg font-black text-white mb-2 uppercase tracking-wide">THE PROBLEM</h3>
+                            <p class="text-sm text-gray-300 font-light leading-relaxed">
+                                Technical interviews are notoriously challenging, yet most preparation resources are either 
+                                expensive, outdated, or fail to provide actionable feedback. Engineers deserve better.
+                            </p>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">100%</div>
-                            <div class="stat-label">Free to Use</div>
+                    </div>
+                    
+                    <div class="relative flex items-start space-x-6 mb-6">
+                        <div class="w-12 h-12 bg-gray-700 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-rocket text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-white mb-2 uppercase tracking-wide">THE SOLUTION</h3>
+                            <p class="text-sm text-gray-300 font-light leading-relaxed">
+                                JobSage was conceived as a free, AI-powered platform that provides instant, expert-level 
+                                feedback on system design interviews, making elite preparation accessible to everyone.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="relative flex items-start space-x-6">
+                        <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-star text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-white mb-2 uppercase tracking-wide">THE MISSION</h3>
+                            <p class="text-sm text-gray-300 font-light leading-relaxed">
+                                To revolutionize how engineers prepare for technical interviews by democratizing access 
+                                to world-class preparation tools and personalized AI feedback.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="hero-visual">
-                    <div class="floating-card card-1">
-                        <i class="fas fa-brain"></i>
-                        <h4>AI Analysis</h4>
-                        <p>Get instant feedback on your designs</p>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-12 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-4">
+                <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                Our Values
+            </div>
+            <h2 class="text-3xl lg:text-4xl font-black text-gray-900 mb-4 leading-none tracking-tight">
+                WHAT DRIVES
+                <br>
+                <span class="text-indigo-600">OUR WORK</span>
+            </h2>
+            <div class="w-16 h-1 bg-indigo-600 mx-auto mb-4"></div>
+            <p class="text-base text-gray-700 font-light max-w-2xl mx-auto">
+                Core principles that guide every decision and feature we build
+            </p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            <!-- Value 1 -->
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-heart text-white text-lg"></i>
                     </div>
-                    <div class="floating-card card-2">
-                        <i class="fas fa-draw-polygon"></i>
-                        <h4>Visual Design</h4>
-                        <p>Draw system architectures with ease</p>
+                    <div>
+                        <h3 class="text-base font-black text-gray-900 mb-2 uppercase tracking-wide">ACCESSIBILITY FIRST</h3>
+                        <div class="w-8 h-1 bg-indigo-600 mb-3"></div>
+                        <p class="text-gray-700 font-light leading-relaxed text-sm">
+                            Quality education should never be a privilege. We believe every engineer, 
+                            regardless of background or financial situation, deserves access to world-class interview preparation.
+                        </p>
                     </div>
-                    <div class="floating-card card-3">
-                        <i class="fas fa-chart-line"></i>
-                        <h4>Track Progress</h4>
-                        <p>Monitor your improvement over time</p>
+                </div>
+            </div>
+            
+            <!-- Value 2 -->
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-cogs text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-gray-900 mb-2 uppercase tracking-wide">INNOVATION DRIVEN</h3>
+                        <div class="w-8 h-1 bg-indigo-600 mb-3"></div>
+                        <p class="text-gray-700 font-light leading-relaxed text-sm">
+                            We leverage cutting-edge technology to solve real problems. Every feature is designed 
+                            with purpose, backed by research, and refined through user feedback.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Value 3 -->
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-gray-900 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-shield-alt text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-gray-900 mb-2 uppercase tracking-wide">QUALITY OBSESSED</h3>
+                        <div class="w-8 h-1 bg-indigo-600 mb-3"></div>
+                        <p class="text-gray-700 font-light leading-relaxed text-sm">
+                            Excellence is not negotiable. From AI analysis to user experience, 
+                            we maintain uncompromising standards in everything we deliver.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Value 4 -->
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-users text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-gray-900 mb-2 uppercase tracking-wide">COMMUNITY FOCUSED</h3>
+                        <div class="w-8 h-1 bg-indigo-600 mb-3"></div>
+                        <p class="text-gray-700 font-light leading-relaxed text-sm">
+                            We're building more than a platform - we're fostering a community where 
+                            engineers support each other's growth and celebrate collective success.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -66,238 +212,162 @@
     </div>
 </section>
 
-<!-- Mission Section -->
-<section class="mission-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <div class="section-badge">Our Mission</div>
-                <h2 class="section-title">Empowering Future Tech Leaders</h2>
-                <p class="section-subtitle">
-                    We believe that every aspiring software engineer deserves access to world-class 
-                    interview preparation tools, regardless of their background or resources.
+<!-- Technology Philosophy Section -->
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-8 items-center">
+            <div>
+                <div class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-4">
+                    <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                    Technology Philosophy
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-black text-gray-900 mb-4 leading-none tracking-tight">
+                    BUILDING THE
+                    <br>
+                    <span class="text-indigo-600">FUTURE</span>
+                </h2>
+                <div class="w-16 h-1 bg-indigo-600 mb-4"></div>
+                <p class="text-base text-gray-700 font-light leading-relaxed mb-4">
+                    Our technology choices reflect our commitment to creating a platform that's both powerful and accessible.
                 </p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="mission-card">
-                    <div class="mission-icon">
-                        <i class="fas fa-users"></i>
+                
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-indigo-600 mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">AI-FIRST APPROACH</h4>
+                            <p class="text-gray-700 font-light text-sm">Gemini AI provides enterprise-grade analysis capabilities</p>
+                        </div>
                     </div>
-                    <h3>Accessibility</h3>
-                    <p>
-                        Making high-quality interview preparation accessible to everyone, 
-                        breaking down barriers to career advancement in tech.
-                    </p>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-indigo-600 mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">PERFORMANCE FOCUSED</h4>
+                            <p class="text-gray-700 font-light text-sm">Django backend ensures scalability and reliability</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-indigo-600 mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">USER EXPERIENCE</h4>
+                            <p class="text-gray-700 font-light text-sm">Modern UI frameworks create intuitive interactions</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="mission-card">
-                    <div class="mission-icon">
-                        <i class="fas fa-rocket"></i>
+            
+            <div class="relative">
+                <!-- Technology stack visualization -->
+                <div class="bg-gray-900 border-2 border-gray-800 p-4 text-white">
+                    <div class="text-center mb-4">
+                        <h3 class="text-lg font-black uppercase tracking-wider text-indigo-400">TECH STACK</h3>
                     </div>
-                    <h3>Innovation</h3>
-                    <p>
-                        Leveraging cutting-edge AI technology to provide personalized, 
-                        intelligent feedback that adapts to each learner's needs.
-                    </p>
+                    
+                    <div class="space-y-3">
+                        <div class="border border-gray-700 p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold uppercase tracking-wide">Frontend</span>
+                                <span class="text-xs text-gray-400">UI/UX Layer</span>
+                            </div>
+                            <div class="text-xs text-gray-300">Tailwind CSS • Excalidraw • Responsive Design</div>
+                        </div>
+                        
+                        <div class="border border-gray-700 p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold uppercase tracking-wide">Backend</span>
+                                <span class="text-xs text-gray-400">Core Engine</span>
+                            </div>
+                            <div class="text-xs text-gray-300">Django • Python • PostgreSQL</div>
+                        </div>
+                        
+                        <div class="border border-indigo-600 p-3 bg-indigo-900/20">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold uppercase tracking-wide text-indigo-300">AI Intelligence</span>
+                                <span class="text-xs text-indigo-400">Analysis Core</span>
+                            </div>
+                            <div class="text-xs text-indigo-200">Google Gemini • Natural Language Processing</div>
+                        </div>
+                        
+                        <div class="border border-gray-700 p-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-bold uppercase tracking-wide">Infrastructure</span>
+                                <span class="text-xs text-gray-400">Deployment</span>
+                            </div>
+                            <div class="text-xs text-gray-300">Cloud Hosting • CDN • Security</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="mission-card">
-                    <div class="mission-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <h3>Excellence</h3>
-                    <p>
-                        Maintaining the highest standards in education quality, 
-                        ensuring every user receives valuable, actionable insights.
-                    </p>
+                
+                <!-- Floating elements -->
+                <div class="absolute -top-2 -right-2 w-8 h-8 bg-indigo-600 flex items-center justify-center">
+                    <i class="fas fa-brain text-white text-sm"></i>
+                </div>
+                <div class="absolute -bottom-2 -left-2 w-6 h-6 bg-gray-900 flex items-center justify-center">
+                    <i class="fas fa-code text-white text-xs"></i>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Features Section -->
-<section class="features-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <div class="section-badge">Platform Features</div>
-                <h2 class="section-title">What Makes JobSage Special</h2>
-                <p class="section-subtitle">
-                    Discover the powerful features that set JobSage apart from traditional interview prep platforms
-                </p>
+<!-- Creator Section -->
+<section class="py-12 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-4">
+                <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                Meet the Creator
             </div>
+            <h2 class="text-3xl lg:text-4xl font-black text-gray-900 mb-4 leading-none tracking-tight">
+                BUILT BY AN ENGINEER
+                <br>
+                <span class="text-indigo-600">FOR ENGINEERS</span>
+            </h2>
+            <div class="w-16 h-1 bg-indigo-600 mx-auto mb-4"></div>
+            <p class="text-base text-gray-700 font-light max-w-2xl mx-auto">
+                Created by someone who understands the technical interview journey firsthand
+            </p>
         </div>
-        <div class="row g-5">
-            <div class="col-lg-6">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-draw-polygon"></i>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="grid lg:grid-cols-3 gap-6 items-center">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-gray-900 flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-user-circle text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-gray-900 mb-1 uppercase tracking-wide">VINYAS BHARADWAJ</h3>
+                        <p class="text-indigo-600 font-semibold uppercase tracking-wide text-xs mb-3">FOUNDER & DEVELOPER</p>
+                        <div class="flex justify-center space-x-2">
+                            <a href="https://www.linkedin.com/in/vinyas-bharadwaj-443982293/" class="w-8 h-8 bg-gray-900 flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
+                                <i class="fab fa-linkedin text-white text-sm"></i>
+                            </a>
+                            <a href="https://github.com/vinyas-bharadwaj" class="w-8 h-8 bg-gray-900 flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">
+                                <i class="fab fa-github text-white text-sm"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="feature-content">
-                        <h3>Interactive System Design</h3>
-                        <p>
-                            Draw system architectures using our intuitive visual interface powered by Excalidraw. 
-                            Create professional diagrams with drag-and-drop simplicity.
-                        </p>
-                        <ul class="feature-list">
-                            <li>Professional drawing tools</li>
-                            <li>Real-time collaboration</li>
-                            <li>Export capabilities</li>
-                            <li>Template library</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <div class="feature-content">
-                        <h3>AI-Powered Analysis</h3>
-                        <p>
-                            Get instant, detailed feedback on your system designs from our advanced AI engine 
-                            powered by Google's Gemini model.
-                        </p>
-                        <ul class="feature-list">
-                            <li>Scalability assessment</li>
-                            <li>Reliability analysis</li>
-                            <li>Best practice recommendations</li>
-                            <li>Detailed improvement suggestions</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <div class="feature-content">
-                        <h3>Curated Question Bank</h3>
-                        <p>
-                            Practice with questions from real interviews at top tech companies, 
-                            organized by difficulty and topic areas.
-                        </p>
-                        <ul class="feature-list">
-                            <li>FAANG company questions</li>
-                            <li>Difficulty-based progression</li>
-                            <li>Regular content updates</li>
-                            <li>Industry-relevant scenarios</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="feature-content">
-                        <h3>Progress Tracking</h3>
-                        <p>
-                            Monitor your improvement over time with detailed analytics and 
-                            personalized learning recommendations.
-                        </p>
-                        <ul class="feature-list">
-                            <li>Performance metrics</li>
-                            <li>Skill gap analysis</li>
-                            <li>Learning path recommendations</li>
-                            <li>Achievement tracking</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Technology Stack Section -->
-<section class="tech-stack-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <div class="section-badge">Technology Stack</div>
-                <h2 class="section-title">Built with Modern Technologies</h2>
-                <p class="section-subtitle">
-                    JobSage leverages cutting-edge technologies to deliver a seamless, powerful experience
-                </p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fab fa-python"></i>
-                    </div>
-                    <h4>Django</h4>
-                    <p>Robust backend framework for scalable web applications</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h4>Google Gemini AI</h4>
-                    <p>Advanced AI model for intelligent design analysis</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fab fa-react"></i>
-                    </div>
-                    <h4>React & Excalidraw</h4>
-                    <p>Interactive drawing interface for system design</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="tech-card">
-                    <div class="tech-icon">
-                        <i class="fab fa-bootstrap"></i>
-                    </div>
-                    <h4>Bootstrap 5</h4>
-                    <p>Modern, responsive UI components and styling</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Team Section -->
-<section class="team-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <div class="section-badge">Meet the Creator</div>
-                <h2 class="section-title">Built by Engineers, for Engineers</h2>
-                <p class="section-subtitle">
-                    JobSage was created by passionate software engineers who understand the challenges of technical interviews
-                </p>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-6">
-                <div class="team-card">
-                    <div class="team-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <h3>Vinyas Bharadwaj</h3>
-                    <p class="team-role">Founder & Developer</p>
-                    <p class="team-description">
-                        Passionate software engineer with a mission to democratize access to quality 
-                        interview preparation resources for aspiring tech professionals.
-                    </p>
-                    <div class="team-social">
-                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    
+                    <div class="lg:col-span-2">
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-base font-black text-gray-900 uppercase tracking-wide mb-2">THE VISION</h4>
+                                <p class="text-gray-700 font-light leading-relaxed text-sm">
+                                    "Having gone through multiple technical interviews myself, I experienced firsthand the 
+                                    challenges of finding quality preparation resources. JobSage was born from a simple belief: 
+                                    every engineer deserves access to world-class interview preparation."
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-base font-black text-gray-900 uppercase tracking-wide mb-2">THE COMMITMENT</h4>
+                                <p class="text-gray-700 font-light leading-relaxed text-sm">
+                                    "This platform represents my commitment to the engineering community. By combining 
+                                    cutting-edge AI with intuitive design, we're democratizing access to elite-level 
+                                    interview preparation that was previously available only to a privileged few."
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -306,22 +376,39 @@
 </section>
 
 <!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center">
-                <div class="cta-content">
-                    <h2>Ready to Ace Your Next Interview?</h2>
-                    <p>Join thousands of engineers who are already improving their system design skills with JobSage</p>
-                    <div class="cta-buttons">
-                        <a href="{% url 'system-design-page' %}" class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-rocket me-2"></i>Start Practicing Now
-                        </a>
-                        <a href="#" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-envelope me-2"></i>Contact Us
-                        </a>
-                    </div>
-                </div>
+<section class="py-12 bg-gray-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0">
+        <div class="absolute bottom-0 right-0 w-1/3 h-full bg-gray-800 transform skew-x-12 origin-bottom-right"></div>
+        <div class="absolute bottom-0 right-0 w-1/4 h-full bg-indigo-600 transform skew-x-6 origin-bottom-right"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl lg:text-4xl font-black mb-4 leading-none tracking-tight">
+                JOIN THE
+                <br>
+                <span class="text-indigo-300">REVOLUTION</span>
+            </h2>
+            
+            <div class="w-16 h-1 bg-indigo-400 mx-auto mb-4"></div>
+            
+            <p class="text-base text-gray-300 font-light mb-6 max-w-2xl mx-auto">
+                Be part of the movement that's transforming how engineers prepare for technical interviews
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+                <a href="{% url 'system-design-page' %}" class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200 text-sm">
+                    <div class="w-2 h-2 bg-white mr-2"></div>
+                    START YOUR JOURNEY
+                </a>
+                <a href="{% url 'home-page' %}" class="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold uppercase tracking-wide hover:bg-white hover:text-gray-900 transition-all duration-200 text-sm">
+                    EXPLORE PLATFORM
+                </a>
+            </div>
+            
+            <div class="flex items-center justify-center text-gray-400 font-light text-sm">
+                <i class="fas fa-heart mr-2"></i>
+                Built with passion • Free forever • For engineers, by engineers
             </div>
         </div>
     </div>

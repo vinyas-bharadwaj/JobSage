@@ -1,95 +1,156 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/resume_page.css' %}">
-{% endblock head %}
-
-
 {% block title %}
     Resume Analyzer - JobSage
 {% endblock title %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="resume-hero-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-file-alt me-2"></i>AI-Powered Analysis
+<section class="min-h-screen bg-white relative overflow-hidden">
+    <!-- Sharp geometric background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-gray-900 transform skew-x-12 origin-top-right"></div>
+        <div class="absolute top-0 right-0 w-1/4 h-full bg-gray-800 transform skew-x-6 origin-top-right"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex items-center min-h-screen">
+            <div class="grid lg:grid-cols-2 gap-12 items-center w-full">
+                <div class="space-y-6">
+                    <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider">
+                        <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                        AI-Powered Analysis
                     </div>
-                    <h1 class="hero-title">
-                        Optimize Your <span class="text-gradient">Resume</span>
+                    
+                    <h1 class="text-5xl lg:text-6xl font-black text-gray-900 leading-none tracking-tight">
+                        OPTIMIZE YOUR
+                        <br>
+                        <span class="text-indigo-600">RESUME</span>
                     </h1>
-                    <p class="hero-subtitle">
-                        Get instant AI-powered feedback on your resume. Our advanced analysis helps you 
+                    
+                    <div class="w-24 h-1 bg-indigo-600"></div>
+                    
+                    <p class="text-lg text-gray-700 leading-relaxed font-light max-w-lg">
+                        Get instant AI-powered feedback on your resume. Advanced analysis helps you 
                         stand out to recruiters and pass ATS systems with confidence.
                     </p>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Upload Section -->
-<section class="upload-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} me-2"></i>
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                <div class="upload-card">
-                    <form method="POST" enctype="multipart/form-data" class="upload-form" id="resumeForm">
-                        {% csrf_token %}
-                        
-                        <div class="upload-header">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <h3>Upload Your Resume</h3>
-                            <p>Upload your resume in PDF, DOCX, or TXT format for instant analysis</p>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="target_role" class="form-label">Target Role (Optional)</label>
-                            <input type="text" class="form-control" id="target_role" name="target_role" 
-                                   placeholder="e.g., Software Engineer, Data Scientist, Product Manager"
-                                   value="{{ target_role }}">
-                            <small class="form-text">Help us provide more targeted feedback</small>
-                        </div>
-
-                        <div class="file-upload-area" id="fileUploadArea">
-                            <input type="file" id="resume_file" name="resume_file" accept=".pdf,.docx,.doc,.txt" required>
-                            <div class="upload-content">
-                                <i class="fas fa-file-upload upload-icon-large"></i>
-                                <h4>Drop your resume here</h4>
-                                <p>or <span class="upload-link">browse files</span></p>
-                                <small>Supports PDF, DOCX, DOC, TXT (max 10MB)</small>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-lg w-100 analyze-btn" id="analyzeBtn">
-                            <span class="btn-text">
-                                <i class="fas fa-brain me-2"></i>Analyze Resume
-                            </span>
-                            <span class="btn-loading" style="display: none;">
-                                <div class="spinner-border spinner-border-sm me-2" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                
+                <div class="relative">
+                    <!-- Upload Card -->
+                    <div class="bg-white border-2 border-gray-300 shadow-2xl">
+                        <!-- Header -->
+                        <div class="bg-gray-900 text-white px-6 py-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500"></div>
+                                    <div class="w-3 h-3 bg-yellow-500"></div>
+                                    <div class="w-3 h-3 bg-green-500"></div>
                                 </div>
-                                Analyzing Your Resume...
-                            </span>
-                        </button>
-                    </form>
+                                <div class="text-sm font-mono font-bold uppercase tracking-wider">
+                                    RESUME ANALYZER
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-6">
+                            <!-- Messages -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == 'success' %}
+                                        <div class="bg-green-50 border-2 border-green-200 p-3 mb-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                                <span class="text-green-700 font-medium text-sm">{{ message }}</span>
+                                            </div>
+                                        </div>
+                                    {% elif message.tags == 'error' %}
+                                        <div class="bg-red-50 border-2 border-red-200 p-3 mb-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                                                <span class="text-red-700 font-medium text-sm">{{ message }}</span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="bg-blue-50 border-2 border-blue-200 p-3 mb-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-info-circle text-blue-600 mr-2"></i>
+                                                <span class="text-blue-700 font-medium text-sm">{{ message }}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            <form method="POST" enctype="multipart/form-data" id="resumeForm" class="space-y-4">
+                                {% csrf_token %}
+                                
+                                <!-- Header -->
+                                <div class="text-center mb-4">
+                                    <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-file-alt text-white text-lg"></i>
+                                    </div>
+                                    <h3 class="text-lg font-black text-gray-900 uppercase tracking-wide mb-2">Upload Resume</h3>
+                                    <p class="text-gray-600 font-light text-sm">PDF, DOCX, or TXT format for instant analysis</p>
+                                </div>
+
+                                <!-- Target Role -->
+                                <div>
+                                    <label for="target_role" class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Target Role (Optional)</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <i class="fas fa-briefcase text-gray-400 text-sm"></i>
+                                        </div>
+                                        <input type="text" 
+                                               id="target_role" 
+                                               name="target_role" 
+                                               class="w-full pl-10 pr-3 py-2.5 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 text-sm" 
+                                               placeholder="e.g., Software Engineer, Data Scientist"
+                                               value="{{ target_role }}">
+                                    </div>
+                                    <small class="text-xs text-gray-500 mt-1 block">Help us provide more targeted feedback</small>
+                                </div>
+
+                                <!-- File Upload -->
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Resume File</label>
+                                    <div class="file-upload-area border-2 border-dashed border-gray-300 hover:border-gray-900 transition-colors duration-200 p-6 text-center cursor-pointer" id="fileUploadArea">
+                                        <input type="file" id="resume_file" name="resume_file" accept=".pdf,.docx,.doc,.txt" required class="hidden">
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt text-gray-400 text-2xl mb-2"></i>
+                                            <h4 class="text-base font-bold text-gray-900 mb-1">Drop your resume here</h4>
+                                            <p class="text-gray-600 text-sm mb-1">or <span class="text-indigo-600 font-semibold hover:text-indigo-700 transition-colors duration-200">browse files</span></p>
+                                            <small class="text-xs text-gray-500">Supports PDF, DOCX, DOC, TXT (max 10MB)</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white font-bold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200 mt-4" id="analyzeBtn">
+                                    <span class="btn-text flex items-center justify-center">
+                                        <div class="w-2 h-2 bg-white mr-2"></div>
+                                        Analyze Resume
+                                    </span>
+                                    <span class="btn-loading hidden">
+                                        <div class="flex items-center justify-center">
+                                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                            Analyzing Your Resume...
+                                        </div>
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating accent elements -->
+                    <div class="absolute -top-3 -right-3 w-10 h-10 bg-indigo-600 flex items-center justify-center">
+                        <i class="fas fa-brain text-white"></i>
+                    </div>
+                    <div class="absolute -bottom-3 -left-3 w-8 h-8 bg-gray-900 flex items-center justify-center">
+                        <i class="fas fa-file-alt text-white text-sm"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,132 +159,142 @@
 
 <!-- Results Section -->
 {% if analysis_completed %}
-<section class="results-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-4">
-                <div class="section-badge">Analysis Results</div>
-                <h2 class="section-title">Your Resume Analysis</h2>
-                <p class="section-subtitle">Detailed feedback for {{ file_name }}</p>
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-6">
+                <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                Analysis Results
             </div>
+            <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-4 leading-none tracking-tight">
+                YOUR RESUME
+                <br>
+                <span class="text-indigo-600">ANALYSIS</span>
+            </h2>
+            <div class="w-24 h-1 bg-indigo-600 mx-auto mb-4"></div>
+            <p class="text-lg text-gray-700 font-light">Detailed feedback for {{ file_name }}</p>
         </div>
 
         <!-- Score Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-6">
-                <div class="score-card">
-                    <div class="score-header">
-                        <h4>Overall Score</h4>
-                        <div class="score-circle">
-                            <div class="score-number">{{ analysis.overall_score }}</div>
-                            <div class="score-label">/ 100</div>
-                        </div>
-                    </div>
-                    <div class="score-bar">
-                        <div class="score-fill" style="width: {{ analysis.overall_score }}%"></div>
+        <div class="grid md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-black text-gray-900 uppercase tracking-wide">Overall Score</h4>
+                    <div class="text-right">
+                        <div class="text-3xl font-black text-gray-900">{{ analysis.overall_score }}</div>
+                        <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">/ 100</div>
                     </div>
                 </div>
+                <div class="w-full bg-gray-300 h-2">
+                    <div class="bg-indigo-600 h-2 transition-all duration-500" style="width: {{ analysis.overall_score }}%"></div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <div class="score-card">
-                    <div class="score-header">
-                        <h4>ATS Compatibility</h4>
-                        <div class="score-circle ats-score">
-                            <div class="score-number">{{ analysis.ats_score }}</div>
-                            <div class="score-label">/ 100</div>
-                        </div>
+            
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-lg font-black text-gray-900 uppercase tracking-wide">ATS Compatibility</h4>
+                    <div class="text-right">
+                        <div class="text-3xl font-black text-indigo-600">{{ analysis.ats_score }}</div>
+                        <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">/ 100</div>
                     </div>
-                    <div class="score-bar">
-                        <div class="score-fill ats-fill" style="width: {{ analysis.ats_score }}%"></div>
-                    </div>
+                </div>
+                <div class="w-full bg-gray-300 h-2">
+                    <div class="bg-gray-900 h-2 transition-all duration-500" style="width: {{ analysis.ats_score }}%"></div>
                 </div>
             </div>
         </div>
 
         <!-- Analysis Details -->
-        <div class="row g-3 mb-4">
+        <div class="grid lg:grid-cols-3 gap-6 mb-10">
             <!-- Strengths -->
-            <div class="col-lg-4">
-                <div class="analysis-card strengths-card">
-                    <div class="card-header">
-                        <i class="fas fa-thumbs-up"></i>
-                        <h4>Strengths</h4>
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-green-600 flex items-center justify-center">
+                        <i class="fas fa-thumbs-up text-white text-sm"></i>
                     </div>
-                    <div class="card-content">
-                        <ul class="analysis-list">
-                            {% for strength in analysis.strengths %}
-                                <li><i class="fas fa-check"></i>{{ strength }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <h4 class="text-lg font-black text-gray-900 uppercase tracking-wide">Strengths</h4>
                 </div>
+                <ul class="space-y-2">
+                    {% for strength in analysis.strengths %}
+                        <li class="flex items-start gap-2">
+                            <div class="w-1.5 h-1.5 bg-green-600 mt-2 flex-shrink-0"></div>
+                            <span class="text-gray-700 font-light text-sm">{{ strength }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
 
             <!-- Improvements -->
-            <div class="col-lg-4">
-                <div class="analysis-card improvements-card">
-                    <div class="card-header">
-                        <i class="fas fa-chart-line"></i>
-                        <h4>Areas for Improvement</h4>
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-yellow-600 flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-sm"></i>
                     </div>
-                    <div class="card-content">
-                        <ul class="analysis-list">
-                            {% for improvement in analysis.improvement_areas %}
-                                <li><i class="fas fa-arrow-up"></i>{{ improvement }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <h4 class="text-lg font-black text-gray-900 uppercase tracking-wide">Improvements</h4>
                 </div>
+                <ul class="space-y-2">
+                    {% for improvement in analysis.improvement_areas %}
+                        <li class="flex items-start gap-2">
+                            <div class="w-1.5 h-1.5 bg-yellow-600 mt-2 flex-shrink-0"></div>
+                            <span class="text-gray-700 font-light text-sm">{{ improvement }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
 
             <!-- Missing Elements -->
-            <div class="col-lg-4">
-                <div class="analysis-card missing-card">
-                    <div class="card-header">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>Missing Elements</h4>
+            <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-red-600 flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-white text-sm"></i>
                     </div>
-                    <div class="card-content">
-                        <ul class="analysis-list">
-                            {% for missing in analysis.missing_elements %}
-                                <li><i class="fas fa-plus"></i>{{ missing }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <h4 class="text-lg font-black text-gray-900 uppercase tracking-wide">Missing</h4>
                 </div>
+                <ul class="space-y-2">
+                    {% for missing in analysis.missing_elements %}
+                        <li class="flex items-start gap-2">
+                            <div class="w-1.5 h-1.5 bg-red-600 mt-2 flex-shrink-0"></div>
+                            <span class="text-gray-700 font-light text-sm">{{ missing }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
 
         <!-- Recommendations -->
-        <div class="row">
-            <div class="col-12">
-                <div class="recommendations-card">
-                    <div class="card-header">
-                        <i class="fas fa-lightbulb"></i>
-                        <h3>Actionable Recommendations</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="recommendations-grid">
-                            {% for recommendation in analysis.recommendations %}
-                                <div class="recommendation-item">
-                                    <div class="recommendation-number">{{ forloop.counter }}</div>
-                                    <div class="recommendation-text">{{ recommendation }}</div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
+        <div class="bg-white border-2 border-gray-300 p-6 hover:border-gray-900 transition-colors duration-200 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-white"></i>
                 </div>
+                <div>
+                    <h3 class="text-xl font-black text-gray-900 uppercase tracking-wide mb-1">Actionable Recommendations</h3>
+                    <div class="w-12 h-1 bg-indigo-600"></div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                {% for recommendation in analysis.recommendations %}
+                    <div class="flex gap-3">
+                        <div class="w-6 h-6 bg-gray-900 text-white flex items-center justify-center flex-shrink-0 font-bold text-xs">
+                            {{ forloop.counter }}
+                        </div>
+                        <p class="text-gray-700 font-light leading-relaxed text-sm">{{ recommendation }}</p>
+                    </div>
+                {% endfor %}
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="row mt-3">
-            <div class="col-12 text-center">
-                <a href="{% url 'resume-page' %}" class="btn btn-outline-primary btn-lg me-3">
-                    <i class="fas fa-upload me-2"></i>Analyze Another Resume
+        <div class="text-center">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'resume-page' %}" class="inline-flex items-center justify-center px-6 py-2.5 border-2 border-gray-900 text-gray-900 font-semibold uppercase tracking-wide hover:bg-gray-900 hover:text-white transition-all duration-200 text-sm">
+                    <i class="fas fa-upload mr-2"></i>
+                    Analyze Another Resume
                 </a>
-                <button class="btn btn-primary btn-lg" onclick="window.print()">
-                    <i class="fas fa-download me-2"></i>Download Report
+                <button onclick="window.print()" class="inline-flex items-center justify-center px-6 py-2.5 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200 text-sm">
+                    <div class="w-2 h-2 bg-white mr-2"></div>
+                    Download Report
                 </button>
             </div>
         </div>
@@ -239,11 +310,16 @@
         const analyzeBtn = document.getElementById('analyzeBtn');
         const resumeForm = document.getElementById('resumeForm');
 
+        // Make file upload area clickable
+        fileUploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+
         // Form submission loading state
         resumeForm.addEventListener('submit', function() {
             analyzeBtn.disabled = true;
-            analyzeBtn.querySelector('.btn-text').style.display = 'none';
-            analyzeBtn.querySelector('.btn-loading').style.display = 'block';
+            analyzeBtn.querySelector('.btn-text').classList.add('hidden');
+            analyzeBtn.querySelector('.btn-loading').classList.remove('hidden');
         });
 
         // Prevent default drag behaviors
@@ -270,11 +346,11 @@
         }
 
         function highlight(e) {
-            fileUploadArea.classList.add('drag-over');
+            fileUploadArea.classList.add('border-indigo-600', 'bg-indigo-50');
         }
 
         function unhighlight(e) {
-            fileUploadArea.classList.remove('drag-over');
+            fileUploadArea.classList.remove('border-indigo-600', 'bg-indigo-50');
         }
 
         function handleDrop(e) {
@@ -297,19 +373,22 @@
         function updateFileLabel(fileName) {
             const uploadContent = fileUploadArea.querySelector('.upload-content');
             uploadContent.innerHTML = `
-                <i class="fas fa-file-check upload-icon-large" style="color: #10b981;"></i>
-                <h4>File Selected</h4>
-                <p><strong>${fileName}</strong></p>
-                <small>Click to change file or drag another file</small>
+                <i class="fas fa-file-check text-green-600 text-2xl mb-2"></i>
+                <h4 class="text-base font-bold text-gray-900 mb-1">File Selected</h4>
+                <p class="text-gray-600 text-sm mb-1"><strong>${fileName}</strong></p>
+                <small class="text-xs text-gray-500">Click to change file or drag another file</small>
             `;
         }
 
         // Auto-scroll to results if they exist
         {% if analysis_completed %}
         setTimeout(function() {
-            document.querySelector('.results-section').scrollIntoView({ 
-                behavior: 'smooth' 
-            });
+            const resultsSection = document.querySelector('.py-16.bg-gray-100');
+            if (resultsSection) {
+                resultsSection.scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }
         }, 100);
         {% endif %}
     });

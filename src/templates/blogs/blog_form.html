@@ -1,113 +1,175 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }}{% endblock %}
-
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/blog_form.css' %}">
-{% endblock %}
+{% block title %}{{ title }} - JobSage{% endblock %}
 
 {% block content %}
-<!-- Form Hero -->
-<section class="form-hero">
-    <div class="container">
-        <div class="form-content">
-            <div class="form-icon">
-                <i class="fas fa-{% if blog %}edit{% else %}plus{% endif %}"></i>
-            </div>
-            <h1 class="form-title">{{ title }}</h1>
-            <p class="form-subtitle">
-                {% if blog %}
-                    Update your blog post and share your latest insights with the community.
-                {% else %}
-                    Share your knowledge and insights with the developer community.
-                {% endif %}
-            </p>
-        </div>
+<!-- Hero Section -->
+<section class="min-h-screen bg-white relative overflow-hidden">
+    <!-- Sharp geometric background - flipped -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 left-0 w-1/3 h-full bg-gray-900 transform -skew-x-12 origin-top-left"></div>
+        <div class="absolute top-0 left-0 w-1/4 h-full bg-gray-800 transform -skew-x-6 origin-top-left"></div>
     </div>
-</section>
-
-<!-- Form Section -->
-<section class="form-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="form-container">
-                    <form method="post" class="form-body">
-                        {% csrf_token %}
-                        
-                        <div class="form-group">
-                            <label for="{{ form.title.id_for_label }}" class="form-label">
-                                <i class="fas fa-heading me-2"></i>Blog Title
-                            </label>
-                            {{ form.title }}
-                            {% if form.title.errors %}
-                                <div class="error-message">{{ form.title.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="{{ form.content.id_for_label }}" class="form-label">
-                                <i class="fas fa-align-left me-2"></i>Content
-                            </label>
-                            {{ form.content }}
-                            {% if form.content.errors %}
-                                <div class="error-message">{{ form.content.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="row-form">
-                            <div class="form-group">
-                                <label for="{{ form.tags.id_for_label }}" class="form-label">
-                                    <i class="fas fa-tags me-2"></i>Tags
-                                </label>
-                                {{ form.tags }}
-                                <div class="form-text">{{ form.tags.help_text }}</div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex items-center min-h-screen py-12">
+            <div class="w-full max-w-4xl mx-auto">
+                <!-- Form Card -->
+                <div class="bg-white border-2 border-gray-300 shadow-2xl">
+                    <!-- Header -->
+                    <div class="bg-gray-900 text-white px-6 py-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 bg-red-500"></div>
+                                <div class="w-3 h-3 bg-yellow-500"></div>
+                                <div class="w-3 h-3 bg-green-500"></div>
                             </div>
-                            <div class="form-group">
-                                <label for="{{ form.category.id_for_label }}" class="form-label">
-                                    <i class="fas fa-folder me-2"></i>Category
-                                </label>
-                                {{ form.category }}
-                                <div class="form-text">{{ form.category.help_text }}</div>
+                            <div class="text-sm font-mono font-bold uppercase tracking-wider">
+                                BLOG EDITOR
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="{{ form.target_role.id_for_label }}" class="form-label">
-                                <i class="fas fa-bullseye me-2"></i>Target Role
-                            </label>
-                            {{ form.target_role }}
-                            <div class="form-text">{{ form.target_role.help_text }}</div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="form-check">
-                                {{ form.is_published }}
-                                <label class="form-check-label" for="{{ form.is_published.id_for_label }}">
-                                    <i class="fas fa-globe me-2"></i>Publish this blog immediately
-                                </label>
-                            </div>
-                        </div>
-                    </form>
-
-                    <div class="form-actions">
-                        <button type="submit" form="id_form" class="btn btn-primary">
-                            <i class="fas fa-{% if blog %}save{% else %}plus{% endif %} me-2"></i>
-                            {% if blog %}Update Blog{% else %}Create Blog{% endif %}
-                        </button>
-                        <a href="{% url 'blog_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-times me-2"></i>Cancel
-                        </a>
                     </div>
+                    
+                    <!-- Content -->
+                    <div class="p-8">
+                        <!-- Header -->
+                        <div class="text-center mb-8">
+                            <div class="w-16 h-16 bg-indigo-600 flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-{% if blog %}edit{% else %}plus{% endif %} text-white text-2xl"></i>
+                            </div>
+                            <h1 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-wide">{{ title }}</h1>
+                            <div class="w-24 h-1 bg-indigo-600 mx-auto mb-4"></div>
+                            <p class="text-gray-600 font-light">
+                                {% if blog %}
+                                    Update your blog post and share your latest insights with the community.
+                                {% else %}
+                                    Share your knowledge and insights with the developer community.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <form method="post" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <!-- Title -->
+                            <div>
+                                <label for="{{ form.title.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                    <i class="fas fa-heading mr-2"></i>Blog Title
+                                </label>
+                                <input type="text" 
+                                       id="{{ form.title.id_for_label }}" 
+                                       name="{{ form.title.name }}" 
+                                       value="{{ form.title.value|default:'' }}"
+                                       class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200" 
+                                       placeholder="Enter an engaging title for your blog"
+                                       required>
+                                {% if form.title.errors %}
+                                    <div class="text-red-600 text-sm mt-2 font-medium">{{ form.title.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Content -->
+                            <div>
+                                <label for="{{ form.content.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                    <i class="fas fa-align-left mr-2"></i>Content
+                                </label>
+                                <textarea id="{{ form.content.id_for_label }}" 
+                                          name="{{ form.content.name }}" 
+                                          rows="12"
+                                          class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 resize-vertical" 
+                                          placeholder="Write your blog content here..."
+                                          required>{{ form.content.value|default:'' }}</textarea>
+                                {% if form.content.errors %}
+                                    <div class="text-red-600 text-sm mt-2 font-medium">{{ form.content.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- Tags -->
+                                <div>
+                                    <label for="{{ form.tags.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                        <i class="fas fa-tags mr-2"></i>Tags
+                                    </label>
+                                    <input type="text" 
+                                           id="{{ form.tags.id_for_label }}" 
+                                           name="{{ form.tags.name }}" 
+                                           value="{{ form.tags.value|default:'' }}"
+                                           class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200" 
+                                           placeholder="python, django, web-development">
+                                    <small class="text-xs text-gray-500 mt-2 block">Separate tags with commas</small>
+                                </div>
+                                
+                                <!-- Category -->
+                                <div>
+                                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                        <i class="fas fa-folder mr-2"></i>Category
+                                    </label>
+                                    <select id="{{ form.category.id_for_label }}" 
+                                            name="{{ form.category.name }}"
+                                            class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200">
+                                        <option value="">Select a category</option>
+                                        {% for value, label in form.category.field.choices %}
+                                            {% if value %}
+                                                <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ label }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <small class="text-xs text-gray-500 mt-2 block">Choose the most relevant category</small>
+                                </div>
+                            </div>
+
+                            <!-- Target Role -->
+                            <div>
+                                <label for="{{ form.target_role.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                    <i class="fas fa-bullseye mr-2"></i>Target Role
+                                </label>
+                                <input type="text" 
+                                       id="{{ form.target_role.id_for_label }}" 
+                                       name="{{ form.target_role.name }}" 
+                                       value="{{ form.target_role.value|default:'' }}"
+                                       class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200" 
+                                       placeholder="e.g., Software Engineer, Data Scientist">
+                                <small class="text-xs text-gray-500 mt-2 block">Who is this blog most relevant for?</small>
+                            </div>
+
+                            <!-- Publish checkbox -->
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" 
+                                       id="{{ form.is_published.id_for_label }}" 
+                                       name="{{ form.is_published.name }}"
+                                       {% if form.is_published.value %}checked{% endif %}
+                                       class="w-5 h-5 text-indigo-600 border-2 border-gray-300 focus:ring-indigo-500 focus:ring-2">
+                                <label for="{{ form.is_published.id_for_label }}" class="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                                    <i class="fas fa-globe mr-2"></i>Publish this blog immediately
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                                <button type="submit" class="flex-1 py-3 bg-indigo-600 text-white font-bold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                                    <div class="flex items-center justify-center">
+                                        <div class="w-3 h-3 bg-white mr-3"></div>
+                                        {% if blog %}Update Blog{% else %}Create Blog{% endif %}
+                                    </div>
+                                </button>
+                                <a href="{% url 'blog_list' %}" class="flex-1 py-3 border-2 border-gray-900 text-gray-900 font-bold uppercase tracking-wide hover:bg-gray-900 hover:text-white transition-all duration-200 text-center">
+                                    <i class="fas fa-times mr-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Floating accent elements -->
+                <div class="absolute -top-4 -left-4 w-12 h-12 bg-indigo-600 flex items-center justify-center">
+                    <i class="fas fa-{% if blog %}edit{% else %}plus{% endif %} text-white text-lg"></i>
+                </div>
+                <div class="absolute -bottom-4 -right-4 w-10 h-10 bg-gray-900 flex items-center justify-center">
+                    <i class="fas fa-blog text-white"></i>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<script>
-// Add form ID to the form element
-document.querySelector('form').id = 'id_form';
-</script>
 {% endblock %}

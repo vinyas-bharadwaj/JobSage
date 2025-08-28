@@ -1,345 +1,749 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/design_question.css' %}">
-{% endblock head %}
-
 {% block title %}{{ question.title }} - JobSage{% endblock title %}
 
+{% block head %}
+<style>
+    /* Override base template styles */
+    .main-content {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        overflow: hidden; /* Prevent scrolling */
+    }
+    
+    .design-container {
+        position: fixed;
+        top: 70px; /* Adjust based on your navbar height */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        z-index: 100;
+    }
+    
+    .design-header {
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1rem 2rem;
+        flex-shrink: 0;
+    }
+    
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: #1f2937;
+        color: white;
+        text-decoration: none;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .back-btn:hover {
+        background: #374151;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .title-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .difficulty-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .difficulty-easy {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .difficulty-medium {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .difficulty-hard {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .design-main {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+    }
+    
+    .sidebar {
+        width: 350px;
+        background: #f9fafb;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    
+    .sidebar-header {
+        background: #1f2937;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
+    }
+    
+    .sidebar-content {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+    
+    .user-info {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .description {
+        color: #374151;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+    }
+    
+    .requirements {
+        margin-bottom: 2rem;
+    }
+    
+    .requirements h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .requirements ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .requirements li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+        color: #4b5563;
+    }
+    
+    .requirements li:before {
+        content: "•";
+        color: #4f46e5;
+        font-weight: bold;
+        margin-top: 0.1rem;
+    }
+    
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: #4f46e5;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #4338ca;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+    }
+    
+    .btn-success {
+        background: #059669;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #047857;
+    }
+    
+    .btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    
+    .canvas-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: white;
+    }
+    
+    .canvas-header {
+        background: #1f2937;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+    }
+    
+    .canvas-container {
+        flex: 1;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    
+    .canvas-title {
+        margin-bottom: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .canvas-title h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0 0 0.25rem 0;
+    }
+    
+    .canvas-title p {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    .excalidraw-wrapper {
+        flex: 1;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background: white;
+        position: relative;
+    }
+    
+    .excalidraw-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+    }
+    
+    .loading-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #6b7280;
+        font-size: 0.875rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 10;
+    }
+    
+    .error-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #dc2626;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    /* Upload Area Styles */
+    .upload-section {
+        border-top: 1px solid #e5e7eb;
+        padding: 1rem 0;
+        margin-top: 1rem;
+    }
+    
+    .upload-area {
+        border: 2px dashed #d1d5db;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        text-align: center;
+        background: #f9fafb;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    
+    .upload-area:hover {
+        border-color: #4f46e5;
+        background: #f8fafc;
+    }
+    
+    .upload-area.dragover {
+        border-color: #4f46e5;
+        background: #eef2ff;
+    }
+    
+    .upload-input {
+        display: none;
+    }
+    
+    .upload-icon {
+        font-size: 1.5rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+    
+    .upload-text {
+        color: #374151;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+    
+    .upload-hint {
+        color: #6b7280;
+        font-size: 0.75rem;
+    }
+    
+    .preview-area {
+        display: none;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        background: white;
+        margin-bottom: 1rem;
+    }
+    
+    .preview-image {
+        max-width: 100%;
+        max-height: 120px;
+        border-radius: 0.25rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .preview-info {
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+    
+    .remove-btn {
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        margin-top: 0.5rem;
+    }
+    
+    .remove-btn:hover {
+        background: #b91c1c;
+    }
+</style>
+{% endblock head %}
+
 {% block content %}
-<div class="design-workspace">
-    <!-- Question Header -->
-    <div class="question-header-section">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="question-info">
-                        <div class="question-meta">
-                            <span class="difficulty-badge {{ question.difficulty|lower }}">{{ question.difficulty }}</span>
-                            {% if question.company %}
-                            <span class="company-tag">{{ question.company }}</span>
-                            {% endif %}
-                        </div>
-                        <h2 class="question-title">{{ question.title }}</h2>
-                        <p class="question-description">{{ question.description }}</p>
-                    </div>
+<div class="design-container">
+    <!-- Header -->
+    <div class="design-header">
+        <div class="header-content">
+            <a href="{% url 'system-design-page' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span style="margin-left: 0.5rem;">Back to Problems</span>
+            </a>
+            <div class="title-section">
+                <span class="difficulty-badge difficulty-{% if question.difficulty == 'Easy' %}easy{% elif question.difficulty == 'Medium' %}medium{% else %}hard{% endif %}">
+                    {{ question.difficulty }}
+                </span>
+                <h1 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #1f2937;">{{ question.title }}</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="design-main">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                Problem Description
+            </div>
+            <div class="sidebar-content">
+                <div class="user-info">
+                    <i class="fas fa-user"></i>
+                    <span style="margin-left: 0.5rem;">{{ question.created_by.username }}</span>
                 </div>
-                <div class="col-md-4">
-                    <div class="design-actions">
-                        {% if existing_submission %}
-                        <a href="{% url 'design-results' existing_submission.id %}" class="btn btn-outline-primary">
-                            <i class="fas fa-chart-line"></i>View Results
-                        </a>
-                        {% endif %}
-                        <button type="button" class="btn btn-outline-success" id="submitDesignBtn" disabled>
-                            <i class="fas fa-brain"></i>Draw Something First
+                
+                <div class="description">
+                    {{ question.description|linebreaks }}
+                </div>
+                
+                <div class="requirements">
+                    <h3>Requirements</h3>
+                    <ul>
+                        <li>Design high-level architecture</li>
+                        <li>Identify key components and services</li>
+                        <li>Consider scalability and performance</li>
+                        <li>Address potential bottlenecks</li>
+                    </ul>
+                </div>
+                
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <h3 style="font-size: 0.875rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Submit Design</h3>
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area" onclick="document.getElementById('design-upload').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">Upload Design Image</div>
+                        <div class="upload-hint">PNG, JPG up to 10MB</div>
+                        <input type="file" id="design-upload" class="upload-input" accept="image/*" onchange="handleFileUpload(event)">
+                    </div>
+                    
+                    <!-- Preview Area -->
+                    <div id="preview-area" class="preview-area">
+                        <img id="preview-image" class="preview-image" src="" alt="Design preview">
+                        <div id="preview-info" class="preview-info"></div>
+                        <button class="remove-btn" onclick="removeUploadedFile()">
+                            <i class="fas fa-trash"></i> Remove
                         </button>
                     </div>
+                    
+                    <button id="submit-upload-btn" onclick="submitUploadedDesign()" class="btn btn-primary" style="display: none;">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Uploaded Design
+                    </button>
+                </div>
+                
+                <div class="actions">
+                    <button onclick="openInNewTab()" class="btn btn-secondary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Open in New Tab
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-area">
+            <div class="canvas-header">
+                <span>Design Canvas</span>
+                <span id="canvas-status">Loading...</span>
+            </div>
+            <div class="canvas-container">
+                <div class="canvas-title">
+                    <h2>Your Solution</h2>
+                    <p>Draw your system design using the interactive canvas below or upload an image.</p>
+                </div>
+                <div class="excalidraw-wrapper">
+                    <div id="loading-indicator" class="loading-state">
+                        <i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>
+                        Loading drawing canvas...
+                    </div>
+                    <iframe 
+                        id="excalidraw-iframe"
+                        src="https://excalidraw.com/"
+                        class="excalidraw-iframe"
+                        style="display: none;">
+                    </iframe>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Excalidraw Canvas -->
-    <div class="design-canvas">
-        <div id="excalidraw-container"></div>
-    </div>
-
-    <!-- Hidden form for submission -->
-    <form id="designSubmissionForm" method="post" action="{% url 'submit-design' question.id %}" style="display: none;">
-        {% csrf_token %}
-        <input type="hidden" name="excalidraw_elements" id="excalidraw_elements">
-        <input type="hidden" name="excalidraw_app_state" id="excalidraw_app_state">
-    </form>
 </div>
 
-<!-- Debug button (hidden by default) -->
-<button id="debugBtn" style="display: none;">
-    <i class="fas fa-bug"></i>
-</button>
+<!-- Hidden forms for submission -->
+<form id="designSubmissionForm" method="post" action="{% url 'submit-design' question.id %}" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="design_image" id="designImage">
+    <input type="hidden" name="submission_type" value="canvas">
+</form>
 
-<!-- Debug info panel -->
-<div id="debugInfo">
-    <h6>Debug Information</h6>
-    <div id="debugContent"></div>
-</div>
-
-<!-- Use CDN for reliable loading -->
-<script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@excalidraw/excalidraw@0.17.6/dist/excalidraw.production.min.js"></script>
+<form id="uploadSubmissionForm" method="post" action="{% url 'submit-design' question.id %}" enctype="multipart/form-data" style="display: none;">
+    {% csrf_token %}
+    <input type="file" name="uploaded_design" id="uploadedDesignFile">
+    <input type="hidden" name="submission_type" value="upload">
+</form>
 
 <script>
+const QUESTION_ID = {{ question.id }};
+let excalidrawAPI = null;
+let iframeReady = false;
+let uploadedFile = null;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('=== EXCALIDRAW DEBUG SESSION ===');
+    initializeExcalidraw();
+    setupDragAndDrop();
+});
+
+function initializeExcalidraw() {
+    const iframe = document.getElementById('excalidraw-iframe');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const statusElement = document.getElementById('canvas-status');
     
-    let excalidrawAPI = null;
-    let hasDrawing = false;
-    let debugMode = false;
-    let currentElements = [];
-    let currentAppState = {};
+    iframe.addEventListener('load', function() {
+        console.log('Excalidraw iframe loaded successfully');
+        iframeReady = true;
+        
+        // Hide loading indicator and show iframe
+        setTimeout(() => {
+            loadingIndicator.style.display = 'none';
+            iframe.style.display = 'block';
+            statusElement.textContent = 'Ready';
+            
+            // Try to load saved design
+            loadSavedDesign();
+        }, 2000); // Increased timeout for external loading
+    });
     
-    const submitBtn = document.getElementById('submitDesignBtn');
-    const debugBtn = document.getElementById('debugBtn');
-    const form = document.getElementById('designSubmissionForm');
-    const container = document.getElementById('excalidraw-container');
-    const debugInfo = document.getElementById('debugInfo');
-    const debugContent = document.getElementById('debugContent');
-
-    // Debug function
-    function updateDebugInfo() {
-        const info = {
-            'React': typeof React !== 'undefined',
-            'ReactDOM': typeof ReactDOM !== 'undefined',
-            'window.Excalidraw': typeof window.Excalidraw !== 'undefined',
-            'ExcalidrawLib': typeof window.ExcalidrawLib !== 'undefined',
-            'excalidrawAPI': excalidrawAPI ? 'Available' : 'Not set',
-            'hasDrawing': hasDrawing,
-            'elements': currentElements.length
-        };
-        
-        let html = '';
-        for (const [key, value] of Object.entries(info)) {
-            const color = value === true || value === 'Available' || (typeof value === 'number' && value > 0) ? 'green' : 'red';
-            html += `<div style="color: ${color};">${key}: ${value}</div>`;
+    iframe.addEventListener('error', function() {
+        console.error('Error loading Excalidraw iframe');
+        showError();
+    });
+    
+    // Timeout fallback
+    setTimeout(() => {
+        if (!iframeReady) {
+            console.warn('Iframe loading timeout');
+            showError();
         }
-        
-        if (debugContent) {
-            debugContent.innerHTML = html;
-        }
-        console.log('Debug Info:', info);
-    }
+    }, 10000); // Increased timeout for external site
+}
 
-    // Debug button click
-    if (debugBtn) {
-        debugBtn.addEventListener('click', function() {
-            debugMode = !debugMode;
-            debugInfo.style.display = debugMode ? 'block' : 'none';
-            updateDebugInfo();
-        });
-    }
-
-    // Show loading state initially
-    container.innerHTML = `
-        <div class="excalidraw-loading">
-            <div class="spinner"></div>
-            <p>Loading drawing canvas...</p>
-        </div>
-    `;
-
-    // Wait for dependencies to load
-    function waitForDependencies() {
-        return new Promise((resolve, reject) => {
-            let attempts = 0;
-            const maxAttempts = 50; // 5 seconds
-            
-            const checkDependencies = () => {
-                attempts++;
-                
-                console.log(`Attempt ${attempts}: Checking dependencies...`);
-                updateDebugInfo();
-                
-                const hasReact = typeof React !== 'undefined';
-                const hasReactDOM = typeof ReactDOM !== 'undefined';
-                // Check for both possible Excalidraw exports
-                const hasExcalidraw = typeof window.Excalidraw !== 'undefined' || typeof window.ExcalidrawLib !== 'undefined';
-                
-                if (hasReact && hasReactDOM && hasExcalidraw) {
-                    console.log('✅ All dependencies loaded!');
-                    resolve();
-                } else if (attempts >= maxAttempts) {
-                    console.log('❌ Dependencies failed to load after', maxAttempts, 'attempts');
-                    console.log('React:', hasReact, 'ReactDOM:', hasReactDOM, 'Excalidraw:', hasExcalidraw);
-                    reject(new Error('Dependencies timeout'));
-                } else {
-                    setTimeout(checkDependencies, 100);
-                }
-            };
-            
-            checkDependencies();
-        });
-    }
-
-    // Initialize Excalidraw
-    waitForDependencies()
-        .then(() => {
-            console.log('Initializing Excalidraw...');
-            
-            try {
-                // Use the correct Excalidraw reference
-                const ExcalidrawComponent = window.ExcalidrawLib?.Excalidraw || window.Excalidraw;
-                
-                if (!ExcalidrawComponent) {
-                    throw new Error('Excalidraw component not found');
-                }
-                
-                console.log('Found Excalidraw component:', ExcalidrawComponent);
-                
-                const excalidrawElement = React.createElement(ExcalidrawComponent, {
-                    onChange: (elements, appState, files) => {
-                        console.log('Excalidraw onChange:', elements?.length || 0, 'elements');
-                        
-                        currentElements = elements || [];
-                        currentAppState = appState || {};
-                        hasDrawing = currentElements.length > 0;
-                        updateButtonState();
-                        updateDebugInfo();
-                    },
-                    ref: (api) => {
-                        excalidrawAPI = api;
-                        console.log('✅ Excalidraw API ready:', api);
-                        updateDebugInfo();
-                    }
-                });
-                
-                ReactDOM.render(excalidrawElement, container);
-                console.log('✅ Excalidraw rendered successfully');
-                
-                {% if existing_submission %}
-                // Load existing design if available
-                setTimeout(() => {
-                    try {
-                        const existingElements = {{ existing_submission.get_design_elements|safe }};
-                        const existingAppState = {{ existing_submission.get_app_state|safe }};
-                        
-                        console.log('Loading existing submission:', existingElements?.length || 0, 'elements');
-                        
-                        if (excalidrawAPI && existingElements && existingElements.length > 0) {
-                            excalidrawAPI.updateScene({
-                                elements: existingElements,
-                                appState: existingAppState || {}
-                            });
-                            currentElements = existingElements;
-                            currentAppState = existingAppState || {};
-                            hasDrawing = true;
-                            updateButtonState();
-                        }
-                    } catch (e) {
-                        console.error('Error loading existing submission:', e);
-                    }
-                }, 2000);
-                {% endif %}
-                
-            } catch (error) {
-                console.error('❌ Error initializing Excalidraw:', error);
-                showFallbackMode();
-            }
-        })
-        .catch((error) => {
-            console.error('❌ Dependencies failed to load:', error);
-            showFallbackMode();
-        });
-
-    function showFallbackMode() {
-        console.log('Showing fallback mode...');
-        
-        container.innerHTML = `
-            <div class="excalidraw-error">
-                <h3><i class="fas fa-exclamation-triangle"></i> Drawing Canvas Error</h3>
-                <p>The drawing canvas couldn't load properly.</p>
-                <div class="alert alert-info">
-                    <strong>Test Mode:</strong> You can still test the submission system.
-                </div>
-                <button onclick="location.reload()" class="btn btn-secondary">Try Reloading</button>
-            </div>
-        `;
-        
-        // Enable button for testing
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('btn-outline-success');
-        submitBtn.classList.add('btn-warning');
-        submitBtn.innerHTML = '<i class="fas fa-vial"></i>Test Submission';
-    }
-
-    function updateButtonState() {
-        submitBtn.disabled = !hasDrawing;
-        
-        if (hasDrawing) {
-            submitBtn.classList.remove('btn-outline-success', 'btn-warning');
-            submitBtn.classList.add('btn-success');
-            submitBtn.innerHTML = '<i class="fas fa-brain"></i>Analyze Design';
-        } else {
-            submitBtn.classList.remove('btn-success', 'btn-warning');
-            submitBtn.classList.add('btn-outline-success');
-            submitBtn.innerHTML = '<i class="fas fa-brain"></i>Draw Something First';
-        }
-    }
-
-    // Handle form submission
-    submitBtn.addEventListener('click', function(e) {
+function setupDragAndDrop() {
+    const uploadArea = document.querySelector('.upload-area');
+    
+    uploadArea.addEventListener('dragover', function(e) {
         e.preventDefault();
-        console.log('🚀 Submit button clicked!');
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
         
-        try {
-            let elements, appState;
-            
-            // Get data from Excalidraw
-            if (excalidrawAPI && hasDrawing) {
-                console.log('Getting data from Excalidraw API...');
-                elements = excalidrawAPI.getSceneElements();
-                appState = excalidrawAPI.getAppState();
-                console.log('✅ Got Excalidraw data:', elements?.length || 0, 'elements');
-            } else if (currentElements.length > 0) {
-                console.log('Using cached elements...');
-                elements = currentElements;
-                appState = currentAppState;
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                handleFile(file);
             } else {
-                console.log('Using test data...');
-                // Create test data
-                elements = [{
-                    type: 'rectangle',
-                    id: 'test-' + Date.now(),
-                    x: 100,
-                    y: 100,
-                    width: 200,
-                    height: 100,
-                    strokeColor: '#000000',
-                    backgroundColor: 'transparent',
-                    fillStyle: 'hachure',
-                    strokeWidth: 2,
-                    roughness: 1,
-                    opacity: 100,
-                    angle: 0,
-                    seed: Math.floor(Math.random() * 1000000)
-                }];
-                appState = {
-                    viewBackgroundColor: '#ffffff',
-                    currentItemStrokeColor: '#000000',
-                    currentItemBackgroundColor: 'transparent'
-                };
+                alert('Please upload an image file (PNG, JPG, etc.)');
             }
-
-            // Validate we have data
-            if (!elements || elements.length === 0) {
-                alert('Please draw your system design first!');
-                return;
-            }
-
-            // Set form data
-            document.getElementById('excalidraw_elements').value = JSON.stringify(elements);
-            document.getElementById('excalidraw_app_state').value = JSON.stringify(appState);
-
-            console.log('✅ Form data set, submitting...');
-
-            // Show loading state
-            submitBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>Analyzing...';
-            submitBtn.disabled = true;
-
-            // Submit form
-            form.submit();
-            
-        } catch (error) {
-            console.error('❌ Error during submission:', error);
-            alert('Error preparing submission: ' + error.message);
-            
-            // Reset button
-            updateButtonState();
         }
     });
+}
 
-    // Initialize button state
-    updateButtonState();
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        handleFile(file);
+    }
+}
+
+function handleFile(file) {
+    // Validate file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB');
+        return;
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
+        return;
+    }
+    
+    uploadedFile = file;
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const previewArea = document.getElementById('preview-area');
+        const previewImage = document.getElementById('preview-image');
+        const previewInfo = document.getElementById('preview-info');
+        const submitBtn = document.getElementById('submit-upload-btn');
+        
+        previewImage.src = e.target.result;
+        previewInfo.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+        previewArea.style.display = 'block';
+        submitBtn.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeUploadedFile() {
+    uploadedFile = null;
+    document.getElementById('design-upload').value = '';
+    document.getElementById('preview-area').style.display = 'none';
+    document.getElementById('submit-upload-btn').style.display = 'none';
+}
+
+function submitUploadedDesign() {
+    if (!uploadedFile) {
+        alert('Please select a file to upload');
+        return;
+    }
+    
+    // Create a new file input and add the file to it
+    const fileInput = document.getElementById('uploadedDesignFile');
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(uploadedFile);
+    fileInput.files = dataTransfer.files;
+    
+    // Submit the upload form
+    document.getElementById('uploadSubmissionForm').submit();
+}
+
+function showError() {
+    const wrapper = document.querySelector('.excalidraw-wrapper');
+    const statusElement = document.getElementById('canvas-status');
+    
+    wrapper.innerHTML = `
+        <div class="error-state">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem;">Canvas Loading Failed</h3>
+            <p style="margin: 0 0 1rem 0; color: #6b7280;">
+                The drawing canvas could not be loaded. You can still upload your design image.
+            </p>
+            <button onclick="openInNewTab()" class="btn btn-primary">
+                <i class="fas fa-external-link-alt"></i>
+                Open Excalidraw in New Tab
+            </button>
+        </div>
+    `;
+    
+    statusElement.textContent = 'Error';
+    statusElement.style.color = '#dc2626';
+}
+
+function openInNewTab() {
+    window.open('https://excalidraw.com/', '_blank');
+}
+
+// Simplified functions for external Excalidraw
+function getExcalidrawData() {
+    return new Promise((resolve, reject) => {
+        reject(new Error('Canvas data export not available with external Excalidraw. Please use the upload feature.'));
+    });
+}
+
+function loadSavedDesign() {
+    // No-op for external Excalidraw
+    console.log('Load design not available with external Excalidraw');
+}
+
+function loadDesign() {
+    alert('Load feature not available with external Excalidraw. Please use the drawing canvas or upload your saved design.');
+}
+
+function captureCanvasAsImage() {
+    return new Promise((resolve, reject) => {
+        reject(new Error('Canvas capture not available with external Excalidraw. Please download your design and upload it.'));
+    });
+}
+
+function submitDesign() {
+    alert('Canvas submission not available. Please download your design from Excalidraw as a PNG and use the upload feature.');
+}
+
+// Listen for messages from iframe (limited with external site)
+window.addEventListener('message', function(event) {
+    // Limited functionality with external Excalidraw due to cross-origin restrictions
+    console.log('Message received:', event.data);
+});
+
+// Disable auto-save for external Excalidraw
+// Auto-save not available with external iframe
+
+// Simplified keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+            case 's':
+                e.preventDefault();
+                saveDesign();
+                break;
+            case 'o':
+                e.preventDefault();
+                loadDesign();
+                break;
+            case 'Enter':
+                e.preventDefault();
+                submitDesign();
+                break;
+        }
+    }
 });
 </script>
-{% endblock content %}
+{% endblock content %}  

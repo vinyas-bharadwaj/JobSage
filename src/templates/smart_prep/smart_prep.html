@@ -1,269 +1,314 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/smart_prep.css' %}">
-{% endblock head %}
-
 {% block title %}Smart Prep - AI Interview Preparation{% endblock title %}
 
 {% block content %}
-<!-- Compact Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-brain me-2"></i>AI-Powered
+<!-- Compact Header Section -->
+<section class="py-16 bg-white relative overflow-hidden">
+    <!-- Sharp geometric background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 right-0 w-1/4 h-full bg-gray-900 transform skew-x-12 origin-top-right"></div>
+        <div class="absolute top-0 right-0 w-1/5 h-full bg-gray-800 transform skew-x-6 origin-top-right"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <!-- Left Side - Text Content -->
+            <div class="max-w-2xl">
+                <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-4">
+                    <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                    AI-Powered Preparation
+                </div>
+                
+                <h1 class="text-4xl lg:text-5xl font-black text-gray-900 leading-none tracking-tight mb-4">
+                    SMART INTERVIEW
+                    <br>
+                    <span class="text-indigo-600">PREP</span>
+                </h1>
+                
+                <div class="w-24 h-1 bg-indigo-600 mb-6"></div>
+                
+                <p class="text-lg text-gray-700 leading-relaxed font-light mb-6">
+                    Get personalized preparation guides for any company with AI-generated study plans, 
+                    tech stacks, and interview insights.
+                </p>
+                
+                <div class="flex items-center gap-6 text-sm font-medium uppercase tracking-wide text-gray-600">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-indigo-600 text-white flex items-center justify-center mr-3 font-bold">{{ total_sessions }}</div>
+                        Guides Created
                     </div>
-                    <h1 class="hero-title">
-                        Smart Interview <span class="text-gradient">Prep</span>
-                    </h1>
-                    <p class="hero-subtitle">
-                        Get personalized preparation guides for any company with AI-generated study plans.
-                    </p>
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-900 text-white flex items-center justify-center mr-3 font-bold">85%</div>
+                        Success Rate
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-4 text-lg-end">
-                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#prepGuideModal">
-                    <i class="fas fa-plus me-2"></i>Create Guide
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
+            
+            <!-- Right Side - Create Guide Form -->
+            <div class="relative">
+                <!-- Create Guide Card -->
+                <div class="bg-white border-2 border-gray-300 shadow-xl">
+                    <!-- Header -->
+                    <div class="bg-gray-900 text-white px-4 py-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-red-500"></div>
+                                <div class="w-2 h-2 bg-yellow-500"></div>
+                                <div class="w-2 h-2 bg-green-500"></div>
+                            </div>
+                            <div class="text-xs font-mono font-bold uppercase tracking-wider">
+                                PREP GENERATOR
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-6">
+                        <!-- Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'success' %}
+                                    <div class="bg-green-50 border-2 border-green-200 p-3 mb-4">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                            <span class="text-green-700 font-medium text-sm">{{ message }}</span>
+                                        </div>
+                                    </div>
+                                {% elif message.tags == 'error' %}
+                                    <div class="bg-red-50 border-2 border-red-200 p-3 mb-4">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-exclamation-circle text-red-600 mr-2"></i>
+                                            <span class="text-red-700 font-medium text-sm">{{ message }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
 
-<!-- Messages -->
-{% if messages %}
-<section class="messages-section">
-    <div class="container">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {% if message.tags == 'success' %}
-                <i class="fas fa-check-circle me-2"></i>
-            {% elif message.tags == 'error' %}
-                <i class="fas fa-exclamation-triangle me-2"></i>
-            {% elif message.tags == 'info' %}
-                <i class="fas fa-info-circle me-2"></i>
-            {% endif %}
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-{% endif %}
-
-<!-- Main Content Section -->
-<section class="main-section">
-    <div class="container">
-        <!-- Header with Search and Stats -->
-        <div class="content-header">
-            <div class="row align-items-center g-3">
-                <div class="col-lg-6">
-                    <div class="search-wrapper">
-                        <form method="get" class="search-form">
-                            <div class="search-input-group">
-                                <i class="fas fa-search search-icon"></i>
+                        <form method="post" id="prepForm" class="space-y-4">
+                            {% csrf_token %}
+                            
+                            <!-- Company Name -->
+                            <div>
+                                <label for="{{ form.company_name.id_for_label }}" class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Company Name</label>
                                 <input type="text" 
-                                       name="search" 
-                                       value="{{ search_query }}" 
-                                       placeholder="Search companies or roles..."
-                                       class="search-input">
-                                {% if search_query %}
-                                <button type="button" class="clear-search" onclick="clearSearch()">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                                       id="{{ form.company_name.id_for_label }}" 
+                                       name="{{ form.company_name.name }}" 
+                                       value="{{ form.company_name.value|default:'' }}"
+                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 text-sm" 
+                                       placeholder="Enter company name"
+                                       required>
+                                {% if form.company_name.errors %}
+                                    <div class="text-red-600 text-xs mt-1">{{ form.company_name.errors.0 }}</div>
                                 {% endif %}
                             </div>
+
+                            <!-- Target Role -->
+                            <div>
+                                <label for="{{ form.target_role.id_for_label }}" class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Target Role</label>
+                                <input type="text" 
+                                       id="{{ form.target_role.id_for_label }}" 
+                                       name="{{ form.target_role.name }}" 
+                                       value="{{ form.target_role.value|default:'' }}"
+                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 text-sm" 
+                                       placeholder="e.g., Software Engineer">
+                                {% if form.target_role.errors %}
+                                    <div class="text-red-600 text-xs mt-1">{{ form.target_role.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- User Experience -->
+                            <div>
+                                <label for="{{ form.user_experience.id_for_label }}" class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">Background</label>
+                                <textarea id="{{ form.user_experience.id_for_label }}" 
+                                          name="{{ form.user_experience.name }}" 
+                                          rows="2"
+                                          class="w-full px-3 py-2 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 text-sm resize-vertical" 
+                                          placeholder="Brief description...">{{ form.user_experience.value|default:'' }}</textarea>
+                                {% if form.user_experience.errors %}
+                                    <div class="text-red-600 text-xs mt-1">{{ form.user_experience.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full py-2 bg-indigo-600 text-white font-bold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200 text-sm" id="generateBtn">
+                                <span class="btn-text flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-white mr-2"></div>
+                                    Generate Guide
+                                </span>
+                                <span class="btn-loading hidden">
+                                    <div class="flex items-center justify-center">
+                                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                        Generating...
+                                    </div>
+                                </span>
+                            </button>
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="header-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">{{ total_sessions }}</span>
-                            <span class="stat-label">Guides</span>
-                        </div>
-                        <div class="stat-divider"></div>
-                        <div class="stat-item">
-                            <span class="stat-number">85%</span>
-                            <span class="stat-label">Success</span>
-                        </div>
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#prepGuideModal">
-                            <i class="fas fa-plus me-1"></i>New
-                        </button>
-                    </div>
+                
+                <!-- Floating accent elements -->
+                <div class="absolute -top-3 -right-3 w-8 h-8 bg-indigo-600 flex items-center justify-center">
+                    <i class="fas fa-brain text-white text-sm"></i>
+                </div>
+                <div class="absolute -bottom-3 -left-3 w-8 h-8 bg-gray-900 flex items-center justify-center">
+                    <i class="fas fa-magic text-white text-sm"></i>
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-        <!-- Company Guides Grid -->
-        {% if sessions %}
-        <div class="guides-section">
-            <div class="section-meta">
-                <h3>
-                    {% if search_query %}
-                        Search Results
-                        <span class="result-count">({{ sessions|length }})</span>
-                    {% else %}
-                        Recent Guides
-                        <span class="result-count">({{ sessions|length }})</span>
-                    {% endif %}
-                </h3>
+<!-- Guides Section -->
+<section class="py-12 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-4">
+                    <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                    Your Prep Guides
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-black text-gray-900 leading-none tracking-tight">
+                    RECENT <span class="text-indigo-600">PREPARATIONS</span>
+                </h2>
+                <div class="w-24 h-1 bg-indigo-600 mt-2"></div>
             </div>
             
-            <div class="guides-grid">
-                {% for session in sessions %}
-                <div class="guide-card" onclick="window.location.href='{% url 'prep-session-detail' session.session_id %}'">
-                    <div class="card-header">
-                        <div class="company-avatar">
-                            {{ session.company_name|first|upper }}
-                        </div>
-                        <div class="company-details">
-                            <h4>{{ session.company_name }}</h4>
-                            <span class="role-tag">{{ session.target_role }}</span>
-                        </div>
-                        <div class="card-menu">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
+            <!-- Search Bar -->
+            <div class="max-w-xs">
+                <form method="get" class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <i class="fas fa-search text-gray-400 text-sm"></i>
                     </div>
-                    
-                    <div class="card-content">
-                        <div class="info-row">
-                            <span class="info-label">Created</span>
-                            <span class="info-value">{{ session.created_at|date:"M d" }}</span>
+                    <input type="text" 
+                           name="search" 
+                           value="{{ search_query }}" 
+                           placeholder="Search..."
+                           class="w-full pl-10 pr-10 py-2 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 text-sm">
+                    {% if search_query %}
+                        <button type="button" onclick="clearSearch()" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <i class="fas fa-times text-gray-400 hover:text-gray-600 text-sm"></i>
+                        </button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% if sessions %}
+            <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-6 mb-12">
+                {% for session in sessions %}
+                    <div class="bg-white border-2 border-gray-300 hover:border-gray-900 transition-colors duration-200 group cursor-pointer" onclick="window.location.href='{% url 'prep-session-detail' session.session_id %}'">
+                        <!-- Header -->
+                        <div class="bg-gray-900 text-white px-4 py-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 bg-red-500"></div>
+                                    <div class="w-2 h-2 bg-yellow-500"></div>
+                                    <div class="w-2 h-2 bg-green-500"></div>
+                                </div>
+                                <div class="text-xs font-mono font-bold uppercase tracking-wider">
+                                    PREP GUIDE
+                                </div>
+                            </div>
                         </div>
                         
-                        {% if session.key_technologies %}
-                        <div class="tech-stack">
-                            {% for tech in session.key_technologies|slice:":4" %}
-                            <span class="tech-badge">{{ tech }}</span>
-                            {% endfor %}
-                            {% if session.key_technologies|length > 4 %}
-                            <span class="tech-more">+{{ session.key_technologies|length|add:"-4" }}</span>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="card-footer">
-                        <div class="completion-indicator">
-                            <div class="completion-bar">
-                                <div class="completion-fill"></div>
+                        <!-- Content -->
+                        <div class="p-6">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center font-black text-lg">
+                                    {{ session.company_name|first|upper }}
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-black text-gray-900 mb-1 uppercase tracking-wide leading-tight">{{ session.company_name }}</h3>
+                                    <p class="text-gray-600 text-sm font-medium uppercase tracking-wide">{{ session.target_role }}</p>
+                                </div>
+                                <div class="text-gray-400 group-hover:text-indigo-600 transition-colors duration-200">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
                             </div>
-                            <span class="completion-text">Ready</span>
+                            
+                            {% if session.key_technologies %}
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    {% for tech in session.key_technologies|slice:":3" %}
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wide border border-gray-300">{{ tech }}</span>
+                                    {% endfor %}
+                                    {% if session.key_technologies|length > 3 %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wide border border-indigo-300">+{{ session.key_technologies|length|add:"-3" }} more</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex items-center justify-between text-xs text-gray-600 font-medium uppercase tracking-wide">
+                                <span><i class="fas fa-calendar mr-1"></i>{{ session.created_at|date:"M d, Y" }}</span>
+                                <span class="text-green-600 font-bold"><i class="fas fa-check-circle mr-1"></i>Ready</span>
+                            </div>
                         </div>
                     </div>
-                </div>
                 {% endfor %}
             </div>
-        </div>
-        {% else %}
-        <!-- Minimal Empty State -->
-        <div class="empty-state">
-            <div class="empty-content">
-                <div class="empty-icon">
-                    <i class="fas fa-lightbulb"></i>
+
+            <!-- Popular Companies -->
+            {% if popular_companies %}
+                <div class="text-center">
+                    <h3 class="text-xl font-black text-gray-900 uppercase tracking-wide mb-6">Popular Companies</h3>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        {% for company in popular_companies|slice:":8" %}
+                            <button onclick="fillCompanyName('{{ company.company_name }}')" class="px-4 py-2 bg-white border-2 border-gray-300 hover:border-gray-900 text-gray-900 font-semibold uppercase tracking-wide transition-colors duration-200 text-sm">
+                                {{ company.company_name }}
+                                <span class="ml-2 px-2 py-0.5 bg-gray-900 text-white text-xs">{{ company.count }}</span>
+                            </button>
+                        {% endfor %}
+                    </div>
                 </div>
-                <h3>No guides yet</h3>
-                <p>Create your first interview preparation guide</p>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#prepGuideModal">
-                    <i class="fas fa-plus me-2"></i>Get Started
+            {% endif %}
+        {% else %}
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-gray-300 flex items-center justify-center mx-auto mb-8">
+                    <i class="fas fa-brain text-gray-600 text-4xl"></i>
+                </div>
+                <h3 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-wide">No Prep Guides Yet</h3>
+                <p class="text-gray-600 mb-8 font-light max-w-md mx-auto">Create your first AI-powered interview preparation guide using the form above.</p>
+                <button onclick="document.getElementById('id_company_name').focus()" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                    <div class="w-3 h-3 bg-white mr-3"></div>
+                    Create First Guide
                 </button>
             </div>
-        </div>
-        {% endif %}
-
-        <!-- Popular Companies - Compact -->
-        {% if popular_companies %}
-        <div class="popular-section">
-            <div class="popular-header">
-                <h4>Popular</h4>
-                <div class="popular-chips">
-                    {% for company in popular_companies|slice:":6" %}
-                    <button class="popular-chip" onclick="openModalWithCompany('{{ company.company_name }}')">
-                        {{ company.company_name }}
-                        <span class="chip-count">{{ company.count }}</span>
-                    </button>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
         {% endif %}
     </div>
 </section>
 
-<!-- Compact Modal -->
-<div class="modal fade" id="prepGuideModal" tabindex="-1" aria-labelledby="prepGuideModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-brain me-2"></i>Create Prep Guide
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="prepForm">
-                    {% csrf_token %}
-                    
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Company*</label>
-                            {{ form.company_name }}
-                            {% if form.company_name.errors %}
-                                <div class="error-text">{{ form.company_name.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Role</label>
-                            {{ form.target_role }}
-                            {% if form.target_role.errors %}
-                                <div class="error-text">{{ form.target_role.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label class="form-label">Background (Optional)</label>
-                            {{ form.user_experience }}
-                            {% if form.user_experience.errors %}
-                                <div class="error-text">{{ form.user_experience.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="prepForm" class="btn btn-primary" id="generateBtn">
-                    <i class="fas fa-magic me-1"></i>Generate
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-// Minimal JavaScript - only essential functionality
-function openModalWithCompany(companyName) {
-    const modal = new bootstrap.Modal(document.getElementById('prepGuideModal'));
-    const companyInput = document.getElementById('id_company_name');
+// Form submission handling
+document.addEventListener('DOMContentLoaded', function() {
+    const generateBtn = document.getElementById('generateBtn');
+    const prepForm = document.getElementById('prepForm');
     
-    if (companyInput) {
-        companyInput.value = companyName;
+    if (prepForm) {
+        prepForm.addEventListener('submit', function() {
+            generateBtn.querySelector('.btn-text').classList.add('hidden');
+            generateBtn.querySelector('.btn-loading').classList.remove('hidden');
+            generateBtn.disabled = true;
+        });
     }
-    
-    modal.show();
-}
+});
 
+// Utility functions
 function clearSearch() {
     const searchInput = document.querySelector('input[name="search"]');
     if (searchInput) {
         searchInput.value = '';
         searchInput.closest('form').submit();
+    }
+}
+
+function fillCompanyName(companyName) {
+    const companyInput = document.getElementById('id_company_name');
+    if (companyInput) {
+        companyInput.value = companyName;
+        companyInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        companyInput.focus();
     }
 }
 
@@ -280,18 +325,5 @@ if (searchInput) {
         }, 500);
     });
 }
-
-// Form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const generateBtn = document.getElementById('generateBtn');
-    const prepForm = document.getElementById('prepForm');
-    
-    if (prepForm) {
-        prepForm.addEventListener('submit', function() {
-            generateBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-1"></div>Generating...';
-            generateBtn.disabled = true;
-        });
-    }
-});
 </script>
 {% endblock content %}

@@ -1,5 +1,5 @@
 import json
-from pydantic_ai import Agent
+from pydantic_ai import Agent, BinaryContent
 from pydantic_ai.models.gemini import GeminiModel
 from pydantic_ai.providers.google_gla import GoogleGLAProvider
 from pydantic import BaseModel, Field
@@ -28,7 +28,7 @@ agent = Agent(
     result_type=SystemDesignResponse,
     system_prompt="""You are a senior system design interviewer with 10+ years of experience at major tech companies (Google, Amazon, Meta, Netflix).
 
-Analyze system design diagrams and provide:
+Analyze system design diagrams from images and provide:
 1. Overall score (1-100) - must be between 1 and 100
 2. Scalability score (1-100) - how well it handles scale
 3. Reliability score (1-100) - fault tolerance and redundancy
@@ -37,61 +37,47 @@ Analyze system design diagrams and provide:
 6. Missing critical components
 7. Specific actionable recommendations
 
-Focus on scalability, reliability, appropriate component selection, and industry best practices. 
-Be direct, constructive, and provide feedback similar to actual FAANG interviews."""
+Focus on:
+- Component architecture and relationships
+- Data flow and communication patterns
+- Scalability considerations (load balancing, caching, sharding)
+- Reliability patterns (redundancy, failover, monitoring)
+- Appropriate technology choices
+- Security considerations
+- Performance optimizations
+
+Be direct, constructive, and provide feedback similar to actual FAANG interviews. 
+Analyze the visual diagram carefully and identify all components, connections, and architectural patterns."""
 )
 
-def parse_excalidraw_diagram(excalidraw_data: str) -> str:
-    """Extract readable information from Excalidraw diagram data."""
-    try:
-        if isinstance(excalidraw_data, str):
-            diagram_data = json.loads(excalidraw_data)
-        else:
-            diagram_data = excalidraw_data
-        
-        # Extract text elements (component names, labels)
-        text_elements = []
-        components_count = 0
-        connections_count = 0
-        
-        for element in diagram_data.get('elements', []):
-            if element.get('type') == 'text' and element.get('text'):
-                text_elements.append(element.get('text'))
-            elif element.get('type') in ['rectangle', 'ellipse', 'diamond']:
-                components_count += 1
-            elif element.get('type') in ['arrow', 'line']:
-                connections_count += 1
-        
-        return f"""
-        Diagram Components: {components_count} components, {connections_count} connections
-        
-        Text Labels Found:
-        {chr(10).join([f"- {text}" for text in text_elements if text])}
-        """
-        
-    except Exception as e:
-        return f"Error parsing diagram: {str(e)}. Analyzing based on provided description."
-
-def analyze_system_design(excalidraw_data: str, problem_statement: str = "", requirements: str = "") -> SystemDesignResponse:
-    """Analyze a system design diagram and return structured feedback."""
-    # Parse the diagram data
-    diagram_description = parse_excalidraw_diagram(excalidraw_data)
+def analyze_system_design(image_data: bytes, problem_statement: str = "", requirements: str = "") -> SystemDesignResponse:
+    """Analyze a system design diagram from an image and return structured feedback."""
     
     # Create the prompt
     prompt = f"""
-    Problem: {problem_statement or "General system design evaluation"}
+    Problem Statement: {problem_statement or "General system design evaluation"}
     
     Requirements: {requirements or "Standard scalability, reliability, and performance requirements"}
     
-    System Design Diagram:
-    {diagram_description}
+    Please analyze the system design diagram in the provided image. Look for:
     
-    Raw Diagram Data (sample):
-    {str(excalidraw_data)[:500]}...
+    1. **Architecture Components**: Identify all services, databases, caches, load balancers, etc.
+    2. **Data Flow**: How data moves through the system
+    3. **Scalability**: How the system handles increased load
+    4. **Reliability**: Fault tolerance and backup mechanisms
+    5. **Technology Choices**: Appropriateness of selected technologies
+    6. **Missing Elements**: What critical components might be missing
     
-    Please analyze this system design and provide detailed feedback with scores between 1-100.
+    Provide detailed feedback with scores between 1-100 for overall quality, scalability, and reliability.
     """
     
-    # Run the agent
-    result = agent.run_sync(prompt)
-    return result.output
+    try:
+        # Run the agent with the image
+        result = agent.run_sync([
+            prompt,
+            BinaryContent(data=image_data, media_type='image/png')
+        ])
+        
+        return result.data
+    except Exception as e:
+        pass

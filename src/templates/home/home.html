@@ -1,92 +1,162 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static '/css/app/home.css' %}">
-{% endblock head %}
-
-
 {% block title %}
     JobSage
 {% endblock title %}    
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-star me-2"></i>Trusted by developers 
+<section class="min-h-screen bg-white relative overflow-hidden">
+    <!-- Sharp geometric background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-gray-900 transform skew-x-12 origin-top-right"></div>
+        <div class="absolute top-0 right-0 w-1/4 h-full bg-gray-800 transform skew-x-6 origin-top-right"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex items-center min-h-screen">
+            <div class="grid lg:grid-cols-2 gap-16 items-center w-full">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider">
+                        <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                        Industry Leading Platform
                     </div>
-                    <h1 class="hero-title">
-                        Ace Your Next <br><span class="text-gradient">Technical Interview</span>
+                    
+                    <h1 class="text-6xl lg:text-7xl font-black text-gray-900 leading-none tracking-tight">
+                        MASTER
+                        <br>
+                        <span class="text-indigo-600">TECHNICAL</span>
+                        <br>
+                        INTERVIEWS
                     </h1>
-                    <p class="hero-subtitle">
-                        Transform your interview preparation with AI-powered practice sessions, 
-                        real-world coding challenges, and expert feedback from industry professionals.
+                    
+                    <div class="w-24 h-1 bg-indigo-600"></div>
+                    
+                    <p class="text-xl text-gray-700 leading-relaxed font-light max-w-lg">
+                        Elite preparation platform designed for top-tier software engineers. 
+                        Precision-engineered curriculum backed by industry data.
                     </p>
-                    <div class="hero-buttons">
+                    
+                    <div class="flex items-center gap-4 pt-4">
                         {% if user.is_authenticated %}
-                            <a href="#" class="btn btn-primary btn-lg">
-                                <i class="fas fa-play me-2"></i>Continue Learning
+                            <a href="{% url 'resume-page' %}" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200">
+                                <div class="w-3 h-3 bg-indigo-400 mr-2"></div>
+                                ANALYZE RESUME
                             </a>
-                            <a href="#" class="btn btn-outline-light btn-lg">
-                                <i class="fas fa-chart-line me-2"></i>View Dashboard
+                            <a href="{% url 'system-design-page' %}" class="inline-flex items-center px-6 py-3 border-2 border-gray-900 text-gray-900 font-semibold uppercase tracking-wide hover:bg-gray-900 hover:text-white transition-all duration-200">
+                                SOLVE PROBLEMS
                             </a>
                         {% else %}
-                            <a href="{% url 'signup-page' %}" class="btn btn-primary btn-lg">
-                                <i class="fas fa-rocket me-2"></i>Get Started
+                            <a href="{% url 'signup-page' %}" class="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200">
+                                <div class="w-3 h-3 bg-indigo-400 mr-2"></div>
+                                START NOW
                             </a>
-                            <a href="{% url 'login-page' %}" class="btn btn-outline-light btn-lg">
-                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            <a href="{% url 'login-page' %}" class="inline-flex items-center px-6 py-3 border-2 border-gray-900 text-gray-900 font-semibold uppercase tracking-wide hover:bg-gray-900 hover:text-white transition-all duration-200">
+                                SIGN IN
                             </a>
                         {% endif %}
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="hero-visual">
-                    <div class="main-card">
-                        <div class="card-header">
-                            <div class="card-dots">
-                                <span></span><span></span><span></span>
-                            </div>
-                            <div class="card-title">Interview Dashboard</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="progress-item">
-                                <span>Algorithm Mastery</span>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 85%"></div>
+                
+                <div class="relative">
+                    <!-- Main showcase card -->
+                    <div class="bg-white border-2 border-gray-300 shadow-2xl">
+                        <!-- Header -->
+                        <div class="bg-gray-900 text-white px-6 py-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500"></div>
+                                    <div class="w-3 h-3 bg-yellow-500"></div>
+                                    <div class="w-3 h-3 bg-green-500"></div>
                                 </div>
-                                <span>85%</span>
-                            </div>
-                            <div class="progress-item">
-                                <span>System Design</span>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 70%"></div>
+                                <div class="text-sm font-mono font-bold uppercase tracking-wider">
+                                    JOBSAGE PLATFORM
                                 </div>
-                                <span>70%</span>
-                            </div>
-                            <div class="progress-item">
-                                <span>Mock Interviews</span>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 92%"></div>
-                                </div>
-                                <span>92%</span>
                             </div>
                         </div>
+                        
+                        <!-- Content -->
+                        <div class="p-5">
+                            <!-- Feature highlights -->
+                            <div class="grid grid-cols-2 gap-4 mb-5">
+                                <div class="text-center">
+                                    <div class="w-10 h-10 bg-indigo-600 flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-brain text-white text-lg"></i>
+                                    </div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">AI POWERED</div>
+                                    <div class="text-xs text-gray-600">Smart Analysis</div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="w-10 h-10 bg-gray-900 flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-draw-polygon text-white text-lg"></i>
+                                    </div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">INTERACTIVE</div>
+                                    <div class="text-xs text-gray-600">System Design</div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="w-10 h-10 bg-gray-900 flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-database text-white text-lg"></i>
+                                    </div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">CURATED</div>
+                                    <div class="text-xs text-gray-600">Real Questions</div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="w-10 h-10 bg-indigo-600 flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-chart-line text-white text-lg"></i>
+                                    </div>
+                                    <div class="text-sm font-bold text-gray-900 uppercase tracking-wide">ANALYTICS</div>
+                                    <div class="text-xs text-gray-600">Track Progress</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Progress simulation -->
+                            <div class="border-t border-gray-300 pt-4">
+                                <div class="text-center mb-3">
+                                    <div class="text-base font-black text-gray-900 uppercase tracking-wide">SKILL PROGRESSION</div>
+                                </div>
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">System Architecture</span>
+                                        <span class="text-xs font-mono text-gray-900">Advanced</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-gray-200">
+                                        <div class="bg-indigo-600 h-1.5" style="width: 85%"></div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Problem Solving</span>
+                                        <span class="text-xs font-mono text-gray-900">Expert</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-gray-200">
+                                        <div class="bg-gray-900 h-1.5" style="width: 92%"></div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Technical Communication</span>
+                                        <span class="text-xs font-mono text-gray-900">Proficient</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-gray-200">
+                                        <div class="bg-indigo-600 h-1.5" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="floating-element element-1">
-                        <i class="fas fa-code"></i>
+                    
+                    <!-- Floating accent elements -->
+                    <div class="absolute -top-4 -right-4 w-8 h-8 bg-indigo-600 flex items-center justify-center">
+                        <i class="fas fa-code text-white text-xl"></i>
                     </div>
-                    <div class="floating-element element-2">
-                        <i class="fas fa-trophy"></i>
+                    <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-gray-900 flex items-center justify-center">
+                        <i class="fas fa-trophy text-white"></i>
                     </div>
-                    <div class="floating-element element-3">
-                        <i class="fas fa-brain"></i>
+                    <div class="absolute top-1/2 -right-8 w-10 h-10 bg-indigo-500 flex items-center justify-center">
+                        <i class="fas fa-star text-white text-sm"></i>
                     </div>
                 </div>
             </div>
@@ -95,102 +165,142 @@
 </section>
 
 <!-- Features Section -->
-<section class="features-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <div class="section-badge">Features</div>
-                <h2 class="section-title">Everything You Need to Succeed</h2>
-                <p class="section-subtitle">Comprehensive tools and resources designed by industry experts</p>
+<section class="py-24 bg-gray-100">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-20">
+            <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-6">
+                <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                Core Features
             </div>
+            <h2 class="text-5xl lg:text-6xl font-black text-gray-900 mb-6 leading-none tracking-tight">
+                ENGINEERED FOR
+                <br>
+                <span class="text-indigo-600">EXCELLENCE</span>
+            </h2>
+            <div class="w-24 h-1 bg-indigo-600 mx-auto mb-8"></div>
+            <p class="text-xl text-gray-700 font-light max-w-2xl mx-auto">
+                Professional-grade preparation tools designed for serious engineers
+            </p>
         </div>
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h4>AI-Powered Practice</h4>
-                    <p>Advanced algorithms analyze your performance and provide personalized recommendations for improvement.</p>
-                    <div class="feature-badge">Premium</div>
+        
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-white border-2 border-gray-300 p-8 hover:border-gray-900 transition-colors duration-200 group">
+                <div class="w-16 h-16 bg-gray-900 flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors duration-200">
+                    <i class="fas fa-brain text-white text-2xl"></i>
                 </div>
+                <h4 class="text-xl font-black text-gray-900 mb-4 uppercase tracking-wide">AI ANALYSIS</h4>
+                <div class="w-12 h-1 bg-indigo-600 mb-6"></div>
+                <p class="text-gray-700 font-light leading-relaxed">
+                    Advanced machine learning algorithms provide real-time performance analysis and targeted improvement recommendations.
+                </p>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <h4>Live Mock Interviews</h4>
-                    <p>Practice with experienced interviewers from top tech companies and get real-time feedback.</p>
-                    <div class="feature-badge">Popular</div>
+            
+            <!-- Feature 2 -->
+            <div class="bg-white border-2 border-gray-300 p-8 hover:border-gray-900 transition-colors duration-200 group">
+                <div class="w-16 h-16 bg-gray-900 flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors duration-200">
+                    <i class="fas fa-draw-polygon text-white text-2xl"></i>
                 </div>
+                <h4 class="text-xl font-black text-gray-900 mb-4 uppercase tracking-wide">SYSTEM DESIGN</h4>
+                <div class="w-12 h-1 bg-indigo-600 mb-6"></div>
+                <p class="text-gray-700 font-light leading-relaxed">
+                    Interactive whiteboard for creating system architecture diagrams with professional drawing tools.
+                </p>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h4>Curated Problems</h4>
-                    <p>Access 1000+ hand-picked problems from FAANG companies with detailed solutions.</p>
+            
+            <!-- Feature 3 -->
+            <div class="bg-white border-2 border-gray-300 p-8 hover:border-gray-900 transition-colors duration-200 group">
+                <div class="w-16 h-16 bg-gray-900 flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors duration-200">
+                    <i class="fas fa-database text-white text-2xl"></i>
                 </div>
+                <h4 class="text-xl font-black text-gray-900 mb-4 uppercase tracking-wide">CURATED CONTENT</h4>
+                <div class="w-12 h-1 bg-indigo-600 mb-6"></div>
+                <p class="text-gray-700 font-light leading-relaxed">
+                    Hand-selected problems from actual technical interviews, organized by difficulty and domain.
+                </p>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h4>Advanced Analytics</h4>
-                    <p>Track your progress with detailed insights and identify areas for improvement.</p>
+            
+            <!-- Feature 4 -->
+            <div class="bg-white border-2 border-gray-300 p-8 hover:border-gray-900 transition-colors duration-200 group">
+                <div class="w-16 h-16 bg-gray-900 flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors duration-200">
+                    <i class="fas fa-chart-line text-white text-2xl"></i>
                 </div>
+                <h4 class="text-xl font-black text-gray-900 mb-4 uppercase tracking-wide">PROGRESS TRACKING</h4>
+                <div class="w-12 h-1 bg-indigo-600 mb-6"></div>
+                <p class="text-gray-700 font-light leading-relaxed">
+                    Comprehensive analytics dashboard with performance metrics and progress tracking capabilities.
+                </p>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h4>Expert Community</h4>
-                    <p>Connect with industry professionals and get guidance from experienced mentors.</p>
+            
+            <!-- Feature 5 -->
+            <div class="bg-white border-2 border-gray-300 p-8 hover:border-gray-900 transition-colors duration-200 group">
+                <div class="w-16 h-16 bg-gray-900 flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors duration-200">
+                    <i class="fas fa-file-alt text-white text-2xl"></i>
                 </div>
+                <h4 class="text-xl font-black text-gray-900 mb-4 uppercase tracking-wide">RESUME BUILDER</h4>
+                <div class="w-12 h-1 bg-indigo-600 mb-6"></div>
+                <p class="text-gray-700 font-light leading-relaxed">
+                    Professional resume creation tools with ATS-optimized templates and formatting.
+                </p>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h4>Cross-Platform</h4>
-                    <p>Seamless experience across all devices with offline practice capabilities.</p>
+            
+            <!-- Feature 6 -->
+            <div class="bg-white border-2 border-gray-300 p-8 hover:border-gray-900 transition-colors duration-200 group">
+                <div class="w-16 h-16 bg-gray-900 flex items-center justify-center mb-8 group-hover:bg-indigo-600 transition-colors duration-200">
+                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
                 </div>
+                <h4 class="text-xl font-black text-gray-900 mb-4 uppercase tracking-wide">LEARNING RESOURCES</h4>
+                <div class="w-12 h-1 bg-indigo-600 mb-6"></div>
+                <p class="text-gray-700 font-light leading-relaxed">
+                    Comprehensive blog articles and tutorials covering technical concepts and interview strategies.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 text-center">
-                <h2 class="cta-title">Ready to Transform Your Career?</h2>
-                <p class="cta-subtitle">
-                    Join thousands of successful developers who chose JobSage for their interview preparation.
-                </p>
-                <div class="cta-buttons">
-                    {% if not user.is_authenticated %}
-                        <a href="{% url 'signup-page' %}" class="btn btn-primary btn-lg">
-                            <i class="fas fa-rocket me-2"></i>Start Free Trial
-                        </a>
-                        <a href="#" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-play me-2"></i>Watch Demo
-                        </a>
-                    {% else %}
-                        <a href="#" class="btn btn-primary btn-lg">
-                            <i class="fas fa-play me-2"></i>Continue Your Journey
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="cta-guarantee">
-                    <i class="fas fa-shield-alt me-2"></i>30-day money-back guarantee
-                </div>
+<section class="py-24 bg-gray-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0">
+        <div class="absolute bottom-0 left-0 w-1/3 h-full bg-gray-800 transform -skew-x-12 origin-bottom-left"></div>
+        <div class="absolute bottom-0 left-0 w-1/4 h-full bg-indigo-600 transform -skew-x-6 origin-bottom-left"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-5xl lg:text-6xl font-black mb-8 leading-none tracking-tight">
+                READY TO
+                <br>
+                <span class="text-indigo-300">EXCEL?</span>
+            </h2>
+            
+            <div class="w-24 h-1 bg-indigo-400 mx-auto mb-8"></div>
+            
+            <p class="text-xl text-gray-300 font-light mb-12 max-w-2xl mx-auto">
+                Join engineers who are mastering technical interviews with precision and confidence. 
+                Your career transformation starts today.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'signup-page' %}" class="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                        <div class="w-3 h-3 bg-white mr-2"></div>
+                        START YOUR JOURNEY
+                    </a>
+                    <a href="{% url 'about-page' %}" class="inline-flex items-center justify-center px-8 py-3 border-2 border-white text-white font-semibold uppercase tracking-wide hover:bg-white hover:text-gray-900 transition-all duration-200">
+                        LEARN MORE
+                    </a>
+                {% else %}
+                    <a href="{% url 'system-design-page' %}" class="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                        <div class="w-3 h-3 bg-white mr-2"></div>
+                        CONTINUE LEARNING
+                    </a>
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center justify-center text-gray-400 font-light">
+                <i class="fas fa-certificate mr-3"></i>
+                Free platform • No hidden fees • Start immediately
             </div>
         </div>
     </div>

@@ -1,313 +1,159 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/system_design_page.css' %}">
-{% endblock head %}
-
 {% block title %}System Design Practice - JobSage{% endblock title %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="system-design-hero-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 text-center">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <i class="fas fa-sitemap me-2"></i>FAANG-Level Practice
-                    </div>
-                    <h1 class="hero-title">
-                        Master <span class="text-gradient">System Design</span>
-                    </h1>
-                    <p class="hero-subtitle">
-                        Practice with real interview questions from top tech companies. Design systems, 
-                        get AI-powered feedback, and ace your next system design interview.
-                    </p>
-                    
-                    <!-- Hero Action Buttons -->
-                    <div class="hero-actions mt-4 mb-4">
-                        {% if user.is_authenticated %}
-                        <button class="btn btn-primary btn-lg me-3" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                            <i class="fas fa-plus me-2"></i>Add Question
-                        </button>
-                        <a href="#questions" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-play me-2"></i>Start Practicing
-                        </a>
-                        {% else %}
-                        <a href="{% url 'signup-page' %}" class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-user-plus me-2"></i>Join Now
-                        </a>
-                        <a href="#questions" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-eye me-2"></i>View Questions
-                        </a>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">{{ total_questions }}+</span>
-                            <span class="stat-label">Questions</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">500+</span>
-                            <span class="stat-label">Solved</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">98%</span>
-                            <span class="stat-label">Success Rate</span>
-                        </div>
-                    </div>
-                </div>
+<!-- Minimal Header -->
+<section class="py-8 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 uppercase tracking-tight">
+                    SYSTEM DESIGN <span class="text-indigo-600">PRACTICE</span>
+                </h1>
+                <div class="w-16 h-1 bg-indigo-600 mt-2"></div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Messages -->
-{% if messages %}
-<div class="container mt-3">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {% if message.tags == 'success' %}
-            <i class="fas fa-check-circle me-2"></i>
-        {% elif message.tags == 'error' %}
-            <i class="fas fa-exclamation-triangle me-2"></i>
-        {% elif message.tags == 'warning' %}
-            <i class="fas fa-exclamation-circle me-2"></i>
-        {% else %}
-            <i class="fas fa-info-circle me-2"></i>
-        {% endif %}
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<!-- Questions Section -->
-<section id="questions" class="questions-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <div class="section-badge">Practice Questions</div>
-                <h2 class="section-title">System Design Challenges</h2>
-                <p class="section-subtitle">Choose a question and start designing your solution</p>
-                
-                <!-- Quick Add Button -->
-                {% if user.is_authenticated %}
-                <div class="mt-3">
-                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                        <i class="fas fa-plus me-2"></i>Contribute a Question
+            
+            {% if user.is_authenticated %}
+                <div class="flex gap-3">
+                    <button onclick="openAddQuestionModal()" class="px-4 py-2 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                        <i class="fas fa-plus mr-2"></i>Add
                     </button>
+                    <a href="{% url 'user-submissions' %}" class="px-4 py-2 border border-gray-900 text-gray-900 font-semibold uppercase tracking-wide hover:bg-gray-900 hover:text-white transition-all duration-200">
+                        <i class="fas fa-history mr-2"></i>History
+                    </a>
                 </div>
+            {% endif %}
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-3 {% if message.tags == 'success' %}bg-green-100 text-green-700 border-l-4 border-green-500{% else %}bg-red-100 text-red-700 border-l-4 border-red-500{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Questions Grid -->
+        {% if questions %}
+            <div class="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+                {% for question in questions %}
+                    <div class="bg-white border border-gray-300 hover:border-gray-900 transition-colors duration-200 group">
+                        <!-- Header -->
+                        <div class="bg-gray-900 text-white px-3 py-2 text-center">
+                            <div class="text-xs font-bold uppercase tracking-wider">{{ question.difficulty }}</div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-4">
+                            <h3 class="text-sm font-black text-gray-900 mb-2 uppercase tracking-wide leading-tight">{{ question.title }}</h3>
+                            <p class="text-xs text-gray-600 mb-3 leading-relaxed">{{ question.description|truncatewords:10 }}</p>
+                            
+                            <div class="text-xs text-gray-500 mb-3">
+                                <div>by {{ question.created_by.username }}</div>
+                                <div>{{ question.created_at|date:"M d" }}</div>
+                            </div>
+                            
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'design-question' question.id %}" class="w-full block text-center py-2 bg-gray-900 text-white text-xs font-bold uppercase tracking-wide hover:bg-indigo-600 transition-colors duration-200">
+                                    SOLVE
+                                </a>
+                            {% else %}
+                                <a href="{% url 'login-page' %}" class="w-full block text-center py-2 bg-gray-900 text-white text-xs font-bold uppercase tracking-wide hover:bg-indigo-600 transition-colors duration-200">
+                                    LOGIN
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-gray-300 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-sitemap text-gray-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-2 uppercase tracking-wide">No Questions Yet</h3>
+                <p class="text-gray-600 mb-4">Be the first to add a challenge!</p>
+                {% if user.is_authenticated %}
+                    <button onclick="openAddQuestionModal()" class="px-6 py-3 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                        Add Question
+                    </button>
                 {% endif %}
             </div>
-        </div>
-
-        <div class="row g-4">
-            {% for question in questions %}
-            <div class="col-lg-6">
-                <div class="question-card" data-difficulty="{{ question.difficulty|lower }}">
-                    <div class="question-header">
-                        <div class="question-meta">
-                            <span class="difficulty-badge {{ question.difficulty|lower }}">{{ question.difficulty }}</span>
-                            <div class="company-tags">
-                                {% if question.company %}
-                                <span class="company-tag">{{ question.company }}</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <h3>{{ question.title }}</h3>
-                        <p class="question-description">
-                            {{ question.description|truncatewords:25 }}
-                        </p>
-                    </div>
-                    
-                    <div class="question-meta-info">
-                        <div class="author-info">
-                            <div class="author-avatar">
-                                {{ question.published_by.username|first|upper }}
-                            </div>
-                            <div class="author-details">
-                                <div class="author-name">{{ question.published_by.username }}</div>
-                                <div class="publish-date">{{ question.created_at|date:"M d, Y" }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Updated button to use new URL pattern -->
-                    <a href="{% url 'design-question' question.id %}" class="btn btn-primary start-design-btn">
-                        <i class="fas fa-pencil-ruler me-2"></i>Start Designing
-                    </a>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-sitemap"></i>
-                    </div>
-                    <h4>No Questions Yet!</h4>
-                    <p>Be the first to contribute a system design question to help the community.</p>
-                    {% if user.is_authenticated %}
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                        <i class="fas fa-plus me-2"></i>Add First Question
-                    </button>
-                    {% else %}
-                    <a href="{% url 'signup-page' %}" class="btn btn-primary">
-                        <i class="fas fa-user-plus me-2"></i>Sign Up to Contribute
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+        {% endif %}
     </div>
 </section>
 
 <!-- Add Question Modal -->
 {% if user.is_authenticated %}
-<div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <form method="post" action="{% url 'system-design-page' %}">
+<div id="addQuestionModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-6">
+    <div class="bg-white border border-gray-300 w-full max-w-lg">
+        <!-- Header -->
+        <div class="bg-gray-900 text-white px-4 py-3 text-center">
+            <div class="text-sm font-bold uppercase tracking-wider">Add Question</div>
+        </div>
+        
+        <!-- Content -->
+        <div class="p-6">
+            <form method="post" class="space-y-4">
                 {% csrf_token %}
-                <div class="modal-header">
-                    <div class="modal-header-content">
-                        <h4 class="modal-title" id="addQuestionModalLabel">
-                            <i class="fas fa-plus-circle me-2 text-primary"></i>Add System Design Question
-                        </h4>
-                        <p class="modal-subtitle">Help the community by sharing an interesting system design question</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                
+                <div>
+                    <label for="title" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">Title</label>
+                    <input type="text" id="title" name="title" required 
+                           class="w-full px-3 py-2 border border-gray-300 focus:border-gray-900 focus:outline-none" 
+                           placeholder="e.g., Design a URL Shortener">
                 </div>
-                <div class="modal-body">
-                    <div class="question-form">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label for="{{ form.title.id_for_label }}" class="form-label">
-                                        <i class="fas fa-heading me-1"></i>Question Title*
-                                    </label>
-                                    {{ form.title }}
-                                    {% if form.title.errors %}
-                                        <div class="text-danger small">{{ form.title.errors.0 }}</div>
-                                    {% endif %}
-                                    <div class="form-text">Make it clear and specific</div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="{{ form.difficulty.id_for_label }}" class="form-label">
-                                        <i class="fas fa-chart-bar me-1"></i>Difficulty
-                                    </label>
-                                    {{ form.difficulty }}
-                                    {% if form.difficulty.errors %}
-                                        <div class="text-danger small">{{ form.difficulty.errors.0 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.description.id_for_label }}" class="form-label">
-                                <i class="fas fa-align-left me-1"></i>Description*
-                            </label>
-                            {{ form.description }}
-                            {% if form.description.errors %}
-                                <div class="text-danger small">{{ form.description.errors.0 }}</div>
-                            {% endif %}
-                            <div class="form-text">Include requirements, constraints, and expected scale</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="{{ form.company.id_for_label }}" class="form-label">
-                                <i class="fas fa-building me-1"></i>Company (Optional)
-                            </label>
-                            {{ form.company }}
-                            {% if form.company.errors %}
-                                <div class="text-danger small">{{ form.company.errors.0 }}</div>
-                            {% endif %}
-                            <div class="form-text">Which company asked this question?</div>
-                        </div>
-                        
-                        <!-- Live Preview -->
-                        <div class="question-preview mt-4">
-                            <h6 class="text-muted mb-2">
-                                <i class="fas fa-eye me-1"></i>Preview
-                            </h6>
-                            <div class="preview-card">
-                                <div class="preview-meta">
-                                    <span class="difficulty-badge medium" id="previewDifficulty">Medium</span>
-                                    <span class="company-tag" id="previewCompany" style="display: none;"></span>
-                                </div>
-                                <h5 id="previewTitle">Your question title will appear here</h5>
-                                <p id="previewDescription" class="text-muted">Your description will appear here...</p>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div>
+                    <label for="description" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">Description</label>
+                    <textarea id="description" name="description" rows="3" required 
+                              class="w-full px-3 py-2 border border-gray-300 focus:border-gray-900 focus:outline-none resize-vertical" 
+                              placeholder="Describe the challenge..."></textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Cancel
+                
+                <div>
+                    <label for="difficulty" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">Difficulty</label>
+                    <select id="difficulty" name="difficulty" required 
+                            class="w-full px-3 py-2 border border-gray-300 focus:border-gray-900 focus:outline-none">
+                        <option value="">Select difficulty</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 py-2 bg-indigo-600 text-white font-bold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                        Create
                     </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Add Question
+                    <button type="button" onclick="closeAddQuestionModal()" class="flex-1 py-2 border border-gray-900 text-gray-900 font-bold uppercase tracking-wide hover:bg-gray-900 hover:text-white transition-all duration-200">
+                        Cancel
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-{% endif %}
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Live preview functionality (minimal JS)
-    const titleInput = document.getElementById('title');
-    const descriptionInput = document.getElementById('description');
-    const companyInput = document.getElementById('company');
-    const difficultySelect = document.getElementById('difficulty');
+function openAddQuestionModal() {
+    document.getElementById('addQuestionModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
 
-    if (titleInput && descriptionInput && companyInput && difficultySelect) {
-        titleInput.addEventListener('input', updatePreview);
-        descriptionInput.addEventListener('input', updatePreview);
-        companyInput.addEventListener('input', updatePreview);
-        difficultySelect.addEventListener('change', updatePreview);
-    }
+function closeAddQuestionModal() {
+    document.getElementById('addQuestionModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
 
-    function updatePreview() {
-        const title = titleInput.value || 'Your question title will appear here';
-        const description = descriptionInput.value || 'Your description will appear here...';
-        const company = companyInput.value;
-        const difficulty = difficultySelect.value;
-
-        const previewTitle = document.getElementById('previewTitle');
-        const previewDescription = document.getElementById('previewDescription');
-        const difficultyBadge = document.getElementById('previewDifficulty');
-        const companyTag = document.getElementById('previewCompany');
-
-        if (previewTitle) previewTitle.textContent = title;
-        if (previewDescription) {
-            previewDescription.textContent = 
-                description.length > 100 ? description.substring(0, 100) + '...' : description;
-        }
-        
-        if (difficultyBadge) {
-            difficultyBadge.textContent = difficulty;
-            difficultyBadge.className = `difficulty-badge ${difficulty.toLowerCase()}`;
-        }
-
-        if (companyTag) {
-            if (company) {
-                companyTag.textContent = company;
-                companyTag.style.display = 'inline-block';
-            } else {
-                companyTag.style.display = 'none';
-            }
-        }
+document.getElementById('addQuestionModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAddQuestionModal();
     }
 });
 </script>
+{% endif %}
 {% endblock content %}

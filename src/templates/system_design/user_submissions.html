@@ -1,178 +1,169 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/app/user_submissions.css' %}">
-{% endblock head %}
-
 {% block title %}My System Design Submissions - JobSage{% endblock title %}
 
 {% block content %}
-<div class="submissions-page">
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="header-content">
-                        <div class="breadcrumb-nav">
-                            <a href="{% url 'system-design-page' %}" class="breadcrumb-link">
-                                <i class="fas fa-sitemap me-1"></i>System Design
-                            </a>
-                            <span class="breadcrumb-separator">/</span>
-                            <span class="breadcrumb-current">My Submissions</span>
+<!-- Hero Section -->
+<section class="min-h-screen bg-white relative overflow-hidden">
+    <!-- Sharp geometric background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-gray-900 transform skew-x-12 origin-top-right"></div>
+        <div class="absolute top-0 right-0 w-1/4 h-full bg-gray-800 transform skew-x-6 origin-top-right"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex items-center min-h-screen">
+            <div class="w-full text-center">
+                <div class="max-w-5xl mx-auto space-y-6">
+                    <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider">
+                        <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                        Progress Dashboard
+                    </div>
+                    
+                    <h1 class="text-6xl lg:text-8xl font-black text-gray-900 leading-none tracking-tight">
+                        MY DESIGN
+                        <br>
+                        <span class="text-indigo-600">SUBMISSIONS</span>
+                    </h1>
+                    
+                    <div class="w-32 h-1 bg-indigo-600 mx-auto"></div>
+                    
+                    <p class="text-2xl text-gray-700 leading-relaxed font-light max-w-3xl mx-auto">
+                        Track your progress, review feedback, and see how your system design skills are improving over time.
+                    </p>
+                    
+                    <div class="flex items-center justify-center gap-8 text-sm font-medium uppercase tracking-wide text-gray-600 pt-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-indigo-600 text-white flex items-center justify-center mr-3 font-bold">{{ submissions.count }}</div>
+                            Total Submissions
                         </div>
-                        <h1 class="page-title">
-                            <i class="fas fa-history me-2"></i>My Design Submissions
-                        </h1>
-                        <p class="page-subtitle">
-                            Review your system design submissions and track your progress
-                        </p>
+                        {% if avg_score %}
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-gray-900 text-white flex items-center justify-center mr-3 font-bold">{{ avg_score|floatformat:0 }}</div>
+                                Average Score
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pt-8">
+                        <a href="{% url 'system-design-page' %}" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                            <div class="w-3 h-3 bg-white mr-3"></div>
+                            Practice More
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Submissions Content -->
-    <section class="submissions-content">
-        <div class="container">
-            {% if submissions %}
-            <div class="submissions-stats mb-4">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-clipboard-list"></i>
-                            </div>
-                            <div class="stat-info">
-                                <div class="stat-number">{{ submissions.count }}</div>
-                                <div class="stat-label">Total Submissions</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="stat-info">
-                                <div class="stat-number">
-                                    {% widthratio submissions|length 1 1 %}
-                                </div>
-                                <div class="stat-label">Avg Score</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                            <div class="stat-info">
-                                <div class="stat-number">75+</div>
-                                <div class="stat-label">Best Score</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-calendar"></i>
-                            </div>
-                            <div class="stat-info">
-                                <div class="stat-number">{{ submissions.first.created_at|date:"M d" }}</div>
-                                <div class="stat-label">Latest</div>
-                            </div>
-                        </div>
-                    </div>
+<!-- Submissions Content -->
+<section class="py-20 bg-gray-100">
+    <div class="container mx-auto px-6">
+        {% if submissions %}
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider mb-6">
+                    <div class="w-2 h-2 bg-indigo-400 mr-3"></div>
+                    Submission History
                 </div>
+                <h2 class="text-5xl lg:text-6xl font-black text-gray-900 mb-6 leading-none tracking-tight">
+                    YOUR PROGRESS
+                    <br>
+                    <span class="text-indigo-600">JOURNEY</span>
+                </h2>
+                <div class="w-24 h-1 bg-indigo-600 mx-auto"></div>
             </div>
 
-            <div class="submissions-list">
-                <div class="list-header">
-                    <h3>Your Submissions</h3>
-                    <a href="{% url 'system-design-page' %}" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>New Design
-                    </a>
-                </div>
-                
-                <div class="submissions-grid">
-                    {% for submission in submissions %}
-                    <div class="submission-card">
-                        <div class="submission-header">
-                            <div class="question-info">
-                                <h4 class="question-title">{{ submission.question.title }}</h4>
-                                <div class="question-meta">
-                                    <span class="difficulty-badge {{ submission.question.difficulty|lower }}">
-                                        {{ submission.question.difficulty }}
-                                    </span>
-                                    {% if submission.question.company %}
-                                    <span class="company-tag">{{ submission.question.company }}</span>
+            <div class="space-y-8">
+                {% for submission in submissions %}
+                    <div class="bg-white border-2 border-gray-300 hover:border-gray-900 transition-colors duration-200">
+                        <!-- Header -->
+                        <div class="bg-gray-900 text-white px-6 py-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-3 h-3 bg-red-500"></div>
+                                    <div class="w-3 h-3 bg-yellow-500"></div>
+                                    <div class="w-3 h-3 bg-green-500"></div>
+                                </div>
+                                <div class="text-sm font-mono font-bold uppercase tracking-wider">
+                                    SUBMISSION #{{ forloop.counter }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-6">
+                            <div class="grid lg:grid-cols-4 gap-6 items-center">
+                                <div class="lg:col-span-2">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center font-black text-lg">
+                                            {{ forloop.counter }}
+                                        </div>
+                                        <div>
+                                            <h3 class="text-xl font-black text-gray-900 uppercase tracking-wide leading-tight">{{ submission.question.title }}</h3>
+                                            <div class="flex items-center gap-3 mt-1">
+                                                <span class="px-2 py-1 bg-{% if submission.question.difficulty == 'Easy' %}green{% elif submission.question.difficulty == 'Medium' %}yellow{% else %}red{% endif %}-100 text-{% if submission.question.difficulty == 'Easy' %}green{% elif submission.question.difficulty == 'Medium' %}yellow{% else %}red{% endif %}-700 font-bold border border-{% if submission.question.difficulty == 'Easy' %}green{% elif submission.question.difficulty == 'Medium' %}yellow{% else %}red{% endif %}-300 text-xs uppercase tracking-wide">{{ submission.question.difficulty }}</span>
+                                                <span class="text-gray-600 font-medium uppercase tracking-wide text-sm">
+                                                    <i class="fas fa-calendar mr-1"></i>{{ submission.created_at|date:"M d, Y" }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if submission.analysis %}
+                                        <div class="grid grid-cols-3 gap-3 text-center">
+                                            <div class="p-3 bg-indigo-50 border border-indigo-200">
+                                                <div class="text-2xl font-black text-indigo-600">{{ submission.analysis.overall_score|floatformat:0 }}</div>
+                                                <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Overall</div>
+                                            </div>
+                                            <div class="p-3 bg-green-50 border border-green-200">
+                                                <div class="text-2xl font-black text-green-600">{{ submission.analysis.scalability_score|floatformat:0 }}</div>
+                                                <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Scale</div>
+                                            </div>
+                                            <div class="p-3 bg-yellow-50 border border-yellow-200">
+                                                <div class="text-2xl font-black text-yellow-600">{{ submission.analysis.complexity_score|floatformat:0 }}</div>
+                                                <div class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Complex</div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="p-4 bg-gray-50 border border-gray-200 text-center">
+                                            <i class="fas fa-clock text-gray-400 text-xl mb-2"></i>
+                                            <p class="text-gray-600 font-medium uppercase tracking-wide text-sm">Analysis Pending</p>
+                                        </div>
                                     {% endif %}
                                 </div>
-                            </div>
-                            <div class="submission-score">
-                                {% if submission.overall_score %}
-                                <div class="score-circle {{ submission.overall_score|floatformat:0|add:'0'|slice:':1'|add:'0' }}">
-                                    <span class="score-number">{{ submission.overall_score|floatformat:0 }}</span>
-                                </div>
-                                {% else %}
-                                <div class="score-circle pending">
-                                    <span class="score-number">--</span>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="submission-details">
-                            <div class="detail-row">
-                                <span class="detail-label">
-                                    <i class="fas fa-clock me-1"></i>Submitted
-                                </span>
-                                <span class="detail-value">{{ submission.created_at|date:"M d, Y H:i" }}</span>
-                            </div>
-                            
-                            {% if submission.analysis_result %}
-                            <div class="detail-row">
-                                <span class="detail-label">
-                                    <i class="fas fa-chart-bar me-1"></i>Scores
-                                </span>
-                                <div class="score-breakdown">
-                                    <span class="mini-score">S: {{ submission.scalability_score|default:"-" }}</span>
-                                    <span class="mini-score">R: {{ submission.reliability_score|default:"-" }}</span>
+                                
+                                <div class="flex flex-wrap lg:flex-col gap-2">
+                                    {% if submission.analysis %}
+                                        <a href="{% url 'design-results' submission.question.id submission.id %}" class="flex-1 lg:w-full py-2 px-4 bg-indigo-600 text-white font-bold text-center uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200 text-sm">
+                                            <i class="fas fa-chart-bar mr-1"></i> View Results
+                                        </a>
+                                    {% endif %}
+                                    <a href="{% url 'design-question' submission.question.id %}" class="flex-1 lg:w-full py-2 px-4 bg-gray-900 text-white font-bold text-center uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200 text-sm">
+                                        <i class="fas fa-redo mr-1"></i> Retry
+                                    </a>
                                 </div>
                             </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="submission-actions">
-                            <a href="{% url 'design-results' submission.id %}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye me-1"></i>View Results
-                            </a>
-                            <a href="{% url 'design-question' submission.question.id %}" class="btn btn-outline-secondary btn-sm">
-                                <i class="fas fa-redo me-1"></i>Try Again
-                            </a>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
+                {% endfor %}
             </div>
-            
-            {% else %}
-            <!-- Empty State -->
-            <div class="empty-submissions">
-                <div class="empty-icon">
-                    <i class="fas fa-clipboard-list"></i>
+        {% else %}
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-gray-300 flex items-center justify-center mx-auto mb-8">
+                    <i class="fas fa-clipboard-list text-gray-600 text-4xl"></i>
                 </div>
-                <h3>No Submissions Yet!</h3>
-                <p>You haven't submitted any system designs yet. Start practicing to see your progress here.</p>
-                <a href="{% url 'system-design-page' %}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-rocket me-2"></i>Start Your First Design
+                <h3 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-wide">No Submissions Yet</h3>
+                <p class="text-gray-600 mb-8 font-light max-w-md mx-auto">
+                    Start practicing system design problems to track your progress and get AI-powered feedback!
+                </p>
+                <a href="{% url 'system-design-page' %}" class="inline-flex items-center justify-center px-8 py-4 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                    <div class="w-3 h-3 bg-white mr-3"></div>
+                    Start Practicing
                 </a>
             </div>
-            {% endif %}
-        </div>
-    </section>
-</div>
+        {% endif %}
+    </div>
+</section>
 {% endblock content %}

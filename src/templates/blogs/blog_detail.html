@@ -1,388 +1,114 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ blog.title }}{% endblock %}
-
-{% block head %}
-<style>
-:root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --shadow-light: 0 5px 20px rgba(0, 0, 0, 0.08);
-    --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.12);
-    --border-radius-lg: 20px;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.blog-hero {
-    background: var(--primary-gradient);
-    color: white;
-    padding: 2rem 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.blog-hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-    opacity: 0.3;
-}
-
-.breadcrumb-nav {
-    position: relative;
-    z-index: 2;
-    margin-bottom: var(--spacing-md);
-}
-
-.breadcrumb-link {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.breadcrumb-link:hover {
-    color: white;
-}
-
-.blog-content-section {
-    padding: var(--spacing-xl) 0;
-    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-}
-
-.blog-article {
-    background: white;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-light);
-    overflow: hidden;
-    position: relative;
-}
-
-.blog-article::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--primary-gradient);
-}
-
-.blog-header {
-    padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.blog-title {
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    font-weight: 800;
-    color: #2c3e50;
-    margin-bottom: var(--spacing-md);
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-}
-
-.blog-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-    flex-wrap: wrap;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #6c757d;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-.meta-item i {
-    color: #667eea;
-}
-
-.blog-badges {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: var(--spacing-md);
-    flex-wrap: wrap;
-}
-
-.category-badge {
-    background: var(--primary-gradient);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-light);
-}
-
-.role-badge {
-    background: var(--accent-gradient);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-light);
-}
-
-.blog-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.tag-badge {
-    background: #f8f9fa;
-    color: #495057;
-    border: 1px solid #dee2e6;
-    padding: 0.25rem 0.75rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: var(--transition);
-}
-
-.tag-badge:hover {
-    background: var(--primary-gradient);
-    color: white;
-    border-color: transparent;
-}
-
-.blog-body {
-    padding: var(--spacing-xl);
-}
-
-.blog-content {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #2c3e50;
-    font-weight: 400;
-}
-
-.blog-content p {
-    margin-bottom: var(--spacing-md);
-}
-
-.blog-content h1, .blog-content h2, .blog-content h3,
-.blog-content h4, .blog-content h5, .blog-content h6 {
-    margin-top: var(--spacing-lg);
-    margin-bottom: var(--spacing-md);
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.blog-content ul, .blog-content ol {
-    margin-bottom: var(--spacing-md);
-    padding-left: var(--spacing-lg);
-}
-
-.blog-content li {
-    margin-bottom: 0.5rem;
-}
-
-.blog-content blockquote {
-    border-left: 4px solid #667eea;
-    padding-left: var(--spacing-md);
-    margin: var(--spacing-lg) 0;
-    font-style: italic;
-    color: #6c757d;
-    background: #f8f9fa;
-    padding: var(--spacing-md);
-    border-radius: 0 8px 8px 0;
-}
-
-.blog-content code {
-    background: #f8f9fa;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    color: #e83e8c;
-    font-size: 0.9rem;
-}
-
-.blog-actions {
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    background: #f8f9fa;
-    display: flex;
-    gap: var(--spacing-md);
-    flex-wrap: wrap;
-}
-
-.btn {
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 600;
-    transition: var(--transition);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.btn-edit {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.btn-edit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    color: white;
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-}
-
-.btn-delete:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
-    color: white;
-}
-
-.blog-navigation {
-    margin-top: var(--spacing-lg);
-    text-align: center;
-}
-
-.btn-back {
-    background: #6c757d;
-    color: white;
-    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-}
-
-.btn-back:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
-    color: white;
-}
-
-@media (max-width: 768px) {
-    .blog-meta {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-md);
-    }
-    
-    .blog-badges {
-        margin-top: var(--spacing-md);
-    }
-    
-    .blog-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .btn {
-        justify-content: center;
-    }
-    
-    .blog-header, .blog-body, .blog-actions {
-        padding-left: var(--spacing-md);
-        padding-right: var(--spacing-md);
-    }
-}
-</style>
-{% endblock %}
+{% block title %}{{ blog.title }} - JobSage{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="blog-hero">
-    <div class="container">
-        <nav class="breadcrumb-nav">
-            <a href="{% url 'blog_list' %}" class="breadcrumb-link">
-                <i class="fas fa-arrow-left me-2"></i>Back to Blogs
-            </a>
-        </nav>
+<section class="min-h-screen bg-white relative overflow-hidden">
+    <!-- Sharp geometric background -->
+    <div class="absolute inset-0">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-gray-900 transform skew-x-12 origin-top-right"></div>
+        <div class="absolute top-0 right-0 w-1/4 h-full bg-gray-800 transform skew-x-6 origin-top-right"></div>
     </div>
-</section>
-
-<!-- Blog Content -->
-<section class="blog-content-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <article class="blog-article">
-                    <header class="blog-header">
-                        <h1 class="blog-title">{{ blog.title }}</h1>
-                        
-                        <div class="blog-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-user"></i>
-                                <span>{{ blog.author.username }}</span>
+    
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="flex items-center min-h-screen">
+            <div class="w-full max-w-4xl mx-auto">
+                <!-- Breadcrumb -->
+                <div class="mb-8">
+                    <a href="{% url 'blog_list' %}" class="inline-flex items-center px-6 py-2 bg-gray-900 text-white text-sm font-medium uppercase tracking-wider hover:bg-gray-800 transition-colors duration-200">
+                        <i class="fas fa-arrow-left mr-3"></i>
+                        Back to Blogs
+                    </a>
+                </div>
+                
+                <!-- Blog Card -->
+                <div class="bg-white border-2 border-gray-300 shadow-2xl">
+                    <!-- Header -->
+                    <div class="bg-gray-900 text-white px-6 py-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-3 h-3 bg-red-500"></div>
+                                <div class="w-3 h-3 bg-yellow-500"></div>
+                                <div class="w-3 h-3 bg-green-500"></div>
                             </div>
-                            <div class="meta-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>{{ blog.created_at|date:"F d, Y" }}</span>
+                            <div class="text-sm font-mono font-bold uppercase tracking-wider">
+                                BLOG POST
                             </div>
-                            {% if blog.updated_at != blog.created_at %}
-                                <div class="meta-item">
-                                    <i class="fas fa-edit"></i>
-                                    <span>Updated {{ blog.updated_at|date:"F d, Y" }}</span>
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        {% if blog.category or blog.target_role %}
-                            <div class="blog-badges">
-                                {% if blog.category %}
-                                    <span class="category-badge">{{ blog.category }}</span>
-                                {% endif %}
-                                {% if blog.target_role %}
-                                    <span class="role-badge">{{ blog.target_role }}</span>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                        
-                        {% if blog.tags %}
-                            <div class="blog-tags">
-                                {% for tag in blog.tags_list %}
-                                    <span class="tag-badge"># {{ tag }}</span>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </header>
-
-                    <div class="blog-body">
-                        <div class="blog-content">
-                            {{ blog.content|linebreaks }}
                         </div>
                     </div>
+                    
+                    <!-- Content -->
+                    <div class="p-8">
+                        <header class="mb-8">
+                            <h1 class="text-4xl lg:text-5xl font-black text-gray-900 mb-6 leading-none tracking-tight">{{ blog.title }}</h1>
+                            
+                            <div class="flex flex-wrap items-center gap-6 mb-6 text-sm text-gray-600 font-medium uppercase tracking-wide">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user mr-2"></i>
+                                    <span>{{ blog.author.username }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-calendar mr-2"></i>
+                                    <span>{{ blog.created_at|date:"F d, Y" }}</span>
+                                </div>
+                                {% if blog.updated_at != blog.created_at %}
+                                    <div class="flex items-center">
+                                        <i class="fas fa-edit mr-2"></i>
+                                        <span>Updated {{ blog.updated_at|date:"F d, Y" }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if blog.category or blog.target_role %}
+                                <div class="flex flex-wrap gap-3 mb-6">
+                                    {% if blog.category %}
+                                        <span class="px-4 py-2 bg-indigo-600 text-white font-semibold uppercase tracking-wide text-sm">{{ blog.category }}</span>
+                                    {% endif %}
+                                    {% if blog.target_role %}
+                                        <span class="px-4 py-2 bg-gray-900 text-white font-semibold uppercase tracking-wide text-sm">{{ blog.target_role }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            
+                            {% if blog.tags %}
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    {% for tag in blog.tags_list %}
+                                        <span class="px-3 py-1 bg-gray-100 text-gray-700 border border-gray-300 font-semibold uppercase tracking-wide text-xs"># {{ tag }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            
+                            <div class="w-24 h-1 bg-indigo-600"></div>
+                        </header>
 
-                    {% if user == blog.author %}
-                        <div class="blog-actions">
-                            <a href="{% url 'blog_update' blog.pk %}" class="btn btn-edit">
-                                <i class="fas fa-edit"></i> Edit Blog
-                            </a>
-                            <a href="{% url 'blog_delete' blog.pk %}" class="btn btn-delete">
-                                <i class="fas fa-trash"></i> Delete Blog
-                            </a>
+                        <div class="prose max-w-none">
+                            <div class="text-lg text-gray-700 leading-relaxed font-light">
+                                {{ blog.content|linebreaks }}
+                            </div>
                         </div>
-                    {% endif %}
-                </article>
 
-                <div class="blog-navigation">
-                    <a href="{% url 'blog_list' %}" class="btn btn-back">
-                        <i class="fas fa-arrow-left me-2"></i>Back to All Blogs
-                    </a>
+                        {% if user == blog.author %}
+                            <div class="flex flex-wrap gap-4 mt-8 pt-8 border-t border-gray-300">
+                                <a href="{% url 'blog_update' blog.pk %}" class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-semibold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
+                                    <i class="fas fa-edit mr-2"></i>
+                                    Edit Blog
+                                </a>
+                                <a href="{% url 'blog_delete' blog.pk %}" class="inline-flex items-center justify-center px-6 py-3 bg-red-600 text-white font-semibold uppercase tracking-wide hover:bg-red-500 transition-colors duration-200">
+                                    <i class="fas fa-trash mr-2"></i>
+                                    Delete Blog
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Floating accent elements -->
+                <div class="absolute -top-4 -right-4 w-12 h-12 bg-indigo-600 flex items-center justify-center">
+                    <i class="fas fa-blog text-white text-lg"></i>
+                </div>
+                <div class="absolute -bottom-4 -left-4 w-10 h-10 bg-gray-900 flex items-center justify-center">
+                    <i class="fas fa-user text-white"></i>
                 </div>
             </div>
         </div>
