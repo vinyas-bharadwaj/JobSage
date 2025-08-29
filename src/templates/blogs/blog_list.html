@@ -109,12 +109,13 @@
 </section>
 
 <!-- Blogs Section -->
-<section class="py-12 bg-gray-100">
+<section class="py-8 bg-gray-100">
     <div class="container mx-auto px-6">
         {% if page_obj %}
-            <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mb-12">
+            <!-- Masonry-style grid with smaller gaps -->
+            <div class="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
                 {% for blog in page_obj %}
-                    <article class="bg-white border-2 border-gray-300 hover:border-gray-900 transition-colors duration-200 group">
+                    <article class="bg-white border-2 border-gray-300 hover:border-gray-900 transition-colors duration-200 group break-inside-avoid mb-4">
                         <!-- Header -->
                         <div class="bg-gray-900 text-white px-4 py-2">
                             <div class="flex items-center justify-between">
@@ -130,24 +131,31 @@
                         </div>
                         
                         <!-- Content -->
-                        <div class="p-6">
-                            <h3 class="text-xl font-black text-gray-900 mb-3 uppercase tracking-wide leading-tight">{{ blog.title }}</h3>
-                            <p class="text-gray-700 font-light mb-4 leading-relaxed">{{ blog.content|truncatewords:20 }}</p>
+                        <div class="p-4">
+                            <h3 class="text-lg font-black text-gray-900 mb-2 uppercase tracking-wide leading-tight">{{ blog.title }}</h3>
                             
+                            <!-- Dynamic content preview based on content length -->
+                            {% with blog.content|safe|truncatewords:15 as preview %}
+                                <p class="text-gray-700 font-light mb-3 leading-relaxed text-sm">{{ preview }}</p>
+                            {% endwith %}
+                            
+                            <!-- Tags if available -->
                             {% if blog.tags %}
-                                <div class="flex flex-wrap gap-2 mb-4">
+                                <div class="flex flex-wrap gap-1 mb-3">
                                     {% for tag in blog.tags_list %}
                                         <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold uppercase tracking-wide border border-gray-300">{{ tag }}</span>
                                     {% endfor %}
                                 </div>
                             {% endif %}
                             
-                            <div class="flex items-center justify-between text-xs text-gray-600 font-medium uppercase tracking-wide mb-4">
-                                <span><i class="fas fa-user mr-1"></i>{{ blog.author.username }}</span>
-                                <span><i class="fas fa-calendar mr-1"></i>{{ blog.created_at|date:"M d, Y" }}</span>
+                            <!-- Meta info -->
+                            <div class="flex items-center justify-between text-xs text-gray-600 font-medium uppercase tracking-wide mb-3">
+                                <span class="truncate"><i class="fas fa-user mr-1"></i>{{ blog.author.username }}</span>
+                                <span><i class="fas fa-calendar mr-1"></i>{{ blog.created_at|date:"M d" }}</span>
                             </div>
                             
-                            <a href="{% url 'blog_detail' blog.pk %}" class="w-full inline-flex items-center justify-center py-2 bg-gray-900 text-white font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200 group-hover:bg-indigo-600">
+                            <!-- Read more button -->
+                            <a href="{% url 'blog_detail' blog.pk %}" class="w-full inline-flex items-center justify-center py-2 bg-gray-900 text-white font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors duration-200 group-hover:bg-indigo-600 text-sm">
                                 Read More
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -158,7 +166,7 @@
 
             <!-- Pagination -->
             {% if page_obj.has_other_pages %}
-                <div class="flex justify-center">
+                <div class="flex justify-center mt-8">
                     <nav class="flex items-center space-x-2">
                         {% if page_obj.has_previous %}
                             <a href="?page=1" class="w-10 h-10 bg-gray-900 text-white flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200">

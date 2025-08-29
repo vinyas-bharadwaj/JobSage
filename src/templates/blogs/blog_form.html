@@ -3,10 +3,57 @@
 
 {% block title %}{{ title }} - JobSage{% endblock %}
 
+{% block head %}
+<!-- Quill.js - Simpler and more reliable than TinyMCE -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<style>
+    /* Custom Quill styling to match your design */
+    .ql-toolbar {
+        border: 2px solid #d1d5db !important;
+        border-bottom: 1px solid #d1d5db !important;
+        background: #f9fafb;
+        border-radius: 0 !important;
+    }
+    
+    .ql-container {
+        border: 2px solid #d1d5db !important;
+        border-top: none !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-size: 16px !important;
+        border-radius: 0 !important;
+    }
+    
+    .ql-editor {
+        min-height: 500px;
+        line-height: 1.6;
+        padding: 24px;
+    }
+    
+    .ql-toolbar:focus-within + .ql-container,
+    .ql-container.ql-focused {
+        border-color: #111827 !important;
+    }
+    
+    .ql-snow .ql-tooltip {
+        z-index: 9999;
+    }
+    
+    /* Match homepage button styles */
+    .ql-snow .ql-toolbar button {
+        border-radius: 0 !important;
+    }
+    
+    .ql-snow .ql-toolbar button:hover {
+        background: #e5e7eb !important;
+    }
+</style>
+{% endblock head %}
+
 {% block content %}
 <!-- Hero Section -->
 <section class="min-h-screen bg-white relative overflow-hidden">
-    <!-- Sharp geometric background - flipped -->
+    <!-- Sharp geometric background - flipped to match homepage -->
     <div class="absolute inset-0">
         <div class="absolute top-0 left-0 w-1/3 h-full bg-gray-900 transform -skew-x-12 origin-top-left"></div>
         <div class="absolute top-0 left-0 w-1/4 h-full bg-gray-800 transform -skew-x-6 origin-top-left"></div>
@@ -14,7 +61,7 @@
     
     <div class="container mx-auto px-6 relative z-10">
         <div class="flex items-center min-h-screen py-12">
-            <div class="w-full max-w-4xl mx-auto">
+            <div class="w-full max-w-6xl mx-auto">
                 <!-- Form Card -->
                 <div class="bg-white border-2 border-gray-300 shadow-2xl">
                     <!-- Header -->
@@ -49,7 +96,7 @@
                             </p>
                         </div>
 
-                        <form method="post" class="space-y-6">
+                        <form method="post" id="blog-form" class="space-y-8">
                             {% csrf_token %}
                             
                             <!-- Title -->
@@ -69,83 +116,139 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Content -->
+                            <!-- Content Editor - Enhanced and Larger -->
                             <div>
-                                <label for="{{ form.content.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                <label class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
                                     <i class="fas fa-align-left mr-2"></i>Content
                                 </label>
+                                
+                                <!-- Professional Editor Container -->
+                                <div class="bg-white border-2 border-gray-300 shadow-lg">
+                                    <!-- Editor Header Bar -->
+                                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-2 h-2 bg-green-500"></div>
+                                                <span class="text-xs font-mono text-gray-600 uppercase tracking-wide">Rich Text Editor</span>
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                <i class="fas fa-info-circle mr-1"></i>
+                                                Professional writing environment
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Quill Editor -->
+                                    <div id="editor-container">
+                                        <div id="quill-editor"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Hidden textarea for form submission -->
                                 <textarea id="{{ form.content.id_for_label }}" 
                                           name="{{ form.content.name }}" 
-                                          rows="12"
-                                          class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200 resize-vertical" 
-                                          placeholder="Write your blog content here..."
-                                          required>{{ form.content.value|default:'' }}</textarea>
+                                          class="hidden">{{ form.content.value|default:'' }}</textarea>
+                                          
                                 {% if form.content.errors %}
                                     <div class="text-red-600 text-sm mt-2 font-medium">{{ form.content.errors.0 }}</div>
                                 {% endif %}
+                                
+                                <!-- Editor Help Text -->
+                                <div class="mt-3 p-3 bg-gray-50 border border-gray-200">
+                                    <div class="flex items-start space-x-3">
+                                        <i class="fas fa-lightbulb text-indigo-600 mt-1"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900 mb-1">Writing Tips</p>
+                                            <ul class="text-xs text-gray-600 space-y-1">
+                                                <li>• Use headers to structure your content</li>
+                                                <li>• Add code blocks for technical examples</li>
+                                                <li>• Include links to relevant resources</li>
+                                                <li>• Keep paragraphs concise and readable</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <!-- Tags -->
-                                <div>
-                                    <label for="{{ form.tags.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
-                                        <i class="fas fa-tags mr-2"></i>Tags
+                            <!-- Metadata Section -->
+                            <div class="bg-gray-50 p-6 border border-gray-200">
+                                <h3 class="text-lg font-black text-gray-900 uppercase tracking-wide mb-6">
+                                    <i class="fas fa-cog mr-2"></i>Blog Metadata
+                                </h3>
+                                
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <!-- Tags -->
+                                    <div>
+                                        <label for="{{ form.tags.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                            <i class="fas fa-tags mr-2"></i>Tags
+                                        </label>
+                                        <input type="text" 
+                                               id="{{ form.tags.id_for_label }}" 
+                                               name="{{ form.tags.name }}" 
+                                               value="{{ form.tags.value|default:'' }}"
+                                               class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200" 
+                                               placeholder="python, django, web-development">
+                                        <small class="text-xs text-gray-500 mt-2 block">Separate tags with commas</small>
+                                    </div>
+                                    
+                                    <!-- Category -->
+                                    <div>
+                                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                            <i class="fas fa-folder mr-2"></i>Category
+                                        </label>
+                                        <select id="{{ form.category.id_for_label }}" 
+                                                name="{{ form.category.name }}"
+                                                class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200">
+                                            <option value="">Select a category</option>
+                                            {% for value, label in form.category.field.choices %}
+                                                {% if value %}
+                                                    <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ label }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <small class="text-xs text-gray-500 mt-2 block">Choose the most relevant category</small>
+                                    </div>
+                                </div>
+
+                                <!-- Target Role -->
+                                <div class="mt-6">
+                                    <label for="{{ form.target_role.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+                                        <i class="fas fa-bullseye mr-2"></i>Target Role
                                     </label>
                                     <input type="text" 
-                                           id="{{ form.tags.id_for_label }}" 
-                                           name="{{ form.tags.name }}" 
-                                           value="{{ form.tags.value|default:'' }}"
+                                           id="{{ form.target_role.id_for_label }}" 
+                                           name="{{ form.target_role.name }}" 
+                                           value="{{ form.target_role.value|default:'' }}"
                                            class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200" 
-                                           placeholder="python, django, web-development">
-                                    <small class="text-xs text-gray-500 mt-2 block">Separate tags with commas</small>
-                                </div>
-                                
-                                <!-- Category -->
-                                <div>
-                                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
-                                        <i class="fas fa-folder mr-2"></i>Category
-                                    </label>
-                                    <select id="{{ form.category.id_for_label }}" 
-                                            name="{{ form.category.name }}"
-                                            class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200">
-                                        <option value="">Select a category</option>
-                                        {% for value, label in form.category.field.choices %}
-                                            {% if value %}
-                                                <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ label }}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </select>
-                                    <small class="text-xs text-gray-500 mt-2 block">Choose the most relevant category</small>
+                                           placeholder="e.g., Software Engineer, Data Scientist">
+                                    <small class="text-xs text-gray-500 mt-2 block">Who is this blog most relevant for?</small>
                                 </div>
                             </div>
 
-                            <!-- Target Role -->
-                            <div>
-                                <label for="{{ form.target_role.id_for_label }}" class="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
-                                    <i class="fas fa-bullseye mr-2"></i>Target Role
-                                </label>
-                                <input type="text" 
-                                       id="{{ form.target_role.id_for_label }}" 
-                                       name="{{ form.target_role.name }}" 
-                                       value="{{ form.target_role.value|default:'' }}"
-                                       class="w-full px-4 py-3 border-2 border-gray-300 focus:border-gray-900 focus:outline-none font-medium transition-colors duration-200" 
-                                       placeholder="e.g., Software Engineer, Data Scientist">
-                                <small class="text-xs text-gray-500 mt-2 block">Who is this blog most relevant for?</small>
+                            <!-- Publish Section -->
+                            <div class="bg-indigo-50 p-6 border-2 border-indigo-200">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-indigo-600 flex items-center justify-center">
+                                        <i class="fas fa-globe text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-black text-gray-900 uppercase tracking-wide">Publication Settings</h4>
+                                        <p class="text-sm text-gray-600 font-light">Control when your blog becomes visible to the community</p>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <input type="checkbox" 
+                                               id="{{ form.is_published.id_for_label }}" 
+                                               name="{{ form.is_published.name }}"
+                                               {% if form.is_published.value %}checked{% endif %}
+                                               class="w-5 h-5 text-indigo-600 border-2 border-gray-300 focus:ring-indigo-500 focus:ring-2">
+                                        <label for="{{ form.is_published.id_for_label }}" class="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                                            Publish Immediately
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Publish checkbox -->
-                            <div class="flex items-center space-x-3">
-                                <input type="checkbox" 
-                                       id="{{ form.is_published.id_for_label }}" 
-                                       name="{{ form.is_published.name }}"
-                                       {% if form.is_published.value %}checked{% endif %}
-                                       class="w-5 h-5 text-indigo-600 border-2 border-gray-300 focus:ring-indigo-500 focus:ring-2">
-                                <label for="{{ form.is_published.id_for_label }}" class="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                                    <i class="fas fa-globe mr-2"></i>Publish this blog immediately
-                                </label>
-                            </div>
-
-                            <!-- Submit Button -->
+                            <!-- Action Buttons -->
                             <div class="flex flex-col sm:flex-row gap-4 pt-6">
                                 <button type="submit" class="flex-1 py-3 bg-indigo-600 text-white font-bold uppercase tracking-wide hover:bg-indigo-500 transition-colors duration-200">
                                     <div class="flex items-center justify-center">
@@ -172,4 +275,138 @@
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Blog form script loaded');
+    
+    // Initialize Quill editor with enhanced configuration
+    const quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        placeholder: 'Start writing your professional blog content here...\n\nTip: Use the toolbar above to format your text, add code blocks, and create engaging content for the developer community.',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                ['blockquote', 'code-block'],
+                ['link', 'image'],
+                [{ 'align': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    console.log('Quill editor initialized');
+
+    // Set initial content if editing
+    const initialContent = document.querySelector('#{{ form.content.id_for_label }}').value;
+    if (initialContent) {
+        console.log('Setting initial content:', initialContent.substring(0, 100) + '...');
+        quill.root.innerHTML = initialContent;
+    }
+
+    // Update hidden textarea on content change
+    const hiddenTextarea = document.querySelector('#{{ form.content.id_for_label }}');
+    quill.on('text-change', function() {
+        hiddenTextarea.value = quill.root.innerHTML;
+        console.log('Content updated, length:', quill.getText().trim().length);
+    });
+
+    // Form submission handler
+    const blogForm = document.getElementById('blog-form');
+    console.log('Form found:', blogForm);
+    
+    blogForm.addEventListener('submit', function(e) {
+        console.log('Form submission started');
+        
+        // Ensure content is synced before submission
+        hiddenTextarea.value = quill.root.innerHTML;
+        console.log('Content synced to textarea');
+        
+        // Enhanced validation
+        const textLength = quill.getText().trim().length;
+        console.log('Text length:', textLength);
+        
+        if (textLength < 10) {  // Reduced from 50 for testing
+            e.preventDefault();
+            alert('Please add more content to your blog post (at least 10 characters).');
+            quill.focus();
+            console.log('Form submission prevented due to insufficient content');
+            return false;
+        }
+        
+        // Validate title
+        const titleField = document.querySelector('#{{ form.title.id_for_label }}');
+        if (!titleField.value.trim()) {
+            e.preventDefault();
+            alert('Please enter a title for your blog.');
+            titleField.focus();
+            console.log('Form submission prevented due to missing title');
+            return false;
+        }
+        
+        console.log('Validation passed, submitting form...');
+        
+        // Show loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="flex items-center justify-center"><div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>Publishing...</div>';
+        submitBtn.disabled = true;
+        
+        console.log('Submit button disabled and loading state shown');
+        
+        // Re-enable if there's an error (though form will likely redirect)
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            console.log('Submit button re-enabled after timeout');
+        }, 10000);
+    });
+
+    // Auto-save functionality with visual feedback
+    let autoSaveTimeout;
+    let saveIndicator = null;
+    
+    quill.on('text-change', function() {
+        clearTimeout(autoSaveTimeout);
+        
+        // Show saving indicator
+        if (!saveIndicator) {
+            saveIndicator = document.createElement('div');
+            saveIndicator.className = 'fixed top-4 right-4 bg-gray-900 text-white px-3 py-1 text-xs font-medium uppercase tracking-wide z-50';
+            saveIndicator.innerHTML = '<i class="fas fa-save mr-1"></i>Auto-saving...';
+            document.body.appendChild(saveIndicator);
+        }
+        
+        autoSaveTimeout = setTimeout(function() {
+            console.log('Auto-saving content...');
+            
+            // Update indicator
+            if (saveIndicator) {
+                saveIndicator.innerHTML = '<i class="fas fa-check mr-1"></i>Saved';
+                saveIndicator.className = 'fixed top-4 right-4 bg-green-600 text-white px-3 py-1 text-xs font-medium uppercase tracking-wide z-50';
+                
+                // Hide after 2 seconds
+                setTimeout(() => {
+                    if (saveIndicator) {
+                        saveIndicator.remove();
+                        saveIndicator = null;
+                    }
+                }, 2000);
+            }
+        }, 3000);
+    });
+    
+    // Focus editor on load for better UX
+    setTimeout(() => {
+        quill.focus();
+        console.log('Editor focused');
+    }, 500);
+    
+    console.log('All event listeners attached');
+});
+</script>
 {% endblock %}

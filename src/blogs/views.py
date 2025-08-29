@@ -9,10 +9,16 @@ from .embeddings import generate_embeddings
 
 def blog_list(request):
     """Display all published blogs"""
-    profile = request.user.profile
-
-    # Checking for similarity using L2Distance in pgvector
-    blogs = Blog.objects.order_by(L2Distance('embeddings', profile.embeddings))
+    # Fix the embeddings check to avoid the array boolean error
+    if (request.user.is_authenticated and 
+        hasattr(request.user, 'profile') and 
+        request.user.profile.embeddings is not None):
+        try:
+            blogs = Blog.objects.filter(is_published=True).order_by(L2Distance('embeddings', request.user.profile.embeddings))
+        except:
+            blogs = Blog.objects.filter(is_published=True).order_by('-created_at')
+    else:
+        blogs = Blog.objects.filter(is_published=True).order_by('-created_at')
 
     paginator = Paginator(blogs, 10)  # 10 blogs per page
     page_number = request.GET.get('page')
@@ -29,14 +35,38 @@ def blog_detail(request, pk):
 def blog_create(request):
     """Create a new blog"""
     if request.method == 'POST':
+        print("POST request received")
+        print("POST data:", request.POST)
+        
         form = BlogForm(request.POST)
-        if form.is_valid():
+        print("Form is valid:", form.is_valid())
+        
+        if not form.is_valid():
+            print("Form errors:", form.errors)
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+        else:
             blog = form.save(commit=False)
             blog.author = request.user
-            blog.embeddings = generate_embeddings(blog.info)
+            
+            # Use the info property from the model
+            try:
+                blog_info_text = " ".join(blog.info)
+                blog.embeddings = generate_embeddings(blog_info_text)
+                print("Embeddings generated successfully")
+            except Exception as e:
+                print(f"Embeddings generation failed: {e}")
+                blog.embeddings = None
+                
             blog.save()
+            print(f"Blog saved with ID: {blog.id}")
             messages.success(request, 'Blog created successfully!')
-            return redirect('blog_detail', pk=blog.pk)
+            
+            if blog.is_published:
+                return redirect('blog_detail', pk=blog.pk)
+            else:
+                return redirect('my_blogs')
     else:
         form = BlogForm()
     
@@ -49,9 +79,27 @@ def blog_update(request, pk):
     if request.method == 'POST':
         form = BlogForm(request.POST, instance=blog)
         if form.is_valid():
-            form.save()
+            updated_blog = form.save(commit=False)
+            
+            # Update embeddings using info property
+            try:
+                blog_info_text = " ".join(updated_blog.info)
+                updated_blog.embeddings = generate_embeddings(blog_info_text)
+            except Exception as e:
+                print(f"Embeddings update failed: {e}")
+                
+            updated_blog.save()
             messages.success(request, 'Blog updated successfully!')
-            return redirect('blog_detail', pk=blog.pk)
+            
+            if updated_blog.is_published:
+                return redirect('blog_detail', pk=blog.pk)
+            else:
+                return redirect('my_blogs')
+        else:
+            # Add form errors to messages for debugging
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = BlogForm(instance=blog)
     
@@ -72,7 +120,7 @@ def blog_delete(request, pk):
 @login_required
 def my_blogs(request):
     """Display current user's blogs"""
-    blogs = Blog.objects.filter(author=request.user)
+    blogs = Blog.objects.filter(author=request.user).order_by('-created_at')
     paginator = Paginator(blogs, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

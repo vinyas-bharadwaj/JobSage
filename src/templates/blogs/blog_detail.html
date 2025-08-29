@@ -82,10 +82,8 @@
                             <div class="w-24 h-1 bg-indigo-600"></div>
                         </header>
 
-                        <div class="prose max-w-none">
-                            <div class="text-lg text-gray-700 leading-relaxed font-light">
-                                {{ blog.content|linebreaks }}
-                            </div>
+                        <div class="blog-content prose prose-lg max-w-none">
+                            {{ blog.content|safe }}
                         </div>
 
                         {% if user == blog.author %}

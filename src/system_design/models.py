@@ -24,8 +24,13 @@ class SystemDesignSubmission(models.Model):
     question = models.ForeignKey(SystemDesignQuestion, on_delete=models.CASCADE, related_name='submissions')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-    # Store the Excalidraw data
-    design_data = models.JSONField(help_text="Excalidraw elements and app state")
+    # Store the uploaded design image (nullable for existing records)
+    design_image = models.ImageField(
+        upload_to='design_submissions/', 
+        help_text="Uploaded design image",
+        null=True,
+        blank=True
+    )
     
     # Analysis results
     overall_score = models.IntegerField(default=0)
@@ -45,21 +50,17 @@ class SystemDesignSubmission(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.question.title}"
     
-    def save_design_data(self, elements, app_state):
-        """Helper method to save Excalidraw data"""
-        self.design_data = {
-            'elements': elements,
-            'appState': app_state
-        }
+    def get_design_image_url(self):
+        """Get the URL of the uploaded design image"""
+        if self.design_image:
+            return self.design_image.url
+        return None
     
-    def get_design_elements(self):
-        """Get design elements from stored data"""
-        return self.design_data.get('elements', [])
-    
-    def get_app_state(self):
-        """Get app state from stored data"""
-        return self.design_data.get('appState', {})
+    def get_design_image_path(self):
+        """Get the file path of the uploaded design image"""
+        if self.design_image:
+            return self.design_image.path
+        return None
     
     class Meta:
         ordering = ['-created_at']
-        unique_together = ['question', 'user']  # One submission per user per question

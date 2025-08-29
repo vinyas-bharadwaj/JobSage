@@ -14,7 +14,6 @@ class Blog(models.Model):
     embeddings = VectorField(dimensions=768, null=True, blank=True)
     is_published = models.BooleanField(default=True)
     
-    
     # Fields for TF-IDF matching with user profiles
     tags = models.CharField(
         max_length=200, 
@@ -23,45 +22,35 @@ class Blog(models.Model):
     )
     
     category = models.CharField(
-        max_length=50,
+        max_length=100,
         blank=True,
-        help_text="Category: Tutorial, News, Career Advice, etc."
+        help_text="Category of the blog post"
     )
     
     target_role = models.CharField(
-        max_length=50,
+        max_length=200,  # Increased from 50 to 200
         blank=True,
-        help_text="Target role: Frontend Developer, Data Scientist, etc."
+        help_text="Target roles (comma-separated): Software Engineer, Data Scientist"
     )
-    
-    class Meta:
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return self.title
-    
-    def get_absolute_url(self):
-        return reverse('blog_detail', kwargs={'pk': self.pk})
-    
+
     @property
     def info(self):
-        """Returns combination of tags, content, category, target_role as an array"""
-        info_array = []
-        
-        # Add tags
-        if self.tags:
-            info_array.extend([t.strip().lower() for t in self.tags.split(',') if t.strip()])
-        
-        # Add content
+        """Return a list of strings representing the blog information for TF-IDF matching."""
+        info_list = []
+        if self.title:
+            info_list.append(self.title)
         if self.content:
-            info_array.append(self.content.strip())
-        
-        # Add category
+            info_list.append(self.content)
+        if self.tags:
+            info_list.append(self.tags)
         if self.category:
-            info_array.append(self.category.strip().lower())
-        
-        # Add target_role
+            info_list.append(self.category)
         if self.target_role:
-            info_array.append(self.target_role.strip().lower())
-        
-        return info_array
+            info_list.append(self.target_role)
+        return info_list
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
