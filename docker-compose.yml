@@ -1,7 +1,6 @@
 services:
   web:
-    build: 736744502587.dkr.ecr.eu-north-1.amazonaws.com/my-django-app
-    ports:
+    build: .
       - "8000:8000"
     volumes:
       - .:/app
