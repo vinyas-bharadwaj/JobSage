@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -103,14 +104,10 @@ WSGI_APPLICATION = 'src.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['POSTGRES_DB'],
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': os.environ['DB_HOST'],
-        'PORT': os.environ['DB_PORT'],
-    }
+    "default": dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 
