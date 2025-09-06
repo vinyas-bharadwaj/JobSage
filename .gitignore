@@ -81,8 +81,6 @@ Thumbs.db
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# pyenv
-.python-version
 
 # pipenv
 Pipfile.lock
