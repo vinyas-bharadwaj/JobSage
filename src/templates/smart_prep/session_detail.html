@@ -185,24 +185,24 @@
                     
                     <!-- Content -->
                     <div class="p-4">
-                        {% if session.preparation_timeline %}
+                        {% if ordered_timeline %}
                             <div class="space-y-4">
-                                {% for week, tasks in session.preparation_timeline.items %}
+                                {% for week in ordered_timeline %}
                                     <div class="relative">
                                         <!-- Week Header -->
                                         <div class="flex items-center gap-3 mb-2">
                                             <div class="w-8 h-8 bg-indigo-600 text-white flex items-center justify-center font-bold">
-                                                W{{ forloop.counter }}
+                                                W{{ week.week_number }}
                                             </div>
                                             <div>
-                                                <h4 class="text-base font-bold text-gray-900">{{ week }}</h4>
-                                                <p class="text-xs text-gray-600">{{ tasks|length }} tasks to complete</p>
+                                                <h4 class="text-base font-bold text-gray-900">{{ week.week_title }}</h4>
+                                                <p class="text-xs text-gray-600">{{ week.tasks|length }} tasks to complete</p>
                                             </div>
                                         </div>
                                         
                                         <!-- Tasks -->
                                         <div class="ml-11 space-y-2">
-                                            {% for task in tasks %}
+                                            {% for task in week.tasks %}
                                                 <div class="flex gap-2 p-2 bg-gray-50 border border-gray-200">
                                                     <div class="w-1 h-1 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
                                                     <span class="text-gray-700 text-sm leading-relaxed">{{ task }}</span>

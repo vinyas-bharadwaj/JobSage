@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 import json
 
 class SystemDesignQuestion(models.Model):
@@ -25,8 +26,9 @@ class SystemDesignSubmission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     # Store the uploaded design image (nullable for existing records)
-    design_image = models.ImageField(
-        upload_to='design_submissions/', 
+    design_image = CloudinaryField(
+        'image',
+        folder='design_submissions',
         help_text="Uploaded design image",
         null=True,
         blank=True

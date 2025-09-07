@@ -1,3 +1,4 @@
+{% load cloudinary %}
 <nav class="bg-white border-b-2 border-gray-200 relative z-50">
     <div class="container mx-auto px-6">
         <div class="flex items-center justify-between h-16">
@@ -37,10 +38,16 @@
                     <!-- User Dropdown -->
                     <div class="relative">
                         <button id="user-dropdown-button" class="flex items-center space-x-3 px-4 py-2 border-2 border-gray-200 hover:border-gray-900 transition-colors duration-200 focus:outline-none">
-                            {% if user.profile.avatar %}
-                                <img src="{{ user.profile.avatar.url }}" alt="Profile" class="w-8 h-8 object-cover">
+                            {% if user.profile.avatar and user.profile.avatar.url and user.profile.avatar != 'avatars/default.webp' %}
+                                <img src="{{ user.profile.avatar.url }}" 
+                                     alt="Profile" 
+                                     class="w-8 h-8 object-cover rounded-full"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center" style="display:none;">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
                             {% else %}
-                                <div class="w-8 h-8 bg-gray-900 flex items-center justify-center">
+                                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                             {% endif %}
@@ -53,10 +60,16 @@
                             <!-- User Info Header -->
                             <div class="p-4 border-b border-gray-200">
                                 <div class="flex items-center space-x-3">
-                                    {% if user.profile.avatar %}
-                                        <img src="{{ user.profile.avatar.url }}" alt="Profile" class="w-12 h-12 object-cover">
+                                    {% if user.profile.avatar and user.profile.avatar.url and user.profile.avatar != 'avatars/default.webp' %}
+                                        <img src="{{ user.profile.avatar.url }}" 
+                                             alt="Profile" 
+                                             class="w-12 h-12 object-cover rounded-full"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center" style="display:none;">
+                                            <i class="fas fa-user text-white"></i>
+                                        </div>
                                     {% else %}
-                                        <div class="w-12 h-12 bg-gray-900 flex items-center justify-center">
+                                        <div class="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center">
                                             <i class="fas fa-user text-white"></i>
                                         </div>
                                     {% endif %}
@@ -122,10 +135,16 @@
                 {% if user.is_authenticated %}
                     <div class="border-t border-gray-200 pt-4 mt-4">
                         <div class="flex items-center space-x-3 mb-4">
-                            {% if user.profile.avatar %}
-                                <img src="{{ user.profile.avatar.url }}" alt="Profile" class="w-8 h-8 object-cover">
+                            {% if user.profile.avatar and user.profile.avatar.url and user.profile.avatar != 'avatars/default.webp' %}
+                                <img src="{{ user.profile.avatar.url }}" 
+                                     alt="Profile" 
+                                     class="w-8 h-8 object-cover rounded-full"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center" style="display:none;">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
                             {% else %}
-                                <div class="w-8 h-8 bg-gray-900 flex items-center justify-center">
+                                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                             {% endif %}

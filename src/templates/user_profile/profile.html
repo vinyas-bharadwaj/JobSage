@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cloudinary %}
 
 {% block title %}Profile - JobSage{% endblock title %}
 
@@ -79,10 +80,16 @@
                                 <!-- Avatar Section -->
                                 <div class="text-center border-b border-gray-200 pb-6">
                                     <div class="mb-4">
-                                        {% if profile.avatar %}
-                                            <img src="{{ profile.avatar.url }}" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto border-4 border-gray-900">
+                                        {% if profile.avatar and profile.avatar.url and profile.avatar != 'avatars/default.webp' %}
+                                            <img src="{{ profile.avatar.url }}" 
+                                                 alt="Profile Picture" 
+                                                 class="w-20 h-20 rounded-full mx-auto border-4 border-gray-900 object-cover"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center border-4 border-gray-900" style="display:none;">
+                                                <i class="fas fa-user text-white text-2xl"></i>
+                                            </div>
                                         {% else %}
-                                            <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center">
+                                            <div class="w-20 h-20 bg-gray-900 rounded-full mx-auto flex items-center justify-center border-4 border-gray-900">
                                                 <i class="fas fa-user text-white text-2xl"></i>
                                             </div>
                                         {% endif %}

@@ -176,8 +176,27 @@ def prep_session_detail(request, session_id):
     """View detailed preparation session"""
     session = get_object_or_404(SmartPrepSession, session_id=session_id)
     
+    # Create ordered timeline for display
+    ordered_timeline = []
+    if session.preparation_timeline:
+        week_order = [
+            "Week 1: Foundation Building",
+            "Week 2: Technical Deep Dive", 
+            "Week 3: Practice & Polish",
+            "Week 4: Final Preparation"
+        ]
+        
+        for week_key in week_order:
+            if week_key in session.preparation_timeline:
+                ordered_timeline.append({
+                    'week_number': len(ordered_timeline) + 1,
+                    'week_title': week_key,
+                    'tasks': session.preparation_timeline[week_key]
+                })
+    
     context = {
         'session': session,
+        'ordered_timeline': ordered_timeline,
     }
     
     return render(request, 'smart_prep/session_detail.html', context)

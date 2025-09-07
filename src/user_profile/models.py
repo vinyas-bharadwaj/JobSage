@@ -4,13 +4,19 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from PIL import Image
 from pgvector.django import VectorField
+from cloudinary.models import CloudinaryField
 
 class Profile(models.Model):
     # Basic fields
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=300, blank=True)
     location = models.CharField(max_length=50, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.webp')
+    avatar = CloudinaryField(
+        'image',
+        folder='avatars',
+        default='avatars/default.webp',
+        transformation={'width': 300, 'height': 300, 'crop': 'fill', 'gravity': 'face'}
+    )
     github_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
     embeddings = VectorField(dimensions=768, null=True, blank=True)
@@ -67,40 +73,9 @@ class Profile(models.Model):
         return ' '.join(text_parts)
     
     def save(self, *args, **kwargs):
+        # Note: Image resizing is now handled by Cloudinary transformations
+        # The avatar field is configured with automatic cropping and resizing
         super().save(*args, **kwargs)
-        
-        # Resize avatar if it exists and is not the default
-        if self.avatar and hasattr(self.avatar, 'path') and 'default.webp' not in self.avatar.name:
-            try:
-                img = Image.open(self.avatar.path)
-                
-                # Convert to RGB if necessary
-                if img.mode in ('RGBA', 'LA', 'P'):
-                    background = Image.new('RGB', img.size, (255, 255, 255))
-                    if img.mode == 'P':
-                        img = img.convert('RGBA')
-                    background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
-                    img = background
-                
-                # Resize to 100x100
-                max_size = (100, 100)
-                img.thumbnail(max_size, Image.Resampling.LANCZOS)
-                
-                # Make it square
-                width, height = img.size
-                if width != height:
-                    min_dimension = min(width, height)
-                    left = (width - min_dimension) // 2
-                    top = (height - min_dimension) // 2
-                    right = left + min_dimension
-                    bottom = top + min_dimension
-                    img = img.crop((left, top, right, bottom))
-                
-                img.save(self.avatar.path, 'JPEG', quality=85, optimize=True)
-                
-            except Exception as e:
-                print(f"Image resize failed: {e}")
-                pass
 
 # Auto-create profile when user is created
 @receiver(post_save, sender=User)

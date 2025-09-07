@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cloudinary %}
 
 {% block title %}{{ question.title }} - JobSage{% endblock title %}
 
@@ -434,7 +435,7 @@
             <div class="sidebar-content">
                 <div class="user-info">
                     <i class="fas fa-user"></i>
-                    <span style="margin-left: 0.5rem;">{{ question.created_by.username }}</span>
+                    <span style="margin-left: 0.5rem;">{{ question.published_by.username }}</span>
                 </div>
                 
                 <div class="description">
@@ -473,15 +474,15 @@
                             <i class="fas fa-trash"></i> Remove
                         </button>
                     </div>
-                    
-                    <button id="submit-upload-btn" onclick="submitUploadedDesign()" class="btn btn-primary" style="display: none;">
-                        <i class="fas fa-paper-plane"></i>
-                        Submit Uploaded Design
-                    </button>
                 </div>
                 
                 <div class="actions">
-                    <button onclick="openInNewTab()" class="btn btn-secondary">
+                    <button id="submit-upload-btn" onclick="submitUploadedDesign()" class="btn btn-primary" style="display: none; width: 100%;">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Uploaded Design
+                    </button>
+                    
+                    <button onclick="openInNewTab()" class="btn btn-secondary" style="width: 100%;">
                         <i class="fas fa-external-link-alt"></i>
                         Open in New Tab
                     </button>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cloudinary %}
 
 {% block title %}Design Analysis Results - JobSage{% endblock title %}
 
@@ -54,10 +55,7 @@
             Your Design
         </h2>
         <div class="text-center">
-            <img src="{{ submission.design_image.url }}" 
-                 alt="Submitted Design" 
-                 class="max-w-full h-auto rounded-lg shadow-md mx-auto border border-gray-200"
-                 style="max-height: 500px;">
+            {% cloudinary submission.design_image width=800 height=600 crop="limit" quality="auto" format="auto" class="max-w-full h-auto rounded-lg shadow-md mx-auto border border-gray-200" style="max-height: 500px;" alt="Submitted Design" %}
         </div>
     </div>
     {% endif %}

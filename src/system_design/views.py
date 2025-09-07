@@ -7,6 +7,7 @@ import json
 import base64
 import io
 import traceback
+import requests
 from PIL import Image
 from .agent import analyze_system_design
 from .models import SystemDesignQuestion, SystemDesignSubmission
@@ -22,7 +23,7 @@ def system_design_page(request):
         form = SystemDesignQuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False)
-            question.created_by = request.user  
+            question.published_by = request.user  
             question.save()
             messages.success(request, 'Question added successfully!')
             return redirect('system-design-page')
@@ -95,9 +96,19 @@ def submit_design_view(request, question_id):
             try:
                 print("Starting design analysis...")
                 
-                # Read the image file for analysis
-                with submission.design_image.open('rb') as image_file:
-                    image_bytes = image_file.read()
+                # Get image bytes from Cloudinary URL
+                if hasattr(submission.design_image, 'url'):
+                    # For Cloudinary, get the image via URL
+                    image_url = submission.design_image.url
+                    print(f"Fetching image from URL: {image_url}")
+                    
+                    response = requests.get(image_url)
+                    response.raise_for_status()
+                    image_bytes = response.content
+                else:
+                    # Fallback for local files (shouldn't happen with Cloudinary)
+                    with submission.design_image.open('rb') as image_file:
+                        image_bytes = image_file.read()
                 
                 analysis = analyze_system_design(
                     image_data=image_bytes,

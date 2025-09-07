@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cloudinary %}
 
 {% block title %}My System Design Submissions - JobSage{% endblock title %}
 
@@ -150,9 +151,7 @@
                         <!-- In the submission card, add an image preview -->
                         <div class="lg:w-1/4">
                             {% if submission.design_image %}
-                                <img src="{{ submission.design_image.url }}" 
-                                     alt="Design Preview" 
-                                     class="w-full h-32 object-cover rounded">
+                                {% cloudinary submission.design_image width=300 height=200 crop="fill" quality="auto" format="auto" class="w-full h-32 object-cover rounded" alt="Design Preview" %}
                             {% else %}
                                 <div class="w-full h-32 bg-gray-200 rounded flex items-center justify-center">
                                     <i class="fas fa-image text-gray-400 text-2xl"></i>

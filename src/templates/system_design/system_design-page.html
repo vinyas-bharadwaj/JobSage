@@ -52,7 +52,7 @@
                             <p class="text-xs text-gray-600 mb-3 leading-relaxed">{{ question.description|truncatewords:10 }}</p>
                             
                             <div class="text-xs text-gray-500 mb-3">
-                                <div>by {{ question.created_by.username }}</div>
+                                <div>by {{ question.published_by.username }}</div>
                                 <div>{{ question.created_at|date:"M d" }}</div>
                             </div>
                             
